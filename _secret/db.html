@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentació Base de Dades - Yanina Parisi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #aa9e6b;
+            --primary-dark: #96865c;
+            --secondary: #474742;
+            --accent: #CCCCA7;
+            --bg-light: #f8f9fa;
+            --bg-dark: #1e1e1e;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --border: #dee2e6;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --shadow: 0 2px 15px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: var(--shadow);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header h1 i {
+            color: var(--primary);
+        }
+        
+        .version-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .card-header i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .card-header h2 {
+            font-size: 1.6rem;
+            color: var(--secondary);
+        }
+        
+        .card-description {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            color: #abb2bf;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .code-block .keyword {
+            color: #c678dd;
+            font-weight: 600;
+        }
+        
+        .code-block .string {
+            color: #98c379;
+        }
+        
+        .code-block .function {
+            color: #61afef;
+        }
+        
+        .code-block .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .copy-btn.copied {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: start;
+        }
+        
+        .info-box i {
+            font-size: 2rem;
+            opacity: 0.9;
+        }
+        
+        .info-box-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .info-box-content p {
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Table */
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+        
+        .db-table th,
+        .db-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .db-table th {
+            background: var(--accent);
+            color: var(--secondary);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        .db-table tr:hover {
+            background: var(--bg-light);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            margin-top: 50px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>
+                <i class="fas fa-database"></i>
+                Base de Dades - Yanina Parisi
+            </h1>
+            <span class="version-badge">v1.0.0</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Info Box -->
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <div class="info-box-content">
+                <h3>Informació del Projecte</h3>
+                <p>
+                    Aquesta documentació conté tota l'estructura de la base de dades per al panell de control 
+                    de la psicòloga Yanina Parisi. Inclou les taules necessàries per gestionar pacients, cites, 
+                    facturació i configuració del sistema.
+                </p>
+            </div>
+        </div>
+
+        <!-- Database Creation -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-server"></i>
+                <h2>Creació de la Base de Dades</h2>
+            </div>
+            
+            <p class="card-description">
+                Primer pas: crear la base de dades amb el charset i collation adequats per suportar 
+                caràcters especials i idiomes múltiples (català, castellà).
+            </p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+<pre><span class="keyword">CREATE DATABASE IF NOT EXISTS</span> db_cp_yanina_parisi
+<span class="keyword">CHARACTER SET</span> utf8mb4
+<span class="keyword">COLLATE</span> utf8mb4_unicode_ci;</pre>
+            </div>
+            <p class="card-description">
+                Aquesta és la definició de la taula principal "pacients" que emmagatzema tota la informació rellevant dels pacients.
+                Inclou dades personals, informació mèdica bàsica, contacte d'emergència i estat del pacient.
+                Aquesta base de dades utilitza l'encoding UTF-8 per garantir la correcta representació de tots els caràcters especials i accents.
+            </p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                <span class="keyword">CREATE TABLE</span> pacients (
+                    id_pacient <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                    nom VARCHAR(50) <span class="keyword">NOT NULL</span>,
+                    cognoms VARCHAR(100) <span class="keyword">NOT NULL</span>,
+                    data_naixement <span class="keyword">DATE</span>,
+                    sexe <span class="keyword">ENUM</span>('Hombre', 'Mujer', 'Otro', 'No especificado'),
+                    telefon <span class="keyword">VARCHAR</span>(20),
+                    email <span class="keyword"></span>VARCHAR</span>(100),
+                    adreca <span class="keyword">TEXT</span>,
+                    ciutat <span class="keyword">VARCHAR</span>(50),
+                    codi_postal <span class="keyword">VARCHAR</span>(10),
+
+                    -- Informació mèdica rellevant
+                    antecedents_medics <span class="keyword">TEXT</span>,
+                    medicacio_actual <span class="keyword"></span>TEXT</span>,
+                    alergies <span class="keyword">TEXT</span>,
+
+                    -- Informació de contacte d'emergència
+                    contacte_emergencia_nom <span class="keyword">VARCHAR</span>(100),
+                    contacte_emergencia_telefon <span class="keyword">VARCHAR</span>(20),
+                    contacte_emergencia_relacio <span class="keyword">VARCHAR</span>(50),
+
+                    -- Dates del sistema
+                    data_registre <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                    data_ultima_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+
+                    -- Estat del pacient
+                    estat <span class="keyword">ENUM</span>('Activo', 'Inactivo', 'Alta', 'Seguimiento') <span class="keyword">DEFAULT</span> 'Activo',
+
+                    -- Observacions addicionals
+                    observacions <span class="keyword">TEXT</span>,
+
+                    <span class="keyword">INDEX</span> idx_dni (dni),
+                    <span class="keyword">INDEX</span> idx_cognoms (cognoms),
+                    <span class="keyword">INDEX</span> idx_estat (estat)
+                ) 
+                <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="card-description">
+                Aquesta és la definició de la taula "sessions" que emmagatzema informació sobre les sessions de teràpia.
+                Inclou dades com la data i hora, tipus de sessió, estat, ubicació, preu i notes del terapeuta.
+                La taula està relacionada amb la taula "pacients" mitjançant una clau forana.
+            </p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                <span class="keyword">CREATE TABLE</span> sessions (
+                    id_sessio <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                    
+                    -- Només necessitem el pacient (un sol terapeuta)
+                    id_pacient <span class="keyword">INT NOT NULL</span>,
+
+                    -- Data i hora de la sessió
+                    data_sessio <span class="keyword">DATE NOT NULL</span>,
+                    hora_inici <span class="keyword">TIME NOT NULL</span>,
+                    hora_fi <span class="keyword">TIME NOT NULL</span>,
+
+                    -- Tipus de sessió simplificat
+                    tipus_sessio <span class="keyword">ENUM</span>('Individual', 'Pareja', 'Familiar', 'Grupo') <span class="keyword">DEFAULT</span> 'Individual',
+                    
+                    -- Estat de la sessió essencial
+                    estat_sessio <span class="keyword">ENUM</span>('Programada', 'Realizada', 'Cancelada', 'No asistida') <span class="keyword">DEFAULT</span> 'Programada',
+
+                    -- Ubicació bàsica
+                    ubicacio <span class="keyword">ENUM</span>('Presencial', 'Online') <span class="keyword">DEFAULT</span> 'Presencial',
+
+                    -- Informació econòmica
+                    preu_sessio <span class="keyword">DECIMAL</span>(8,2) <span class="keyword">NULL</span>,
+                    
+                    -- Notes simples
+                    notes_terapeuta <span class="keyword">TEXT</span>,
+                    
+                    -- Dates del sistema
+                    data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                    
+                    -- Clau forana
+                    <span class="keyword">FOREIGN KEY</span> (id_pacient) <span class="keyword">REFERENCES</span> pacients(id_pacient) <span class="keyword">ON DELETE RESTRICT</span>,
+                    
+                    -- Índexs essencials
+                    <span class="keyword">INDEX</span> idx_data_sessio (data_sessio),
+                    <span class="keyword">INDEX</span> idx_pacient_data (id_pacient, data_sessio),
+                    <span class="keyword">INDEX</span> idx_estat (estat_sessio)
+                ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="card-description">
+                Aquesta és la definició de la taula "pagaments" que emmagatzema informació sobre els pagaments realitzats pels pacients.
+                Inclou dades com la data del pagament, import, mètode de pagament, estat i informació de facturació.
+                La taula està relacionada amb la taula "sessions" mitjançant una clau forana.
+            </p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                <span class="keyword">CREATE TABLE</span> pagaments (
+                    id_pagament <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                    
+                    -- Relació amb la sessió
+                    id_sessio <span class="keyword">INT NOT NULL</span>,
+
+                    -- Informació del pagament
+                    data_pagament <span class="keyword">DATE NOT NULL</span>,
+                    import <span class="keyword">DECIMAL</span>(8,2) <span class="keyword"></span>NOT NULL</span>,
+                    metode_pagament <span class="keyword">ENUM</span>('Efectivo', 'Tarjeta', 'Transferencia', 'Bizum') <span class="keyword">DEFAULT</span> 'Efectivo',
+                    
+                    -- Estat del pagament
+                    estat <span class="keyword">ENUM</span>('Pendiente', 'Completado', 'Anulado') <span class="keyword">DEFAULT</span> 'Completado',
+                    
+                    -- Informació de facturació (opcional)
+                    facturat <span class="keyword">BOOLEAN DEFAULT</span> FALSE,
+                    numero_factura <span class="keyword">VARCHAR</span>(50),
+                    
+                    -- Notes
+                    observacions <span class="keyword">TEXT</span>,
+                    
+                    -- Data del sistema
+                    data_registre <span class="keyword">DATETIME DEFAULT</span> CURRENT_TIMESTAMP,
+                    
+                    -- Clau forana
+                    <span class="keyword">FOREIGN KEY</span> (id_sessio) <span class="keyword">REFERENCES</span> sessions(id_sessio) <span class="keyword">ON DELETE RESTRICT</span>,
+                    
+                    -- Índexs
+                    <span class="keyword">INDEX</span> idx_data_pagament (data_pagament),
+                    <span class="keyword">INDEX</span> idx_estat (estat),
+                    <span class="keyword">INDEX</span> idx_facturat (facturat)
+                ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-table"></i>
+                    <div class="number">6</div>
+                    <div class="label">Taules</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <div class="number">UTF-8</div>
+                    <div class="label">Encoding</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-language"></i>
+                    <div class="number">2</div>
+                    <div class="label">Idiomes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Structure Overview -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-sitemap"></i>
+                <h2>Estructura de la Base de Dades</h2>
+            </div>
+            
+            <p class="card-description">
+                La base de dades està composada per les següents taules principals:
+            </p>
+
+            <table class="db-table">
+                <thead>
+                    <tr>
+                        <th>Taula</th>
+                        <th>Descripció</th>
+                        <th>Relacions</th>
+                        <th>Estat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>usuarios</strong></td>
+                        <td>Credencials d'accés al panell de control</td>
+                        <td>-</td>
+                        <td><span class="badge badge-warning">Pendent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>pacientes</strong></td>
+                        <td>Dades bàsiques dels pacients</td>
+                        <td>citas, facturacion</td>
+                        <td><span class="badge badge-warning">Pendent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>citas</strong></td>
+                        <td>Gestió de cites i sessions</td>
+                        <td>pacientes</td>
+                        <td><span class="badge badge-warning">Pendent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>facturacion</strong></td>
+                        <td>Factures i pagaments</td>
+                        <td>pacientes, citas</td>
+                        <td><span class="badge badge-warning">Pendent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>configuracion</strong></td>
+                        <td>Configuració del sistema</td>
+                        <td>-</td>
+                        <td><span class="badge badge-warning">Pendent</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>estadisticas</strong></td>
+                        <td>Dades per a estadístiques</td>
+                        <td>pacientes, citas</td>
+                        <td><span class="badge badge-warning">Pendent</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Notes Importants</h2>
+            </div>
+            
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 10px; margin: 10px 0; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                    <i class="fas fa-shield-alt" style="color: #856404;"></i>
+                    <strong>Protecció de Dades:</strong> NO es guarden notes clíniques ni historials mèdics per complir amb la normativa de protecció de dades.
+                </li>
+                <li style="padding: 10px; margin: 10px 0; background: #d1ecf1; border-left: 4px solid #17a2b8; border-radius: 4px;">
+                    <i class="fas fa-lock" style="color: #0c5460;"></i>
+                    <strong>Seguretat:</strong> Les contrasenyes es guardaran amb hash bcrypt (PASSWORD_DEFAULT de PHP).
+                </li>
+                <li style="padding: 10px; margin: 10px 0; background: #d4edda; border-left: 4px solid #28a745; border-radius: 4px;">
+                    <i class="fas fa-database" style="color: #155724;"></i>
+                    <strong>Integritat:</strong> Totes les taules tindran claus foranes amb ON DELETE CASCADE quan sigui apropiat.
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><i class="fas fa-heart" style="color: var(--primary);"></i> Documentació creada per al projecte Yanina Parisi - 2025</p>
+    </footer>
+
+    <script>
+        // Copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const code = codeBlock.querySelector('pre').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copiat!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll animation for cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.5s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

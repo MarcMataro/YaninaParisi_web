@@ -1,9 +1,34 @@
+<?php 
+// Incluir sistema de traducció
+include 'includes/lang.php';
+?>
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="<?php echo getCurrentLanguage(); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centre de Psicologia - Yanina Parisi</title>
+    
+    <!-- METAETIQUETES ESSENCIALS -->
+    <title><?php echo t('meta_title'); ?></title>
+    <meta name="description" content="<?php echo t('meta_description'); ?>">
+    <meta name="keywords" content="<?php echo t('meta_keywords'); ?>">
+    <meta name="author" content="<?php echo t('meta_author'); ?>">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
+    <meta property="og:title" content="<?php echo t('meta_og_title'); ?>">
+    <meta property="og:description" content="<?php echo t('meta_og_description'); ?>">
+    <meta property="og:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
+    <meta property="og:site_name" content="<?php echo t('meta_og_site_name'); ?>">
+    <meta property="og:locale" content="<?php echo getCurrentLanguage() === 'ca' ? 'ca_ES' : 'es_ES'; ?>">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo t('meta_og_title'); ?>">
+    <meta name="twitter:description" content="<?php echo t('meta_og_description'); ?>">
+    <meta name="twitter:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/estils.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,74 +36,133 @@
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Capçalera -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <img src="img/logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#inici">Inici</a></li>
-                    <li><a href="#serveis">Serveis</a></li>
-                    <li><a href="#sobre-mi">Sobre mi</a></li>
-                    <li><a href="#testimonis">Testimonis</a></li>
-                    <li><a href="#contacte">Contacte</a></li>
-                </ul>
-            </nav>
-            <a href="#contacte" class="btn">Demana una cita</a>
-        </div>
-    </header>
+    <?php include 'includes/navigation.php'; ?>
 
     <!-- Secció Hero -->
     <section class="hero" id="inici">
         <div class="container hero-content">
-            <h1>Yanina Parisi psicologia</h1>
-            <h2 class="heroh2">Benestar, suport i creixement personal.</h2>
+            <h1><?php echo t('hero_title'); ?> <span class="highlight"><?php echo t('hero_name'); ?></span></h1>
+            <h2 class="hero-subtitle"><?php echo t('hero_subtitle'); ?></h2>
+            
+            <div class="hero-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span><?php echo t('hero_badge'); ?></span>
+            </div>
+
             <div class="hero-buttons">
-                <a href="#serveis" class="btn">Els meus serveis</a>
-                <a href="#contacte" class="btn btn-light">Contacta'm</a>
+                <a href="#contacte" class="btn btn-primary">
+                    <i class="fas fa-calendar-check"></i>
+                    <?php echo t('hero_btn_primary'); ?>
+                </a>
+                <a href="#serveis" class="btn btn-secondary">
+                    <?php echo t('hero_btn_secondary'); ?>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Serveis -->
-    <section id="serveis">
+    <!-- Frase inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <blockquote>
+                    <p>"<?php echo t('quote_text'); ?>"</p>
+                </blockquote>
+                <cite>— <?php echo t('quote_author'); ?></cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- Especialitats -->
+    <section id="serveis" class="specialties-section">
         <div class="container">
             <div class="section-title">
-                <h2>Els meus serveis</h2>
-                <p>Ofereixo teràpies personalitzades adaptades a les necessitats específiques de cada persona</p>
+                <h2><?php echo t('services_title'); ?></h2>
+                <p><?php echo t('services_subtitle'); ?></p>
             </div>
-            <div class="services-grid">
-                <div class="service-card">
-                    <i class="fas fa-heart service-icon"></i>
-                    <h3>Teràpia individual</h3>
-                    <p>Sessions individuals centrades en les teves necessitats específiques i objectius personals.</p>
+            <div class="specialties-grid">
+                <!-- Salut Mental Adults -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3><?php echo t('specialty1_title'); ?></h3>
+                    <ul>
+                        <li><?php echo t('specialty1_item1'); ?></li>
+                        <li><?php echo t('specialty1_item2'); ?></li>
+                        <li><?php echo t('specialty1_item3'); ?></li>
+                        <li><?php echo t('specialty1_item4'); ?></li>
+                        <li><?php echo t('specialty1_item5'); ?></li>
+                        <li><?php echo t('specialty1_item6'); ?></li>
+                    </ul>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-users service-icon"></i>
-                    <h3>Teràpia de parella</h3>
-                    <p>Millora la comunicació i resoleu conflictes per enfortir la vostra relació.</p>
+                
+                <!-- Teràpia de Parella i Família -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3><?php echo t('specialty2_title'); ?></h3>
+                    <ul>
+                        <li><?php echo t('specialty2_item1'); ?></li>
+                        <li><?php echo t('specialty2_item2'); ?></li>
+                        <li><?php echo t('specialty2_item3'); ?></li>
+                        <li><?php echo t('specialty2_item4'); ?></li>
+                        <li><?php echo t('specialty2_item5'); ?></li>
+                    </ul>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-child service-icon"></i>
-                    <h3>Teràpia infantil</h3>
-                    <p>Ajuda especialitzada per a nens i adolescents que afronten desafiaments emocionals.</p>
+                
+                <!-- Psicologia Judicial -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3><?php echo t('specialty3_title'); ?></h3>
+                    <ul>
+                        <li><?php echo t('specialty3_item1'); ?></li>
+                        <li><?php echo t('specialty3_item2'); ?></li>
+                        <li><?php echo t('specialty3_item3'); ?></li>
+                        <li><?php echo t('specialty3_item4'); ?></li>
+                    </ul>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-stethoscope service-icon"></i>
-                    <h3>Assessament psicològic</h3>
-                    <p>Avaluació i diagnòstic per identificar i comprendre millor les teves necessitats.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serveis Especials -->
+    <section class="special-services">
+        <div class="container">
+            <div class="section-title">
+                <h2><?php echo t('special_services_title'); ?></h2>
+                <p><?php echo t('special_services_subtitle'); ?></p>
+            </div>
+            
+            <div class="services-special-grid">
+                <div class="service-special-card">
+                    <div class="service-special-header">
+                        <i class="fas fa-heart-circle-check"></i>
+                        <h3><?php echo t('special_service1_title'); ?></h3>
+                    </div>
+                    <p><?php echo t('special_service1_desc'); ?></p>
+                    <ul>
+                        <li><?php echo t('special_service1_item1'); ?></li>
+                        <li><?php echo t('special_service1_item2'); ?></li>
+                        <li><?php echo t('special_service1_item3'); ?></li>
+                    </ul>
                 </div>
-                <div class="service-card">
-                    <i class="fas fa-hands-helping service-icon"></i>
-                    <h3>Teràpia familiar</h3>
-                    <p>Millora les dinàmiques familiars i la comunicació entre els membres de la família.</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-seedling service-icon"></i>
-                    <h3>Teràpia online</h3>
-                    <p>Sessions de teràpia per vídeo trucada des de la comoditat de casa teva.</p>
+                
+                <div class="service-special-card">
+                    <div class="service-special-header">
+                        <i class="fas fa-scale-balanced"></i>
+                        <h3><?php echo t('special_service2_title'); ?></h3>
+                    </div>
+                    <p><?php echo t('special_service2_desc'); ?></p>
+                    <ul>
+                        <li><?php echo t('special_service2_item1'); ?></li>
+                        <li><?php echo t('special_service2_item2'); ?></li>
+                        <li><?php echo t('special_service2_item3'); ?></li>
+                        <li><?php echo t('special_service2_item4'); ?></li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -88,16 +172,16 @@
     <section id="sobre-mi">
         <div class="container">
             <div class="section-title">
-                <h2>Sobre mi</h2>
-                <p>Connexió que va més enllà de la teràpia</p>
+                <h2><?php echo t('about_title'); ?></h2>
+                <p><?php echo t('about_subtitle'); ?></p>
             </div>
             <div class="about-grid">
                 <div class="about-content">
-                    <h3>Yanina Parisi</h3>
-                    <p>Sóc psicòloga col·legiada amb més de 10 anys d'experiència ajudant a persones a superar adversitats i trobar el seu camí cap al benestar mental.</p>
-                    <p>La meva abordatge es centra en crear un espai segur i sense judicis on puguis explorar els teus pensaments i sentiments. Crec en la capacitat de cada persona per créixer i canviar, i em considero un acompanyant en el teu viatge cap a una vida més plena.</p>
-                    <p>La meva formació inclou un Màster en Teràpia Cognitivo-Conductual i especialitzacions en teràpia de parella i teràpia infantil. Continuo formant-me regularment per oferir les tècniques més actuals i efectives.</p>
-                    <a href="#contacte" class="btn">Programa una consulta</a>
+                    <h3><?php echo t('about_name'); ?></h3>
+                    <p><?php echo t('about_desc1'); ?></p>
+                    <p><?php echo t('about_desc2'); ?></p>
+                    <p><?php echo t('about_desc3'); ?></p>
+                    <a href="#contacte" class="btn"><?php echo t('about_btn'); ?></a>
                 </div>
                 <div class="about-image">
                     <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='400' viewBox='0 0 500 400'><rect width='500' height='400' fill='%236a9fb5'/><circle cx='250' cy='150' r='80' fill='%239f86c0'/><rect x='170' y='250' width='160' height='100' fill='%23a5c882'/></svg>" alt="Yanina Parisi - Psicòloga">
@@ -133,6 +217,101 @@
                             <p>Pacients des de 2022</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarifes -->
+    <section id="tarifes">
+        <div class="container">
+            <div class="section-title">
+                <h2><?php echo t('pricing_title'); ?></h2>
+                <p><?php echo t('pricing_subtitle'); ?></p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-gift pricing-icon"></i>
+                        <h3><?php echo t('pricing_first_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="original-price">60</span>
+                            <span class="amount">0</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_session'); ?></span>
+                        </div>
+                        <p class="price-note"><?php echo t('pricing_first_note'); ?></p>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_first_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_first_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_first_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-heart pricing-icon"></i>
+                        <h3><?php echo t('pricing_individual_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">60</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_session'); ?></span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature1'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-calendar-week pricing-icon"></i>
+                        <h3><?php echo t('pricing_biweekly_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">100</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_month'); ?></span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature1'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-calendar-alt pricing-icon"></i>
+                        <h3><?php echo t('pricing_monthly_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">180</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_month'); ?></span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature1'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
                 </div>
             </div>
         </div>
@@ -215,16 +394,18 @@
                         <li><a href="#serveis">Serveis</a></li>
                         <li><a href="#sobre-mi">Sobre mi</a></li>
                         <li><a href="#testimonis">Testimonis</a></li>
+                        <li><a href="#tarifes">Tarifes</a></li>
                         <li><a href="#contacte">Contacte</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3>Serveis</h3>
+                    <h3><?php echo t('footer_services_title'); ?></h3>
                     <ul>
-                        <li><a href="#">Teràpia individual</a></li>
-                        <li><a href="#">Teràpia de parella</a></li>
-                        <li><a href="#">Teràpia infantil</a></li>
-                        <li><a href="#">Teràpia online</a></li>
+                        <li><a href="#serveis"><?php echo t('footer_service1'); ?></a></li>
+                        <li><a href="#serveis"><?php echo t('footer_service2'); ?></a></li>
+                        <li><a href="#serveis"><?php echo t('footer_service3'); ?></a></li>
+                        <li><a href="#serveis-especials"><?php echo t('footer_service4'); ?></a></li>
+                        <li><a href="#serveis-especials"><?php echo t('footer_service5'); ?></a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -251,6 +432,30 @@
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
+            });
+        });
+
+        // Script per l'efecte scroll de la navegació
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Script per al selector d'idioma
+        function changeLanguage(lang) {
+            window.location.href = window.location.pathname + '?lang=' + lang;
+        }
+        
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Eliminar classe active de tots els botons
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                // Afegir classe active al botó clickat
+                this.classList.add('active');
             });
         });
     </script>

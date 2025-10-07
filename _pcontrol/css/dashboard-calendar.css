@@ -1,0 +1,1219 @@
+/**
+ * Dashboard Calendar Styles
+ * Estilos para la visualización de calendario diario en el dashboard
+ * Diseño tipo agenda física con horas
+ */
+
+/* ============================================
+   LAYOUT PRINCIPAL CON ASIDE
+   ============================================ */
+.dashboard-grid-with-aside {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.main-content-area {
+    min-width: 0; /* Importante para el overflow */
+}
+
+.dashboard-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ============================================
+   DAY CALENDAR CARD
+   ============================================ */
+.day-calendar-card {
+    grid-column: auto !important;
+    min-height: 600px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.day-calendar-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #CCCCA7 0%, #aa9e6b 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px 12px 0 0;
+}
+
+.day-calendar-card .card-header h2 {
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.calendar-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 12px 18px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.calendar-day-num {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    font-family: 'Libre Baskerville', serif;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-month {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    margin-top: 3px;
+}
+
+/* ============================================
+   DAY CALENDAR TIMELINE - ESTILO AGENDA
+   ============================================ */
+.day-calendar {
+    padding: 0;
+    background: #fafafa;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+}
+
+.no-appointments {
+    text-align: center;
+    padding: 80px 20px;
+    color: #999;
+    background: white;
+}
+
+.no-appointments i {
+    font-size: 4rem;
+    color: var(--color-accent);
+    margin-bottom: 25px;
+    opacity: 0.5;
+}
+
+.no-appointments p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    color: #666;
+}
+
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--color-accent) 0%, #aa9e6b 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   TIMELINE STRUCTURE - ESTILO AGENDA FÍSICA
+   ============================================ */
+.timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: white !important;
+    padding: 10px 0 !important;
+}
+
+/* Efecto de página de agenda - LÍNEA VERTICAL CENTRAL */
+.timeline::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 120px !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 2px !important;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        #e0e0e0 5%, 
+        #e0e0e0 95%, 
+        transparent 100%) !important;
+    z-index: 0 !important;
+}
+
+.timeline-hour {
+    position: relative;
+    display: flex;
+    align-items: stretch !important;
+    min-height: 70px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    transition: background-color 0.2s ease;
+}
+
+.timeline-hour:hover {
+    background-color: #fafafa !important;
+}
+
+.timeline-hour:last-child {
+    border-bottom: none !important;
+}
+
+/* Hora a la izquierda - estilo agenda */
+.hour-label {
+    width: 110px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #555 !important;
+    padding: 12px 20px 0 20px !important;
+    text-align: right !important;
+    flex-shrink: 0 !important;
+    font-family: 'Libre Baskerville', serif !important;
+    background: linear-gradient(to right, transparent, rgba(204, 204, 167, 0.05)) !important;
+    border-right: 3px solid #CCCCA7 !important;
+    position: relative !important;
+}
+
+.hour-label::after {
+    content: '' !important;
+    position: absolute !important;
+    right: -6px !important;
+    top: 12px !important;
+    width: 10px !important;
+    height: 10px !important;
+    background: #CCCCA7 !important;
+    border-radius: 50% !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    display: block !important;
+}
+
+.hour-line {
+    display: none !important; /* Ya no necesitamos esta línea */
+}
+
+.hour-slots {
+    flex: 1 !important;
+    margin-left: 20px !important;
+    margin-right: 15px !important;
+    position: relative;
+    min-height: 60px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 8px 0 !important;
+}
+
+/* ============================================
+   APPOINTMENT SLOTS - ESTILO NOTAS AGENDA
+   ============================================ */
+.appointment-slot {
+    position: relative;
+    background: white !important;
+    border-left: 5px solid var(--color-accent) !important;
+    border-radius: 0 8px 8px 0 !important;
+    padding: 12px 15px !important;
+    color: #333 !important;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+    min-height: 65px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    transition: all 0.3s ease !important;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.appointment-slot:hover {
+    transform: translateX(8px) scale(1.02) !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.12),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+    z-index: 2;
+}
+
+/* Estados de sesión - colores más suaves tipo agenda */
+.appointment-slot.programada {
+    border-left-color: #4a90e2 !important;
+    background: linear-gradient(to right, rgba(74, 144, 226, 0.05), white) !important;
+}
+
+.appointment-slot.programada:hover {
+    background: linear-gradient(to right, rgba(74, 144, 226, 0.1), white) !important;
+}
+
+.appointment-slot.realitzada {
+    border-left-color: #27ae60 !important;
+    background: linear-gradient(to right, rgba(39, 174, 96, 0.05), white) !important;
+}
+
+.appointment-slot.realitzada:hover {
+    background: linear-gradient(to right, rgba(39, 174, 96, 0.1), white) !important;
+}
+
+.appointment-slot.cancelada {
+    border-left-color: #e74c3c !important;
+    background: linear-gradient(to right, rgba(231, 76, 60, 0.05), white) !important;
+    opacity: 0.75 !important;
+}
+
+.appointment-slot.cancelada:hover {
+    background: linear-gradient(to right, rgba(231, 76, 60, 0.1), white) !important;
+    opacity: 0.85 !important;
+}
+
+.slot-time {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    color: #555 !important;
+    font-family: 'Libre Baskerville', serif !important;
+}
+
+.slot-time::before {
+    content: "\f017" !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-size: 0.85rem !important;
+    color: var(--color-accent) !important;
+}
+
+.slot-patient {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #2c3e50 !important;
+}
+
+.slot-type {
+    font-size: 0.85rem !important;
+    color: #7f8c8d !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-style: italic !important;
+}
+
+/* Indicador visual del tipo de sesión */
+.appointment-slot.programada .slot-type::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #4a90e2;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.appointment-slot.realitzada .slot-type::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #27ae60;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.appointment-slot.cancelada .slot-type::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #e74c3c;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* ============================================
+   APPOINTMENTS LIST CARD
+   ============================================ */
+.appointments-card {
+    min-height: 400px;
+}
+
+.appointments-list {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    color: var(--color-accent);
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1rem;
+}
+
+.appointment-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--color-accent);
+}
+
+.appointment-item:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateX(5px);
+}
+
+.appointment-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--color-accent);
+    font-size: 1rem;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.appointment-time i {
+    font-size: 0.9rem;
+}
+
+.appointment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.appointment-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-type {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.appointment-type i {
+    font-size: 0.8rem;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-badge.programada {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-badge.realitzada {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.status-badge.cancel·lada {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.status-badge.no-assistida {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+/* ============================================
+   UPCOMING APPOINTMENTS CARD
+   ============================================ */
+.upcoming-card {
+    min-height: 400px;
+}
+
+.upcoming-list {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.upcoming-item:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateX(5px);
+}
+
+.upcoming-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, var(--color-accent) 0%, #aa9e6b 100%);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    min-width: 55px;
+    flex-shrink: 0;
+}
+
+.date-day {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.date-month {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-top: 2px;
+}
+
+.upcoming-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.upcoming-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upcoming-time {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.upcoming-time i {
+    font-size: 0.75rem;
+}
+
+.upcoming-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   QUICK ACTIONS ADJUSTMENTS
+   ============================================ */
+.quick-actions {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 15px;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: white;
+    border-color: var(--color-accent);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn i {
+    font-size: 2rem;
+    color: var(--color-accent);
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover i {
+    transform: scale(1.1);
+}
+
+.action-btn span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .day-calendar-card {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendar-date {
+        padding: 8px 12px;
+    }
+    
+    .calendar-day-num {
+        font-size: 1.8rem;
+    }
+    
+    .calendar-month {
+        font-size: 0.7rem;
+    }
+    
+    .timeline::before {
+        left: 90px;
+    }
+    
+    .hour-label {
+        width: 80px;
+        font-size: 0.9rem;
+        padding: 10px 15px 0 10px;
+    }
+    
+    .hour-label::after {
+        right: -5px;
+        width: 8px;
+        height: 8px;
+    }
+    
+    .hour-slots {
+        margin-left: 15px;
+        margin-right: 10px;
+    }
+    
+    .appointment-slot {
+        padding: 10px 12px;
+        min-height: 55px;
+    }
+    
+    .slot-time {
+        font-size: 0.8rem;
+    }
+    
+    .slot-patient {
+        font-size: 1rem;
+    }
+    
+    .slot-type {
+        font-size: 0.75rem;
+    }
+    
+    .appointment-item {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .appointment-time {
+        min-width: 70px;
+        font-size: 0.9rem;
+    }
+    
+    .status-badge {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .action-btn {
+        padding: 15px 10px;
+    }
+    
+    .action-btn i {
+        font-size: 1.5rem;
+    }
+    
+    .action-btn span {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .day-calendar {
+        padding: 0;
+    }
+    
+    .timeline::before {
+        left: 70px;
+    }
+    
+    .hour-label {
+        width: 65px;
+        font-size: 0.8rem;
+        padding: 8px 10px 0 5px;
+    }
+    
+    .hour-label::after {
+        display: none;
+    }
+    
+    .hour-slots {
+        margin-left: 10px;
+        margin-right: 5px;
+    }
+    
+    .timeline-hour {
+        min-height: 60px;
+    }
+    
+    .appointment-slot {
+        padding: 8px 10px;
+        min-height: 50px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   QUICK ACTIONS ASIDE - VERSIÓN LATERAL
+   ============================================ */
+.quick-actions-aside {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn-aside {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.action-btn-aside:hover {
+    background: white;
+    border-color: var(--color-accent);
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.action-btn-aside i {
+    font-size: 1.3rem;
+    color: var(--color-accent);
+    width: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.action-btn-aside:hover i {
+    transform: scale(1.15);
+}
+
+.action-btn-aside span {
+    flex: 1;
+}
+
+/* Responsive para aside */
+@media (max-width: 768px) {
+    .dashboard-aside {
+        flex-direction: column;
+    }
+    
+    .quick-actions-aside {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .action-btn-aside {
+        flex-direction: column;
+        text-align: center;
+        padding: 12px 10px;
+    }
+    
+    .action-btn-aside i {
+        font-size: 1.8rem;
+    }
+    
+    .action-btn-aside span {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-actions-aside {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   ANIMACIONES ADICIONALES
+   ============================================ *//* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.appointment-slot {
+    animation: slideIn 0.4s ease-out forwards;
+}
+
+.appointment-slot:nth-child(1) { animation-delay: 0.1s; }
+.appointment-slot:nth-child(2) { animation-delay: 0.2s; }
+.appointment-slot:nth-child(3) { animation-delay: 0.3s; }
+.appointment-slot:nth-child(4) { animation-delay: 0.4s; }
+.appointment-slot:nth-child(5) { animation-delay: 0.5s; }
+
+/* ============================================
+   APPOINTMENTS LIST CARD
+   ============================================ */
+.appointments-card {
+    min-height: 400px;
+}
+
+.appointments-list {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    color: var(--color-accent);
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1rem;
+}
+
+.appointment-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--color-accent);
+}
+
+.appointment-item:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateX(5px);
+}
+
+.appointment-time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--color-accent);
+    font-size: 1rem;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.appointment-time i {
+    font-size: 0.9rem;
+}
+
+.appointment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.appointment-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appointment-type {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.appointment-type i {
+    font-size: 0.8rem;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-badge.programada {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-badge.realitzada {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.status-badge.cancel·lada {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.status-badge.no-assistida {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+/* ============================================
+   UPCOMING APPOINTMENTS CARD
+   ============================================ */
+.upcoming-card {
+    min-height: 400px;
+}
+
+.upcoming-list {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.upcoming-item:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateX(5px);
+}
+
+.upcoming-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, var(--color-accent) 0%, #aa9e6b 100%);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    min-width: 55px;
+    flex-shrink: 0;
+}
+
+.date-day {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.date-month {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-top: 2px;
+}
+
+.upcoming-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.upcoming-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upcoming-time {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.upcoming-time i {
+    font-size: 0.75rem;
+}
+
+.upcoming-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   QUICK ACTIONS ADJUSTMENTS
+   ============================================ */
+.quick-actions {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 15px;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: white;
+    border-color: var(--color-accent);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn i {
+    font-size: 2rem;
+    color: var(--color-accent);
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover i {
+    transform: scale(1.1);
+}
+
+.action-btn span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .day-calendar-card {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendar-date {
+        padding: 8px 12px;
+    }
+    
+    .calendar-day-num {
+        font-size: 1.5rem;
+    }
+    
+    .calendar-month {
+        font-size: 0.7rem;
+    }
+    
+    .hour-label {
+        width: 60px;
+        font-size: 0.8rem;
+        padding-right: 10px;
+    }
+    
+    .hour-line {
+        left: 65px;
+    }
+    
+    .hour-slots {
+        margin-left: 10px;
+    }
+    
+    .appointment-slot {
+        padding: 8px 10px;
+        min-height: 50px;
+    }
+    
+    .slot-time {
+        font-size: 0.75rem;
+    }
+    
+    .slot-patient {
+        font-size: 0.9rem;
+    }
+    
+    .slot-type {
+        font-size: 0.7rem;
+    }
+    
+    .appointment-item {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .appointment-time {
+        min-width: 70px;
+        font-size: 0.9rem;
+    }
+    
+    .status-badge {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .action-btn {
+        padding: 15px 10px;
+    }
+    
+    .action-btn i {
+        font-size: 1.5rem;
+    }
+    
+    .action-btn span {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .day-calendar {
+        padding: 10px;
+    }
+    
+    .hour-label {
+        width: 50px;
+        font-size: 0.75rem;
+    }
+    
+    .hour-line {
+        left: 55px;
+    }
+    
+    .timeline-hour {
+        min-height: 60px;
+    }
+    
+    .appointment-slot {
+        padding: 6px 8px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}

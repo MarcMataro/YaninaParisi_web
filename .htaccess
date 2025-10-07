@@ -1,0 +1,3 @@
+<Files ~ "\_data\.inc$">
+    Require all denied
+</Files>
