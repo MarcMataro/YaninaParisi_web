@@ -6,6 +6,153 @@
     padding: 20px;
 }
 
+/* Gentle page background to reduce contrast */
+.main-content {
+    background: linear-gradient(180deg, rgba(250,250,250,0.6), rgba(245,245,245,0.6));
+    padding-bottom: 40px;
+}
+
+/* Tabs navigation */
+.settings-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* Make tabs look like pills */
+.settings-tabs { padding: 8px 4px; }
+.settings-tabs .tab-btn { border-radius: 999px; padding: 10px 16px; }
+.settings-tabs .tab-btn.active { box-shadow: 0 8px 24px rgba(23,23,23,0.06); }
+
+.settings-tabs .tab-btn {
+    background: #fafafa;
+    border: 1px solid #e6e6e6;
+    color: var(--color-dark);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.18s ease;
+}
+
+.settings-tabs .tab-btn:hover {
+    transform: translateY(-2px);
+}
+
+.settings-tabs .tab-btn.active {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: rgba(0,0,0,0.06);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Tab content visibility - hide non-active panes */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Users table and add-user panel styling */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.users-table thead th {
+    background: linear-gradient(180deg, #fafafa, #f3f3f3);
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.users-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.users-table tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.users-table .actions { 
+    display:flex; gap:8px; align-items:center;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 8px 12px;
+}
+
+.btn-secondary:hover { transform: translateY(-2px); }
+
+.btn-danger {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover { opacity: 0.95; transform: translateY(-2px); }
+
+.add-user-panel summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.add-user-panel[open] summary {
+    background: transparent;
+}
+
+.add-user-panel form { margin-top: 6px; }
+
+.muted { color: #666; }
+
+.add-user-panel summary.btn { background: linear-gradient(180deg,#ffffff,#fafafa); border:1px solid #eaeaea; }
+.add-user-panel[open] summary { background: linear-gradient(180deg,#fffaf0,#fff8f0); border-color: rgba(0,0,0,0.03); }
+
+/* Empty state */
+.users-table tbody td[colspan] { text-align:center; padding:28px; color:#777; }
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+/* Small tweaks for responsiveness */
+@media (max-width: 900px) {
+    .users-table thead { display: none; }
+    .users-table tbody td { display: block; width: 100%; }
+    .users-table tbody tr { display: block; margin-bottom: 12px; background: #fff; border-radius:8px; box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
+    .users-table tbody td:before { content: ''; display:block; }
+}
+
+/* Hide the global Cancel/Save actions when the Users tab is active */
+#users.active ~ .form-actions {
+    display: none;
+}
+
+
 /* Alert Messages */
 .alert {
     padding: 15px 20px;
@@ -64,16 +211,18 @@
 .config-section {
     background: white;
     border-radius: 12px;
-    padding: 30px;
+    padding: 22px;
     box-shadow: var(--shadow);
     animation: fadeInUp 0.4s ease;
 }
 
 .section-header {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
+.section-header .subtle { color:#888; font-size:0.95rem; }
 
 .section-header h2 {
     font-size: 1.4rem;
@@ -142,6 +291,10 @@
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px rgba(170, 158, 107, 0.1);
 }
+
+/* Soften inputs a bit */
+.form-group input, .form-group select { background: #fbfbfb; border-color: #ececec; }
+.form-group input:focus, .form-group select:focus { box-shadow: 0 6px 18px rgba(150,130,80,0.08); }
 
 /* Input with Icon */
 .input-icon {
@@ -250,8 +403,8 @@ input:checked + .slider:before {
     justify-content: flex-end;
     gap: 15px;
     margin-top: 10px;
-    padding: 20px 30px;
-    background: white;
+    padding: 6px 0;
+    background: transparent;
     border-radius: 12px;
     box-shadow: var(--shadow);
 }

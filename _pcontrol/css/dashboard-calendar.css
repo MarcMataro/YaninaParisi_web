@@ -113,20 +113,28 @@
 .btn-link {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, var(--color-accent) 0%, #aa9e6b 100%);
-    color: white;
+    gap: 4px;
+    padding: 4px 10px;
+    background: transparent;
+    color: var(--color-accent);
     text-decoration: none;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(194, 178, 128, 0.4);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-weight: 400;
+    font-size: 0.8rem;
+    box-shadow: none;
+}
+
+.btn-link i {
+    font-size: 0.75rem;
 }
 
 .btn-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background: rgba(194, 178, 128, 0.08);
+    border-color: var(--color-accent);
+    transform: none;
+    box-shadow: none;
 }
 
 /* ============================================

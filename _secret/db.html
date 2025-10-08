@@ -48,7 +48,7 @@
             padding: 20px 0;
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
         }
         
         .header-content {
@@ -86,6 +86,7 @@
             max-width: 1400px;
             margin: 40px auto;
             padding: 0 30px;
+            padding-top: 100px;
         }
         
         /* Cards */
@@ -379,9 +380,9 @@
                 <button class="copy-btn" onclick="copyCode(this)">
                     <i class="fas fa-copy"></i> Copiar
                 </button>
-<pre><span class="keyword">CREATE DATABASE IF NOT EXISTS</span> db_cp_yanina_parisi
-<span class="keyword">CHARACTER SET</span> utf8mb4
-<span class="keyword">COLLATE</span> utf8mb4_unicode_ci;</pre>
+                <pre><span class="keyword">CREATE DATABASE IF NOT EXISTS</span> db_cp_yanina_parisi
+                <span class="keyword">CHARACTER SET</span> utf8mb4
+                <span class="keyword">COLLATE</span> utf8mb4_unicode_ci;</pre>
             </div>
             <p class="card-description">
                 Aquesta és la definició de la taula principal "pacients" que emmagatzema tota la informació rellevant dels pacients.
@@ -525,6 +526,488 @@
                 ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
                 </pre>
             </div>
+            <p class="card-description">
+                Aquesta és la definició de la taula "seo_global" que emmagatzema tota la configuració global de SEO per al lloc web.
+                Inclou metadades, plantilles, esquemes estructurats, perfils socials, Open Graph, Twitter Cards, verificacions i altres paràmetres essencials per a l'optimització SEO.
+            </p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> seo_global (
+                        id_global <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. SITE-WIDE META TAGS
+                        site_title_ca <span class="keyword">VARCHAR</span>(60) <span class="keyword">DEFAULT</span> 'Psicòloga Yanina Parisi | Barcelona',
+                        site_title_es <span class="keyword">VARCHAR</span>(60) <span class="keyword">DEFAULT</span> 'Psicóloga Yanina Parisi | Barcelona',
+                        site_description_ca <span class="keyword">VARCHAR</span>(160),
+                        site_description_es <span class="keyword">VARCHAR</span>(160),
+                        
+                        -- 2. DEFAULT META TEMPLATES
+                        default_title_template_ca <span class="keyword">VARCHAR</span>(100) <span class="keyword">DEFAULT</span> '{page} | Psicòloga Yanina Parisi',
+                        default_title_template_es <span class="keyword">VARCHAR</span>(100) <span class="keyword">DEFAULT</span> '{page} | Psicóloga Yanina Parisi',
+                        default_meta_template_ca <span class="keyword">VARCHAR</span>(160),
+                        default_meta_template_es <span class="keyword">VARCHAR</span>(160),
+                        
+                        -- 3. GLOBAL SCHEMA MARKUP
+                        organization_schema <span class="keyword">JSON</span>, -- Datos empresa/organización
+                        local_business_schema <span class="keyword">JSON</span>, -- Datos negocio local
+                        person_schema <span class="keyword">JSON</span>, -- Datos persona (Yanina Parisi)
+                        
+                        -- 4. SOCIAL PROFILES GLOBALES
+                        facebook_url <span class="keyword">VARCHAR</span>(255),
+                        twitter_url <span class="keyword">VARCHAR</span>(255),
+                        linkedin_url <span class="keyword">VARCHAR</span>(255),
+                        instagram_url <span class="keyword">VARCHAR</span>(255),
+                        google_business_url <span class="keyword">VARCHAR</span>(255),
+
+                        -- 5. GLOBAL OPEN GRAPH
+                        og_site_name <span class="keyword">VARCHAR</span>(100) <span class="keyword">DEFAULT</span> 'Consultori Psicològic Yanina Parisi',
+                        og_locale_ca <span class="keyword">VARCHAR</span>(10) <span class="keyword">DEFAULT</span> 'ca_ES',
+                        og_locale_es <span class="keyword">VARCHAR</span>(10) <span class="keyword">DEFAULT</span> 'es_ES',
+                        default_og_image <span class="keyword">VARCHAR</span>(255),
+                        
+                        -- 6. GLOBAL TWITTER CARD
+                        twitter_site <span class="keyword">VARCHAR</span>(100), -- @username
+                        twitter_creator <span class="keyword">VARCHAR</span>(100), -- @username
+                        default_twitter_image <span class="keyword">VARCHAR</span>(255),
+
+                        -- 7. TECHNICAL SEO GLOBAL
+                        default_meta_robots <span class="keyword">VARCHAR</span>(100),
+                        google_site_verification <span class="keyword">TEXT</span>,
+                        bing_verification <span class="keyword">TEXT</span>,
+                        google_analytics_id <span class="keyword">VARCHAR</span>(50),
+                        google_tag_manager_id <span class="keyword">VARCHAR</span>(50),
+
+                        -- 8. STRUCTURED DATA GLOBAL
+                        breadcrumb_home_text_ca <span class="keyword">VARCHAR</span>(50) <span class="keyword">DEFAULT</span> 'Inici',
+                        breadcrumb_home_text_es <span class="keyword">VARCHAR</span>(50) <span class="keyword">DEFAULT</span> 'Inicio',
+                        website_schema <span class="keyword">JSON</span>,
+                        webpage_schema <span class="keyword">JSON</span>,
+
+                        -- 9. INTERNATIONAL SEO
+                        hreflang_default <span class="keyword">VARCHAR</span>(10) <span class="keyword">DEFAULT</span> 'es',
+                        hreflang_alternates <span class="keyword">JSON</span>, -- [{lang: "es", url: "..."}]
+
+                        -- 10. PERFORMANCE GLOBAL
+                        default_priority <span class="keyword">ENUM</span>('1.0', '0.8', '0.6', '0.4', '0.2') <span class="keyword">DEFAULT</span> '0.8',
+                        default_changefreq <span class="keyword">ENUM</span>('always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never') <span class="keyword">DEFAULT</span> 'monthly',
+
+                        -- 11. CONTROL
+                        fecha_actualizacion <span class="keyword">DATETIME</span> <span class="keyword">DEFAULT</span> CURRENT_TIMESTAMP <span class="keyword">ON UPDATE</span> CURRENT_TIMESTAMP
+                    ) ENGINE=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>  
+            </div>
+            <p class="card-description">
+                Aquesta és la definició de la taula "seo_onpage_paginas" que emmagatzema tota la informació SEO específica per a cada pàgina del lloc web.
+                Inclou metadades, estructures, Open Graph, Twitter Cards, imatges SEO, mètriques i altres paràmetres essencials per a l'optimització SEO a nivell de pàgina.
+            </p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> seo_onpage_paginas (
+                        id_pagina <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. IDENTIFICACIÓ I URL
+                        url_relativa <span class="keyword">VARCHAR</span>(255) <span class="keyword">UNIQUE NOT NULL</span> COMMENT 'URL sense domini ej: /terapia-ansietat',
+                        titulo_pagina <span class="keyword"></span>VARCHAR</span>(100) <span class="keyword">NOT NULL</span> COMMENT 'Títol visible de la pàgina',
+                        tipo_pagina <span class="keyword">ENUM</span>('home', 'sobre-mi', 'servicios', 'blog', 'articulo', 'contacto', 'legal', 'landing') <span class="keyword">NOT NULL</span>,
+                        
+                        -- 2. SEO BÀSIC CATALÀ
+                        title_ca <span class="keyword">VARCHAR</span>(60) <span class="keyword">NOT NULL</span>,
+                        meta_description_ca <span class="keyword">VARCHAR</span>(160) <span class="keyword">NOT NULL</span>,
+                        h1_ca <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        contenido_principal_ca <span class="keyword">TEXT</span>,
+                        
+                        -- 3. SEO BÀSIC CASTELLÀ
+                        title_es <span class="keyword">VARCHAR</span>(60) <span class="keyword">NOT NULL</span>,
+                        meta_description_es <span class="keyword">VARCHAR</span>(160) <span class="keyword">NOT NULL</span>,
+                        h1_es <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        contenido_principal_es <span class="keyword">TEXT</span>,
+                        
+                        -- 4. ESTRUCTURA I ORGANITZACIÓ
+                        breadcrumb_json <span class="keyword">JSON</span> COMMENT 'Estructura jeràrquica de migues de pa',
+                        slug_ca <span class="keyword">VARCHAR</span>(100) <span class="keyword">UNIQUE</span>,
+                        slug_es <span class="keyword">VARCHAR</span>(100) <span class="keyword">UNIQUE</span>,
+                        parent_id <span class="keyword">INT</span> NULL COMMENT 'Pàgina pare si existeix jerarquia',
+                        
+                        -- 5. SEO TÈCNIC ESPECÍFIC
+                        meta_robots <span class="keyword">VARCHAR</span>(100) DEFAULT 'index, follow',
+                        canonical_url <span class="keyword">VARCHAR</span>(255) COMMENT 'Si és diferent a la URL relativa',
+                        priority <span class="keyword">ENUM</span>('1.0', '0.8', '0.6', '0.4', '0.2') <span class="keyword">DEFAULT</span> '0.8',
+                        changefreq <span class="keyword">ENUM</span>('always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never') <span class="keyword">DEFAULT</span> 'monthly',
+                        
+                        -- 6. SEO AVANÇAT
+                        focus_keyword_ca <span class="keyword">VARCHAR</span>(50),
+                        focus_keyword_es <span class="keyword">VARCHAR</span>(50),
+                        keywords_secundarias_ca <span class="keyword">VARCHAR</span>(255),
+                        keywords_secundarias_es <span class="keyword">VARCHAR</span>(255),
+                        schema_json <span class="keyword">JSON</span> COMMENT 'Structured data específic de la pàgina',
+                        
+                        -- 7. OPEN GRAPH ESPECÍFIC
+                        og_title_ca <span class="keyword">VARCHAR</span>(100),
+                        og_title_es <span class="keyword">VARCHAR</span>(100),
+                        og_description_ca <span class="keyword">VARCHAR</span>(200),
+                        og_description_es <span class="keyword">VARCHAR</span>(200),
+                        og_image <span class="keyword">VARCHAR</span>(255) COMMENT 'Imatge específica, sinó usa la global',
+                        
+                        -- 8. TWITTER CARD ESPECÍFIC
+                        twitter_title_ca <span class="keyword">VARCHAR</span>(100),
+                        twitter_title_es <span class="keyword">VARCHAR</span>(100),
+                        twitter_description_ca <span class="keyword">VARCHAR</span>(200),
+                        twitter_description_es <span class="keyword">VARCHAR</span>(200),
+                        twitter_image <span class="keyword">VARCHAR</span>(255),
+                        
+                        -- 9. IMATGES SEO
+                        featured_image <span class="keyword">VARCHAR</span>(255),
+                        alt_image_ca <span class="keyword">VARCHAR</span>(125),
+                        alt_image_es <span class="keyword">VARCHAR</span>(125),
+                        image_caption_ca <span class="keyword">VARCHAR</span>(200),
+                        image_caption_es <span class="keyword">VARCHAR</span>(200),
+
+                        -- 10. MÈTRIQUES I CONTROL
+                        seo_score <span class="keyword">TINYINT DEFAULT</span> 0 COMMENT 'Puntuació SEO 0-100',
+                        word_count_ca <span class="keyword">INT DEFAULT</span> 0,
+                        word_count_es <span class="keyword">INT DEFAULT</span> 0,
+                        densidad_keyword_ca <span class="keyword">DECIMAL</span>(4,2) <span class="keyword">DEFAULT</span> 0,
+                        densidad_keyword_es <span class="keyword">DECIMAL</span>(4,2) <span class="keyword">DEFAULT</span> 0,
+
+                        -- 11. ESTAT I TEMPORALITAT
+                        activa <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        fecha_publicacion <span class="keyword">DATETIME</span>,
+                        fecha_ultima_actualizacion <span class="keyword">DATETIME</span>,
+                        fecha_creacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        fecha_modificacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+
+                        -- 12. CLAUS I ÍNDEXS
+                        FOREIGN KEY (parent_id) <span class="keyword">REFERENCES</span> seo_onpage_paginas(id_pagina) <span class="keyword">ON DELETE SET NULL</span>,
+                        
+                        -- ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_url_relativa (url_relativa),
+                        <span class="keyword">INDEX</span> idx_tipo_pagina (tipo_pagina),
+                        <span class="keyword">INDEX</span> idx_activa (activa),
+                        <span class="keyword">INDEX</span> idx_slug_ca (slug_ca),
+                        <span class="keyword">INDEX</span> idx_slug_es (slug_es),
+                        <span class="keyword">INDEX</span> idx_parent_id (parent_id),
+                        <span class="keyword">INDEX</span> idx_fecha_publicacion (fecha_publicacion),
+                        <span class="keyword">INDEX</span> idx_focus_keyword_ca (focus_keyword_ca),
+                        <span class="keyword">INDEX</span> idx_focus_keyword_es (focus_keyword_es),
+                        <span class="keyword">FULLTEXT</span> idx_contenido_ca (contenido_principal_ca),
+                        <span class="keyword">FULLTEXT</span> idx_contenido_es (contenido_principal_es)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula SEO Off-Page.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> seo_offpage (
+                        id_offpage <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. IDENTIFICACIÓ DEL BACKLINK
+                        url_origen <span class="keyword">VARCHAR</span>(500) <span class="keyword">NOT NULL</span> COMMENT 'URL que enllaça al nostre lloc',
+                        url_destino <span class="keyword">VARCHAR</span>(500) <span class="keyword">NOT NULL</span> COMMENT 'URL del nostre lloc que enllaça',
+                        anchor_text <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span> COMMENT 'Text de l\'enllaç',
+                        
+                        -- 2. METADADES DEL DOMINI ORIGEN
+                        dominio_origen <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        da_origen <span class="keyword">TINYINT UNSIGNED</span> COMMENT 'Domain Authority 0-100',
+                        dr_origen <span class="keyword">TINYINT UNSIGNED</span> COMMENT 'Domain Rating 0-100',
+                        tf_origen <span class="keyword">TINYINT UNSIGNED</span> COMMENT 'Trust Flow 0-100',
+                        cf_origen <span class="keyword">TINYINT UNSIGNED</span> COMMENT 'Citation Flow 0-100',
+                        
+                        -- 3. METADADES DE LA PÀGINA ORIGEN
+                        titulo_pagina_origen <span class="keyword">VARCHAR</span>(255),
+                        da_pagina_origen <span class="keyword">TINYINT UNSIGNED</span>,
+                        traffic_origen <span class="keyword">INT</span> COMMENT 'Tràfic mensual estimat',
+                        idioma_origen <span class="keyword">ENUM</span>('ca', 'es', 'en', 'fr', 'it', 'other') <span class="keyword">DEFAULT 'es'</span>,
+
+                        -- 4. TIPUS I CONTEXT DEL BACKLINK
+                        tipo_backlink <span class="keyword">ENUM</span>(
+                            'guest_post', 
+                            'directorio', 
+                            'prensa', 
+                            'blog_comentario',
+                            'foro',
+                            'social_media',
+                            'recursos_util',
+                            'colaboracion',
+                            'natural',
+                            'adquirido'
+                        ) <span class="keyword">NOT NULL</span>,
+                        
+                        contexto_backlink <span class="keyword">TEXT</span> COMMENT 'Text que envolta l\'enllaç',
+                        posicion_enlace <span class="keyword">ENUM</span>('header', 'footer', 'sidebar', 'contenido', 'comentarios', 'navegacion') <span class="keyword">DEFAULT 'contenido'</span>,
+                        nofollow <span class="keyword">BOOLEAN</span> <span class="keyword">DEFAULT FALSE</span>,
+                        sponsored <span class="keyword">BOOLEAN</span> <span class="keyword">DEFAULT FALSE</span>,
+                        ugc <span class="keyword">BOOLEAN</span> <span class="keyword">DEFAULT FALSE</span> COMMENT 'User Generated Content',
+
+                        -- 5. QUALITAT I RELEVÀNCIA
+                        relevancia_tematica <span class="keyword">ENUM</span>('alta', 'media', 'baja') <span class="keyword">DEFAULT 'media'</span>,
+                        calidad_percibida <span class="keyword">ENUM</span>('excelente', 'buena', 'regular', 'mala') <span class="keyword">DEFAULT 'regular'</span>,
+                        autoridad_tematica <span class="keyword">VARCHAR</span>(100) COMMENT 'Temàtica principal del domini origen',
+                        
+                        -- 6. ESTAT I VIGÈNCIA
+                        fecha_descubrimiento <span class="keyword">DATE</span> <span class="keyword">NOT NULL</span>,
+                        fecha_ultima_verificacion <span class="keyword">DATE</span>,
+                        estado <span class="keyword">ENUM</span>('activo', 'perdido', 'roto', 'en_revision') <span class="keyword">DEFAULT 'activo'</span>,
+                        fecha_perdida <span class="keyword">DATE</span> COMMENT 'Data quan es va perdre el backlink',
+                        
+                        -- 7. MÈTRIQUES DE RENDIMENT
+                        clicks_mensuales <span class="keyword">INT</span> <span class="keyword">DEFAULT 0</span>,
+                        traffic_estimado <span class="keyword">INT</span> <span class="keyword">DEFAULT 0</span>,
+                        valor_estimado <span class="keyword">DECIMAL</span>(10,2) COMMENT 'Valor monetari estimat',
+                        
+                        -- 8. ACCIONS I SEGUIMENT
+                        contacto_realizado <span class="keyword">BOOLEAN</span> <span class="keyword">DEFAULT FALSE</span>,
+                        fecha_contacto <span class="keyword">DATE</span>,
+                        respuesta_recibida <span class="keyword">BOOLEAN</span> <span class="keyword">DEFAULT FALSE</span>,
+                        notas_contacto <span class="keyword">TEXT</span>,
+                        
+                        -- 9. ESTRATÈGIA I CLASSIFICACIÓ
+                        campana_seo <span class="keyword">VARCHAR</span>(100) COMMENT 'Campanya a la que pertany',
+                        objetivo_seo <span class="keyword">ENUM</span>('branding', 'trafico', 'autoridad', 'conversiones') <span class="keyword">DEFAULT 'autoridad'</span>,
+                        prioridad <span class="keyword">ENUM</span>('alta', 'media', 'baja') <span class="keyword">DEFAULT 'media'</span>,
+                        
+                        -- 10. DADES TÈCNIQUES
+                        ip_origen <span class="keyword">VARCHAR</span>(45),
+                        pais_origen <span class="keyword">VARCHAR</span>(50),
+                        tld_origen <span class="keyword">VARCHAR</span>(10) COMMENT 'Domini de primer nivell .es, .com, etc',
+                        indexacion_origen <span class="keyword">ENUM</span>('indexada', 'no_indexada', 'desconocido') <span class="keyword">DEFAULT 'desconocido'</span>,
+                        
+                        -- 11. HERRAMIENTAS EXTERNES
+                        semrush_id <span class="keyword">VARCHAR</span>(100),
+                        ahrefs_id <span class="keyword">VARCHAR</span>(100),
+                        majestic_id <span class="keyword">VARCHAR</span>(100),
+
+                        -- 12. CONTROL INTERN
+                        notas_internas <span class="keyword">TEXT</span>,
+                        fecha_creacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        fecha_actualizacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        
+                        -- ÍNDEXS PER A CONSULTES RÀPIDES
+                        <span class="keyword">UNIQUE INDEX</span> idx_enlace_unico (url_origen(200), url_destino(200)),
+                        <span class="keyword">INDEX</span> idx_dominio_origen (dominio_origen),
+                        <span class="keyword">INDEX</span> idx_tipo_backlink (tipo_backlink),
+                        <span class="keyword">INDEX</span> idx_estado (estado),
+                        <span class="keyword">INDEX</span> idx_fecha_descubrimiento (fecha_descubrimiento),
+                        <span class="keyword">INDEX</span> idx_da_origen (da_origen),
+                        <span class="keyword">INDEX</span> idx_relevancia (relevancia_tematica),
+                        <span class="keyword">INDEX</span> idx_campana (campana_seo),
+                        <span class="keyword">INDEX</span> idx_anchor_text (anchor_text(100)),
+                        <span class="keyword">INDEX</span> idx_url_destino (url_destino(100)),
+                        <span class="keyword">INDEX</span> idx_prioridad (prioridad),
+                        <span class="keyword">INDEX</span> idx_fecha_verificacion (fecha_ultima_verificacion)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula SEO Off-Page Directoris.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> seo_offpage_directorios (
+                        id_directorio <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        nombre <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        url <span class="keyword">VARCHAR</span>(500) <span class="keyword">NOT NULL</span>,
+                        categoria <span class="keyword">ENUM</span>('salud', 'psicologia', 'negocios', 'locales', 'generico') <span class="keyword">DEFAULT</span> 'psicologia',
+                        da_directorio <span class="keyword">TINYINT UNSIGNED</span>,
+                        costo <span class="keyword">DECIMAL(8,2) DEFAULT 0</span>,
+                        idioma <span class="keyword">ENUM</span>('ca', 'es', 'en', 'other') <span class="keyword">DEFAULT</span> 'es',
+                        nofollow <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        permite_anchor_personalizado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        estado <span class="keyword">ENUM</span>('pendiente', 'enviado', 'aprobado', 'rechazado', 'activo') <span class="keyword">DEFAULT</span> 'pendiente',
+                        fecha_envio <span class="keyword">DATE</span>,
+                        fecha_aprobacion <span class="keyword">DATE</span>,
+                        notas <span class="keyword">TEXT</span>,
+                        fecha_creacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="card-description">
+                Aquesta és la definició de la taula "seo_tecnico" que emmagatzema tota la informació tècnica de SEO per al lloc web.
+                Inclou paràmetres essencials com rendiment, indexació, estructura d'URL, sitemaps, robots.txt, SSL, mobile-friendly, seguretat, dades estructurades i altres aspectes tècnics crítics per a l'optimització SEO.
+            </p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> seo_tecnico (
+                        id_tecnico <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. RENDIMENT I VELOCITAT
+                        velocidad_carga_ms <span class="keyword">INT</span> COMMENT 'Temps de càrrega en mil·lisegons',
+                        velocidad_primera_pintura <span class="keyword">INT</span> COMMENT 'First Paint',
+                        velocidad_pintura_contenido <span class="keyword">INT</span> COMMENT 'First Contentful Paint',
+                        velocidad_interactividad <span class="keyword">INT</span> COMMENT 'Time to Interactive',
+                        puntuacion_lighthouse <span class="keyword">TINYINT</span> COMMENT 'Puntuació 0-100',
+                        core_web_vitals <span class="keyword">JSON</span> COMMENT 'Dades de LCP, FID, CLS',
+                        
+                        -- 2. INDEXACIÓ I RASTREIG
+                        estado_indexacion <span class="keyword">ENUM</span>('completa', 'parcial', 'limitada', 'bloqueada') <span class="keyword">DEFAULT</span> 'completa',
+                        paginas_indexadas <span class="keyword">INT</span> <span class="keyword">DEFAULT</span> 0,
+                        paginas_no_indexadas <span class="keyword">INT</span> <span class="keyword">DEFAULT</span> 0,
+                        ultimo_rastreo_google <span class="keyword">DATE</span>,
+                        frecuencia_rastreo <span class="keyword">ENUM</span>('diaria', 'semanal', 'mensual', 'poco_frecuente') <span class="keyword">DEFAULT</span> 'semanal',
+                        
+                        -- 3. ESTRUCTURA URL I CANONICALS
+                        estructura_url <span class="keyword">ENUM</span>('amigable', 'parametrica', 'mixta') <span class="keyword">DEFAULT</span> 'amigable',
+                        urls_canonicas_incorrectas <span class="keyword">INT</span> <span class="keyword">DEFAULT</span> 0,
+                        urls_duplicadas <span class="keyword">INT</span> <span class="keyword">DEFAULT</span> 0,
+                        parametros_url_problematicos <span class="keyword">TEXT</span> COMMENT 'Paràmetres que generen contingut duplicat',
+                        
+                        -- 4. ESTAT DEL SITEMAP
+                        sitemap_existe <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        sitemap_url <span class="keyword">VARCHAR</span>(255) <span class="keyword">DEFAULT</span> '/sitemap.xml',
+                        sitemap_ultima_actualizacion <span class="keyword">DATE</span>,
+                        sitemap_urls_total <span class="keyword">INT DEFAULT</span> 0,
+                        sitemap_urls_indexables <span class="keyword">INT DEFAULT</span> 0,
+
+                        -- 5. ROBOTS.TXT I ACCÉS
+                        robots_txt_existe <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        robots_txt_configurado <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        bloqueos_inecesarios <span class="keyword">INT DEFAULT</span> 0 COMMENT 'Recursos bloqueats incorrectament',
+                        
+                        -- 6. ESTAT HTTPS I SSL
+                        ssl_activo <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        ssl_valido <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        ssl_tipo <span class="keyword">ENUM</span>('dv', 'ov', 'ev') <span class="keyword">DEFAULT</span> 'dv',
+                        ssl_caducidad <span class="keyword">DATE</span>,
+                        http2_activo <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 7. RESPONSIVE I MOBILE-FRIENDLY
+                        mobile_friendly <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        viewport_configurado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        tap_targets_adecuados <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        font_sizes_legibles <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 8. ESTRUCTURA I JERARQUIA
+                        profundidad_maxima <span class="keyword">TINYINT DEFAULT</span> 3,
+                        enlaces_rotos <span class="keyword">INT DEFAULT</span> 0,
+                        enlaces_internos_total <span class="keyword">INT DEFAULT</span> 0,
+                        enlaces_salientes_total <span class="keyword">INT DEFAULT</span> 0,
+                        arquitectura_optimizada <span class="keyword">BOOLEAN DEFAULT</span> TRUE,
+                        
+                        -- 9. SEGURETAT
+                        headers_seguridad JSON COMMENT 'CSP, HSTS, X-Frame-Options, etc.',
+                        vulnerabilidades_detectadas <span class="keyword">INT DEFAULT</span> 0,
+                        proteccion_malware <span class="keyword">BOOLEAN DEFAULT</span> TRUE,
+
+                        -- 10. INTERNACIONAL I HREFLANG
+                        hreflang_implementado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        hreflang_errores <span class="keyword">INT DEFAULT</span> 0,
+                        geotargeting_configurado <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        ccTLDs_implementados <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+
+                        -- 11. DADES ESTRUCTURADES TÈCNIQUES
+                        schema_implementado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        schema_errores <span class="keyword">INT DEFAULT</span> 0,
+                        rich_results_activos <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        tipo_rich_results <span class="keyword">JSON</span> COMMENT 'Tipus de resultats enriquits detectats',
+                        
+                        -- 12. IMATGES I MULTIMÈDIA
+                        imagenes_optimizadas <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        imagenes_sin_alt <span class="keyword">INT DEFAULT</span> 0,
+                        lazy_loading_activo <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        webp_soportado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+
+                        -- 13. CACHE I CDN
+                        cache_implementado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        cdn_activo <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        tiempo_cache_browser <span class="keyword">INT DEFAULT</span> 86400 COMMENT 'En segons',
+                        compresion_activa <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 14. MONITORITZACIÓ I ERRORS
+                        uptime_30d <span class="keyword">DECIMAL</span>(5,2) <span class="keyword">DEFAULT</span> 99.99 COMMENT 'Percentatge',
+                        errores_404 <span class="keyword">INT DEFAULT</span> 0,
+                        errores_500 <span class="keyword">INT DEFAULT</span> 0,
+                        redirects_encadenados <span class="keyword">INT DEFAULT</span> 0,
+                        
+                        -- 15. INTEGRACIONS HERRAMENTES
+                        google_search_console_configurado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        google_analytics_configurado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        google_tag_manager_configurado <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        google_business_profile_configurado <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        
+                        -- 16. CONTROL I AUDITORIA
+                        ultima_auditoria_completa <span class="keyword">DATETIME</span>,
+                        puntuacion_seo_tecnico <span class="keyword">TINYINT DEFAULT</span> 0 COMMENT '0-100',
+                        criticidad_issues <span class="keyword">ENUM</span>('critica', 'alta', 'media', 'baja') <span class="keyword">DEFAULT</span> 'media',
+                        fecha_creacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        fecha_actualizacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+
+                        -- ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_puntuacion (puntuacion_seo_tecnico),
+                        <span class="keyword">INDEX</span> idx_ultima_auditoria (ultima_auditoria_completa),
+                        <span class="keyword">INDEX</span> idx_criticidad (criticidad_issues),
+                        <span class="keyword">INDEX</span> idx_velocidad (velocidad_carga_ms),
+                        <span class="keyword">INDEX</span> idx_indexacion (estado_indexacion),
+                        <span class="keyword">INDEX</span> idx_mobile (mobile_friendly)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula d'Usuaris del Panell de Control.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> usuarios_panel (
+                        id_usuario <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. INFORMACIÓ BÀSICA
+                        email <span class="keyword">VARCHAR</span>(255) <span class="keyword">UNIQUE NOT NULL</span>,
+                        password_hash <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        nombre <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        apellidos <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        telefono <span class="keyword">VARCHAR</span>(20),
+                        avatar <span class="keyword"></span>VARCHAR</span>(255) <span class="keyword">DEFAULT NULL</span>,
+                        
+                        -- 2. ROL I PERMISOS
+                        rol <span class="keyword">ENUM</span>('superadmin', 'admin', 'editor', 'seo_manager', 'viewer') <span class="keyword">DEFAULT</span> 'editor',
+                        permisos <span class="keyword">JSON</span> COMMENT 'Permisos específics sobre mòduls',
+                        
+                        -- 3. ESTAT I ACCÉS
+                        activo <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        ultimo_acceso <span class="keyword">DATETIME</span>,
+                        fecha_expiracion <span class="keyword">DATE</span> COMMENT 'Data de caducitat del compte',
+                        intentos_login <span class="keyword">TINYINT DEFAULT</span> 0,
+                        bloqueado <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        
+                        -- 4. PREFERENCES I CONFIGURACIÓ
+                        idioma <span class="keyword">ENUM</span>('ca', 'es', 'en') <span class="keyword">DEFAULT</span> 'ca',
+                        zona_horiana <span class="keyword"></span>VARCHAR</span>(50) <span class="keyword">DEFAULT</span> 'Europe/Madrid',
+                        notificaciones_email <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        notificaciones_push <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 5. SEGURETAT
+                        token_restablecimiento <span class="keyword">VARCHAR</span>(100),
+                        token_expiracion <span class="keyword">DATETIME</span>,
+                        two_factor_auth <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        two_factor_secret <span class="keyword"></span>VARCHAR</span>(255),
+                        
+                        -- 6. AUDITORIA
+                        fecha_creacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        fecha_actualizacion <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        creado_por <span class="keyword">INT</span> COMMENT 'Usuari que va crear aquest compte',
+                        
+                        -- 7. CLAUS FORANES I ÍNDEXS
+                        <span class="keyword">FOREIGN KEY</span> (creado_por) REFERENCES usuarios_panel(id_usuario),
+                        
+                        <span class="keyword">INDEX</span> idx_email (email),
+                        <span class="keyword">INDEX</span> idx_rol (rol),
+                        <span class="keyword">INDEX</span> idx_activo (activo),
+                        <span class="keyword">INDEX</span> idx_ultimo_acceso (ultimo_acceso),
+                        <span class="keyword">INDEX</span> idx_bloqueado (bloqueado)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+            </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-table"></i>
@@ -655,25 +1138,27 @@
 
         // Smooth scroll animation for cards
         const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.05,
+            rootMargin: '50px 0px 50px 0px'
         };
 
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }, index * 100);
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    // Stop observing after animation
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        document.querySelectorAll('.card').forEach(card => {
+        document.querySelectorAll('.card').forEach((card, index) => {
             card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.5s ease';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            // Add delay based on index
+            card.style.transitionDelay = `${index * 0.05}s`;
             observer.observe(card);
         });
     </script>

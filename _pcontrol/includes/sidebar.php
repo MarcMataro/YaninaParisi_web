@@ -29,6 +29,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-blog"></i>
             <span>Blog</span>
         </a>
+        <a href="gseo.php" class="nav-item <?php echo ($current_page == 'gseo.php') ? 'active' : ''; ?>">
+            <i class="fas fa-search"></i>
+            <span>SEO</span>
+        </a>
         <a href="estadisticas.php" class="nav-item <?php echo ($current_page == 'estadisticas.php') ? 'active' : ''; ?>">
             <i class="fas fa-chart-line"></i>
             <span>Estadísticas</span>

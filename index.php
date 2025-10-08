@@ -380,49 +380,7 @@ include 'includes/lang.php';
     </section>
 
     <!-- Peu de pàgina -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-column">
-                    <img src="img/Logo2.png" class="logo-footer" alt="Psicòloga Yanina Parisi" placeholder="Logo psicòloga Yanina Parisi">
-                    <p>Ajudant-te a trobar el teu camí cap al benestar mental i emocional.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Enllaços ràpids</h3>
-                    <ul>
-                        <li><a href="#inici">Inici</a></li>
-                        <li><a href="#serveis">Serveis</a></li>
-                        <li><a href="#sobre-mi">Sobre mi</a></li>
-                        <li><a href="#testimonis">Testimonis</a></li>
-                        <li><a href="#tarifes">Tarifes</a></li>
-                        <li><a href="#contacte">Contacte</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3><?php echo t('footer_services_title'); ?></h3>
-                    <ul>
-                        <li><a href="#serveis"><?php echo t('footer_service1'); ?></a></li>
-                        <li><a href="#serveis"><?php echo t('footer_service2'); ?></a></li>
-                        <li><a href="#serveis"><?php echo t('footer_service3'); ?></a></li>
-                        <li><a href="#serveis-especials"><?php echo t('footer_service4'); ?></a></li>
-                        <li><a href="#serveis-especials"><?php echo t('footer_service5'); ?></a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Xarxes socials</h3>
-                    <ul>
-                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 Psicologia Yanina. Tots els drets reservats.</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script>
         // Script per a la navegació suau

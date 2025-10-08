@@ -1,0 +1,537 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1:3306
+-- Temps de generació: 08-10-2025 a les 16:24:34
+-- Versió del servidor: 9.1.0
+-- Versió de PHP: 8.4.0
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Base de dades: `db_cp_yanina_parisi`
+--
+CREATE DATABASE IF NOT EXISTS `db_cp_yanina_parisi` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `db_cp_yanina_parisi`;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `pacients`
+--
+
+DROP TABLE IF EXISTS `pacients`;
+CREATE TABLE IF NOT EXISTS `pacients` (
+  `id_pacient` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cognoms` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data_naixement` date DEFAULT NULL,
+  `sexe` enum('Hombre','Mujer','Otro','No especificado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telefon` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `adreca` text COLLATE utf8mb4_unicode_ci,
+  `ciutat` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `codi_postal` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `antecedents_medics` text COLLATE utf8mb4_unicode_ci,
+  `medicacio_actual` text COLLATE utf8mb4_unicode_ci,
+  `alergies` text COLLATE utf8mb4_unicode_ci,
+  `contacte_emergencia_nom` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contacte_emergencia_telefon` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contacte_emergencia_relacio` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `data_registre` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_ultima_actualitzacio` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `estat` enum('Activo','Inactivo','Alta','Seguimiento') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Activo',
+  `observacions` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id_pacient`),
+  KEY `idx_cognoms` (`cognoms`),
+  KEY `idx_estat` (`estat`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `pacients`
+--
+
+INSERT INTO `pacients` (`id_pacient`, `nom`, `cognoms`, `data_naixement`, `sexe`, `telefon`, `email`, `adreca`, `ciutat`, `codi_postal`, `antecedents_medics`, `medicacio_actual`, `alergies`, `contacte_emergencia_nom`, `contacte_emergencia_telefon`, `contacte_emergencia_relacio`, `data_registre`, `data_ultima_actualitzacio`, `estat`, `observacions`) VALUES
+(1, 'Marc', 'Mataró', '1977-12-21', 'Hombre', '640203367', 'marcmataro@gmail.com', 'c/ Montseny, 77, piso 2, puerta 1', 'Girona (Girona, España)', '17006', 'Fractura bilateral en tibia y peroné debido a accidente de coche en 2017', 'El paciente no se medica actualmente.', 'Ninguna conocida', 'Martí Mataró Catà', '640203367', 'Padre', '2025-10-06 10:47:50', '2025-10-06 11:34:20', 'Activo', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `pagaments`
+--
+
+DROP TABLE IF EXISTS `pagaments`;
+CREATE TABLE IF NOT EXISTS `pagaments` (
+  `id_pagament` int NOT NULL AUTO_INCREMENT,
+  `id_sessio` int NOT NULL,
+  `data_pagament` date NOT NULL,
+  `import` decimal(8,2) NOT NULL,
+  `metode_pagament` enum('Efectivo','Tarjeta','Transferencia','Bizum') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Efectivo',
+  `estat` enum('Pendiente','Completado','Anulado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Completado',
+  `facturat` tinyint(1) DEFAULT '0',
+  `numero_factura` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `observacions` text COLLATE utf8mb4_unicode_ci,
+  `data_registre` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_pagament`),
+  KEY `id_sessio` (`id_sessio`),
+  KEY `idx_data_pagament` (`data_pagament`),
+  KEY `idx_estat` (`estat`),
+  KEY `idx_facturat` (`facturat`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `pagaments`
+--
+
+INSERT INTO `pagaments` (`id_pagament`, `id_sessio`, `data_pagament`, `import`, `metode_pagament`, `estat`, `facturat`, `numero_factura`, `observacions`, `data_registre`) VALUES
+(1, 1, '2025-10-06', 60.00, 'Efectivo', 'Completado', 1, '2025-00112', '', '2025-10-06 15:25:04');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `seo_global`
+--
+
+DROP TABLE IF EXISTS `seo_global`;
+CREATE TABLE IF NOT EXISTS `seo_global` (
+  `id_global` int NOT NULL AUTO_INCREMENT,
+  `site_title_ca` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT 'Psicòloga Yanina Parisi | Barcelona',
+  `site_title_es` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT 'Psicóloga Yanina Parisi | Barcelona',
+  `site_description_ca` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `site_description_es` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `default_title_template_ca` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '{page} | Psicòloga Yanina Parisi',
+  `default_title_template_es` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '{page} | Psicóloga Yanina Parisi',
+  `default_meta_template_ca` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `default_meta_template_es` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `organization_schema` json DEFAULT NULL,
+  `local_business_schema` json DEFAULT NULL,
+  `person_schema` json DEFAULT NULL,
+  `facebook_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `linkedin_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `instagram_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `google_business_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_site_name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'Consultori Psicològic Yanina Parisi',
+  `og_locale_ca` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'ca_ES',
+  `og_locale_es` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'es_ES',
+  `default_og_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_site` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_creator` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `default_twitter_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `default_meta_robots` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `google_site_verification` text COLLATE utf8mb4_unicode_ci,
+  `bing_verification` text COLLATE utf8mb4_unicode_ci,
+  `google_analytics_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `google_tag_manager_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `breadcrumb_home_text_ca` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'Inici',
+  `breadcrumb_home_text_es` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'Inicio',
+  `website_schema` json DEFAULT NULL,
+  `webpage_schema` json DEFAULT NULL,
+  `hreflang_default` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'es',
+  `hreflang_alternates` json DEFAULT NULL,
+  `default_priority` enum('1.0','0.8','0.6','0.4','0.2') COLLATE utf8mb4_unicode_ci DEFAULT '0.8',
+  `default_changefreq` enum('always','hourly','daily','weekly','monthly','yearly','never') COLLATE utf8mb4_unicode_ci DEFAULT 'monthly',
+  `fecha_actualizacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_global`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `seo_global`
+--
+
+INSERT INTO `seo_global` (`id_global`, `site_title_ca`, `site_title_es`, `site_description_ca`, `site_description_es`, `default_title_template_ca`, `default_title_template_es`, `default_meta_template_ca`, `default_meta_template_es`, `organization_schema`, `local_business_schema`, `person_schema`, `facebook_url`, `twitter_url`, `linkedin_url`, `instagram_url`, `google_business_url`, `og_site_name`, `og_locale_ca`, `og_locale_es`, `default_og_image`, `twitter_site`, `twitter_creator`, `default_twitter_image`, `default_meta_robots`, `google_site_verification`, `bing_verification`, `google_analytics_id`, `google_tag_manager_id`, `breadcrumb_home_text_ca`, `breadcrumb_home_text_es`, `website_schema`, `webpage_schema`, `hreflang_default`, `hreflang_alternates`, `default_priority`, `default_changefreq`, `fecha_actualizacion`) VALUES
+(1, 'Yanina Parisi - Psicòloga col·legiada a Girona', 'Yanina Parisi - Psicóloga colegiada en Girona', 'Psicòloga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '{page} | Yanina Parisi - Psic??loga Girona', '{page} | Yanina Parisi - Psic??loga Girona', 'Descobreix m??s sobre {page}. Atenci?? psicol??gica professional a Girona amb primera sessi?? gratu??ta.', 'Descubre m??s sobre {page}. Atenci??n psicol??gica profesional en Girona con primera sesi??n gratuita.', '{\"url\": \"https://www.psicologiayanina.com\", \"logo\": \"https://www.psicologiayanina.com/img/Logo.png\", \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"Organization\", \"address\": {\"@type\": \"PostalAddress\", \"addressRegion\": \"Girona\", \"addressCountry\": \"ES\", \"addressLocality\": \"Girona\"}, \"@context\": \"https://schema.org\", \"contactPoint\": {\"@type\": \"ContactPoint\", \"telephone\": \"+34-XXX-XXX-XXX\", \"contactType\": \"customer service\", \"availableLanguage\": [\"ca\", \"es\"]}}', '{\"geo\": {\"@type\": \"GeoCoordinates\", \"latitude\": 41.9794, \"longitude\": 2.8214}, \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"LocalBusiness\", \"image\": \"https://www.psicologiayanina.com/img/Logo.png\", \"address\": {\"@type\": \"PostalAddress\", \"postalCode\": \"17001\", \"streetAddress\": \"Carrer Example, 123\", \"addressCountry\": \"ES\", \"addressLocality\": \"Girona\"}, \"@context\": \"https://schema.org\", \"priceRange\": \"??????\", \"openingHoursSpecification\": {\"@type\": \"OpeningHoursSpecification\", \"opens\": \"09:00\", \"closes\": \"20:00\", \"dayOfWeek\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"]}}', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"Yanina Parisi\", \"@type\": \"Person\", \"image\": \"https://www.psicologiayanina.com/img/yanina-parisi.jpg\", \"@context\": \"https://schema.org\", \"alumniOf\": {\"name\": \"Universitat de Girona\", \"@type\": \"CollegeOrUniversity\"}, \"jobTitle\": \"Psic??loga Col??legiada\", \"worksFor\": {\"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"Organization\"}, \"knowsAbout\": [\"Psicologia\", \"Ter??pia de Parella\", \"Psicologia Judicial\"]}', 'https://www.facebook.com/yaninaparisi', 'https://twitter.com/yaninaparisi', 'https://www.linkedin.com/in/yaninaparisi', 'https://www.instagram.com/yaninaparisi', 'https://g.page/yaninaparisi', 'Yanina Parisi - Psicologia', 'ca_ES', 'es_ES', 'https://www.psicologiayanina.com/img/og-default.jpg', '@yaninaparisi', '@yaninaparisi', 'https://www.psicologiayanina.com/img/twitter-default.jpg', 'index, follow', '', '', '', '', 'Inici', 'Inicio', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"WebSite\", \"@context\": \"https://schema.org\"}', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"P??gina\", \"@type\": \"WebPage\", \"@context\": \"https://schema.org\"}', 'es', '{\"ca\": \"https://www.psicologiayanina.com/ca/\", \"en\": \"https://www.psicologiayanina.com/en/\", \"es\": \"https://www.psicologiayanina.com/es/\"}', '0.8', 'weekly', '2025-10-07 17:42:55');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `seo_offpage`
+--
+
+DROP TABLE IF EXISTS `seo_offpage`;
+CREATE TABLE IF NOT EXISTS `seo_offpage` (
+  `id_offpage` int NOT NULL AUTO_INCREMENT,
+  `url_origen` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL que enllaça al nostre lloc',
+  `url_destino` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL del nostre lloc que enllaça',
+  `anchor_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Text de l''enllaç',
+  `dominio_origen` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `da_origen` tinyint UNSIGNED DEFAULT NULL COMMENT 'Domain Authority 0-100',
+  `dr_origen` tinyint UNSIGNED DEFAULT NULL COMMENT 'Domain Rating 0-100',
+  `tf_origen` tinyint UNSIGNED DEFAULT NULL COMMENT 'Trust Flow 0-100',
+  `cf_origen` tinyint UNSIGNED DEFAULT NULL COMMENT 'Citation Flow 0-100',
+  `titulo_pagina_origen` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `da_pagina_origen` tinyint UNSIGNED DEFAULT NULL,
+  `traffic_origen` int DEFAULT NULL COMMENT 'Tràfic mensual estimat',
+  `idioma_origen` enum('ca','es','en','fr','it','other') COLLATE utf8mb4_unicode_ci DEFAULT 'es',
+  `tipo_backlink` enum('guest_post','directorio','prensa','blog_comentario','foro','social_media','recursos_util','colaboracion','natural','adquirido') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contexto_backlink` text COLLATE utf8mb4_unicode_ci COMMENT 'Text que envolta l''enllaç',
+  `posicion_enlace` enum('header','footer','sidebar','contenido','comentarios','navegacion') COLLATE utf8mb4_unicode_ci DEFAULT 'contenido',
+  `nofollow` tinyint(1) DEFAULT '0',
+  `sponsored` tinyint(1) DEFAULT '0',
+  `ugc` tinyint(1) DEFAULT '0' COMMENT 'User Generated Content',
+  `relevancia_tematica` enum('alta','media','baja') COLLATE utf8mb4_unicode_ci DEFAULT 'media',
+  `calidad_percibida` enum('excelente','buena','regular','mala') COLLATE utf8mb4_unicode_ci DEFAULT 'regular',
+  `autoridad_tematica` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Temàtica principal del domini origen',
+  `fecha_descubrimiento` date NOT NULL,
+  `fecha_ultima_verificacion` date DEFAULT NULL,
+  `estado` enum('activo','perdido','roto','en_revision') COLLATE utf8mb4_unicode_ci DEFAULT 'activo',
+  `fecha_perdida` date DEFAULT NULL COMMENT 'Data quan es va perdre el backlink',
+  `clicks_mensuales` int DEFAULT '0',
+  `traffic_estimado` int DEFAULT '0',
+  `valor_estimado` decimal(10,2) DEFAULT NULL COMMENT 'Valor monetari estimat',
+  `contacto_realizado` tinyint(1) DEFAULT '0',
+  `fecha_contacto` date DEFAULT NULL,
+  `respuesta_recibida` tinyint(1) DEFAULT '0',
+  `notas_contacto` text COLLATE utf8mb4_unicode_ci,
+  `campana_seo` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Campanya a la que pertany',
+  `objetivo_seo` enum('branding','trafico','autoridad','conversiones') COLLATE utf8mb4_unicode_ci DEFAULT 'autoridad',
+  `prioridad` enum('alta','media','baja') COLLATE utf8mb4_unicode_ci DEFAULT 'media',
+  `ip_origen` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pais_origen` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tld_origen` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Domini de primer nivell .es, .com, etc',
+  `indexacion_origen` enum('indexada','no_indexada','desconocido') COLLATE utf8mb4_unicode_ci DEFAULT 'desconocido',
+  `semrush_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ahrefs_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `majestic_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notas_internas` text COLLATE utf8mb4_unicode_ci,
+  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_actualizacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_offpage`),
+  UNIQUE KEY `idx_enlace_unico` (`url_origen`(200),`url_destino`(200)),
+  KEY `idx_dominio_origen` (`dominio_origen`),
+  KEY `idx_tipo_backlink` (`tipo_backlink`),
+  KEY `idx_estado` (`estado`),
+  KEY `idx_fecha_descubrimiento` (`fecha_descubrimiento`),
+  KEY `idx_da_origen` (`da_origen`),
+  KEY `idx_relevancia` (`relevancia_tematica`),
+  KEY `idx_campana` (`campana_seo`),
+  KEY `idx_anchor_text` (`anchor_text`(100)),
+  KEY `idx_url_destino` (`url_destino`(100)),
+  KEY `idx_prioridad` (`prioridad`),
+  KEY `idx_fecha_verificacion` (`fecha_ultima_verificacion`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `seo_offpage`
+--
+
+INSERT INTO `seo_offpage` (`id_offpage`, `url_origen`, `url_destino`, `anchor_text`, `dominio_origen`, `da_origen`, `dr_origen`, `tf_origen`, `cf_origen`, `titulo_pagina_origen`, `da_pagina_origen`, `traffic_origen`, `idioma_origen`, `tipo_backlink`, `contexto_backlink`, `posicion_enlace`, `nofollow`, `sponsored`, `ugc`, `relevancia_tematica`, `calidad_percibida`, `autoridad_tematica`, `fecha_descubrimiento`, `fecha_ultima_verificacion`, `estado`, `fecha_perdida`, `clicks_mensuales`, `traffic_estimado`, `valor_estimado`, `contacto_realizado`, `fecha_contacto`, `respuesta_recibida`, `notas_contacto`, `campana_seo`, `objetivo_seo`, `prioridad`, `ip_origen`, `pais_origen`, `tld_origen`, `indexacion_origen`, `semrush_id`, `ahrefs_id`, `majestic_id`, `notas_internas`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 'https://www.marmataro.dev', 'https://yaninaparisi.com', 'Projecte de la web de la Psicòloga Yanina Parisi', 'marcmataro.dev', 70, 70, 90, 80, NULL, NULL, 10, 'es', 'blog_comentario', 'Pàgina web del desenvolupador de la web i que mostra el meu projecte', 'contenido', 1, 0, 0, 'media', 'regular', NULL, '2025-10-08', NULL, 'activo', NULL, 0, 0, NULL, 0, NULL, 0, NULL, 'Promoció Marc', 'autoridad', 'media', NULL, NULL, NULL, 'desconocido', NULL, NULL, NULL, 'Prueba de backlink', '2025-10-08 06:38:37', '2025-10-08 06:45:24');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `seo_offpage_directorios`
+--
+
+DROP TABLE IF EXISTS `seo_offpage_directorios`;
+CREATE TABLE IF NOT EXISTS `seo_offpage_directorios` (
+  `id_directorio` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `categoria` enum('salud','psicologia','negocios','locales','generico') COLLATE utf8mb4_unicode_ci DEFAULT 'psicologia',
+  `da_directorio` tinyint UNSIGNED DEFAULT NULL,
+  `costo` decimal(8,2) DEFAULT '0.00',
+  `idioma` enum('ca','es','en','other') COLLATE utf8mb4_unicode_ci DEFAULT 'es',
+  `nofollow` tinyint(1) DEFAULT '0',
+  `permite_anchor_personalizado` tinyint(1) DEFAULT '1',
+  `estado` enum('pendiente','enviado','aprobado','rechazado','activo') COLLATE utf8mb4_unicode_ci DEFAULT 'pendiente',
+  `fecha_envio` date DEFAULT NULL,
+  `fecha_aprobacion` date DEFAULT NULL,
+  `notas` text COLLATE utf8mb4_unicode_ci,
+  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_directorio`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `seo_onpage_paginas`
+--
+
+DROP TABLE IF EXISTS `seo_onpage_paginas`;
+CREATE TABLE IF NOT EXISTS `seo_onpage_paginas` (
+  `id_pagina` int NOT NULL AUTO_INCREMENT,
+  `url_relativa` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL sense domini ej: /terapia-ansietat',
+  `titulo_pagina` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'T??tol visible de la p??gina',
+  `tipo_pagina` enum('home','sobre-mi','servicios','blog','articulo','contacto','legal','landing') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title_ca` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_description_ca` varchar(160) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `h1_ca` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contenido_principal_ca` text COLLATE utf8mb4_unicode_ci,
+  `title_es` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_description_es` varchar(160) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `h1_es` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contenido_principal_es` text COLLATE utf8mb4_unicode_ci,
+  `breadcrumb_json` json DEFAULT NULL COMMENT 'Estructura jer??rquica de migues de pa',
+  `slug_ca` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `slug_es` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `parent_id` int DEFAULT NULL COMMENT 'P??gina pare si existeix jerarquia',
+  `meta_robots` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'index, follow',
+  `canonical_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Si ??s diferent a la URL relativa',
+  `priority` enum('1.0','0.8','0.6','0.4','0.2') COLLATE utf8mb4_unicode_ci DEFAULT '0.8',
+  `changefreq` enum('always','hourly','daily','weekly','monthly','yearly','never') COLLATE utf8mb4_unicode_ci DEFAULT 'monthly',
+  `focus_keyword_ca` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `focus_keyword_es` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `keywords_secundarias_ca` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `keywords_secundarias_es` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `schema_json` json DEFAULT NULL COMMENT 'Structured data espec??fic de la p??gina',
+  `og_title_ca` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_title_es` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_description_ca` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_description_es` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Imatge espec??fica, sin?? usa la global',
+  `twitter_title_ca` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_title_es` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_description_ca` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_description_es` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `featured_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alt_image_ca` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alt_image_es` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_caption_ca` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_caption_es` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `seo_score` tinyint DEFAULT '0' COMMENT 'Puntuaci?? SEO 0-100',
+  `word_count_ca` int DEFAULT '0',
+  `word_count_es` int DEFAULT '0',
+  `densidad_keyword_ca` decimal(4,2) DEFAULT '0.00',
+  `densidad_keyword_es` decimal(4,2) DEFAULT '0.00',
+  `activa` tinyint(1) DEFAULT '1',
+  `fecha_publicacion` datetime DEFAULT NULL,
+  `fecha_ultima_actualizacion` datetime DEFAULT NULL,
+  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_pagina`),
+  UNIQUE KEY `url_relativa` (`url_relativa`),
+  UNIQUE KEY `slug_ca` (`slug_ca`),
+  UNIQUE KEY `slug_es` (`slug_es`),
+  KEY `idx_url_relativa` (`url_relativa`),
+  KEY `idx_tipo_pagina` (`tipo_pagina`),
+  KEY `idx_activa` (`activa`),
+  KEY `idx_slug_ca` (`slug_ca`),
+  KEY `idx_slug_es` (`slug_es`),
+  KEY `idx_parent_id` (`parent_id`),
+  KEY `idx_fecha_publicacion` (`fecha_publicacion`),
+  KEY `idx_focus_keyword_ca` (`focus_keyword_ca`),
+  KEY `idx_focus_keyword_es` (`focus_keyword_es`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Configuraci?? SEO espec??fica per cada p??gina';
+
+--
+-- Bolcament de dades per a la taula `seo_onpage_paginas`
+--
+
+INSERT INTO `seo_onpage_paginas` (`id_pagina`, `url_relativa`, `titulo_pagina`, `tipo_pagina`, `title_ca`, `meta_description_ca`, `h1_ca`, `contenido_principal_ca`, `title_es`, `meta_description_es`, `h1_es`, `contenido_principal_es`, `breadcrumb_json`, `slug_ca`, `slug_es`, `parent_id`, `meta_robots`, `canonical_url`, `priority`, `changefreq`, `focus_keyword_ca`, `focus_keyword_es`, `keywords_secundarias_ca`, `keywords_secundarias_es`, `schema_json`, `og_title_ca`, `og_title_es`, `og_description_ca`, `og_description_es`, `og_image`, `twitter_title_ca`, `twitter_title_es`, `twitter_description_ca`, `twitter_description_es`, `twitter_image`, `featured_image`, `alt_image_ca`, `alt_image_es`, `image_caption_ca`, `image_caption_es`, `seo_score`, `word_count_ca`, `word_count_es`, `densidad_keyword_ca`, `densidad_keyword_es`, `activa`, `fecha_publicacion`, `fecha_ultima_actualizacion`, `fecha_creacion`, `fecha_modificacion`) VALUES
+(1, '/', 'Pàgina d\'Inici', 'home', 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psicòloga Yanina Parisi', NULL, 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', 'Psicóloga Yanina Parisi', NULL, NULL, 'inici', 'inicio', NULL, 'index, follow', '', '1.0', 'weekly', 'psic??loga girona online', 'psic??loga girona', '', '', NULL, 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '', 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '', '', '', '', NULL, NULL, 45, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:00', NULL, '2025-10-07 16:26:43', '2025-10-07 17:35:52'),
+(2, '/sobre-mi', 'Sobre M??', 'sobre-mi', 'Sobre M?? - Yanina Parisi | Psic??loga Col??legiada', 'Coneix m??s sobre la meva experi??ncia professional com a psic??loga col??legiada especialitzada en ter??pia de parella i psicologia judicial.', 'Sobre M?? - Yanina Parisi', NULL, 'Sobre M?? - Yanina Parisi | Psic??loga Colegiada', 'Conoce m??s sobre mi experiencia profesional como psic??loga colegiada especializada en terapia de pareja y psicolog??a judicial.', 'Sobre M?? - Yanina Parisi', NULL, NULL, 'sobre-mi', 'sobre-mi', NULL, 'index, follow', NULL, '0.8', 'monthly', 'psic??loga col??legiada girona', 'psic??loga colegiada girona', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:43', NULL, '2025-10-07 16:26:43', '2025-10-07 16:26:43'),
+(3, '/contacto', 'Contacto', 'contacto', 'Contacte - Primera Sessi?? Gratu??ta | Yanina Parisi', 'Posa\'t en contacte per reservar la teva primera sessi?? gratu??ta. Psic??loga a Girona especialitzada en ter??pia de parella i adults.', 'Contacte - Primera Sessi?? Gratu??ta', NULL, 'Contacto - Primera Sesi??n Gratuita | Yanina Parisi', 'Ponte en contacto para reservar tu primera sesi??n gratuita. Psic??loga en Girona especializada en terapia de pareja y adultos.', 'Contacto - Primera Sesi??n Gratuita', NULL, NULL, 'contacte', 'contacto', NULL, 'index, follow', NULL, '0.8', 'monthly', 'psic??loga girona contacte', 'psic??loga girona contacto', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:43', NULL, '2025-10-07 16:26:43', '2025-10-07 16:26:43');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `seo_tecnico`
+--
+
+DROP TABLE IF EXISTS `seo_tecnico`;
+CREATE TABLE IF NOT EXISTS `seo_tecnico` (
+  `id_tecnico` int NOT NULL AUTO_INCREMENT,
+  `velocidad_carga_ms` int DEFAULT NULL COMMENT 'Temps de càrrega en mil·lisegons',
+  `velocidad_primera_pintura` int DEFAULT NULL COMMENT 'First Paint',
+  `velocidad_pintura_contenido` int DEFAULT NULL COMMENT 'First Contentful Paint',
+  `velocidad_interactividad` int DEFAULT NULL COMMENT 'Time to Interactive',
+  `puntuacion_lighthouse` tinyint DEFAULT NULL COMMENT 'Puntuació 0-100',
+  `core_web_vitals` json DEFAULT NULL COMMENT 'Dades de LCP, FID, CLS',
+  `estado_indexacion` enum('completa','parcial','limitada','bloqueada') COLLATE utf8mb4_unicode_ci DEFAULT 'completa',
+  `paginas_indexadas` int DEFAULT '0',
+  `paginas_no_indexadas` int DEFAULT '0',
+  `ultimo_rastreo_google` date DEFAULT NULL,
+  `frecuencia_rastreo` enum('diaria','semanal','mensual','poco_frecuente') COLLATE utf8mb4_unicode_ci DEFAULT 'semanal',
+  `estructura_url` enum('amigable','parametrica','mixta') COLLATE utf8mb4_unicode_ci DEFAULT 'amigable',
+  `urls_canonicas_incorrectas` int DEFAULT '0',
+  `urls_duplicadas` int DEFAULT '0',
+  `parametros_url_problematicos` text COLLATE utf8mb4_unicode_ci COMMENT 'Paràmetres que generen contingut duplicat',
+  `sitemap_existe` tinyint(1) DEFAULT '1',
+  `sitemap_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '/sitemap.xml',
+  `sitemap_ultima_actualizacion` date DEFAULT NULL,
+  `sitemap_urls_total` int DEFAULT '0',
+  `sitemap_urls_indexables` int DEFAULT '0',
+  `robots_txt_existe` tinyint(1) DEFAULT '1',
+  `robots_txt_configurado` tinyint(1) DEFAULT '0',
+  `bloqueos_inecesarios` int DEFAULT '0' COMMENT 'Recursos bloqueats incorrectament',
+  `ssl_activo` tinyint(1) DEFAULT '1',
+  `ssl_valido` tinyint(1) DEFAULT '1',
+  `ssl_tipo` enum('dv','ov','ev') COLLATE utf8mb4_unicode_ci DEFAULT 'dv',
+  `ssl_caducidad` date DEFAULT NULL,
+  `http2_activo` tinyint(1) DEFAULT '1',
+  `mobile_friendly` tinyint(1) DEFAULT '1',
+  `viewport_configurado` tinyint(1) DEFAULT '1',
+  `tap_targets_adecuados` tinyint(1) DEFAULT '1',
+  `font_sizes_legibles` tinyint(1) DEFAULT '1',
+  `profundidad_maxima` tinyint DEFAULT '3',
+  `enlaces_rotos` int DEFAULT '0',
+  `enlaces_internos_total` int DEFAULT '0',
+  `enlaces_salientes_total` int DEFAULT '0',
+  `arquitectura_optimizada` tinyint(1) DEFAULT '1',
+  `headers_seguridad` json DEFAULT NULL COMMENT 'CSP, HSTS, X-Frame-Options, etc.',
+  `vulnerabilidades_detectadas` int DEFAULT '0',
+  `proteccion_malware` tinyint(1) DEFAULT '1',
+  `hreflang_implementado` tinyint(1) DEFAULT '1',
+  `hreflang_errores` int DEFAULT '0',
+  `geotargeting_configurado` tinyint(1) DEFAULT '0',
+  `ccTLDs_implementados` tinyint(1) DEFAULT '0',
+  `schema_implementado` tinyint(1) DEFAULT '1',
+  `schema_errores` int DEFAULT '0',
+  `rich_results_activos` tinyint(1) DEFAULT '0',
+  `tipo_rich_results` json DEFAULT NULL COMMENT 'Tipus de resultats enriquits detectats',
+  `imagenes_optimizadas` tinyint(1) DEFAULT '1',
+  `imagenes_sin_alt` int DEFAULT '0',
+  `lazy_loading_activo` tinyint(1) DEFAULT '1',
+  `webp_soportado` tinyint(1) DEFAULT '1',
+  `cache_implementado` tinyint(1) DEFAULT '1',
+  `cdn_activo` tinyint(1) DEFAULT '0',
+  `tiempo_cache_browser` int DEFAULT '86400' COMMENT 'En segons',
+  `compresion_activa` tinyint(1) DEFAULT '1',
+  `uptime_30d` decimal(5,2) DEFAULT '99.99' COMMENT 'Percentatge',
+  `errores_404` int DEFAULT '0',
+  `errores_500` int DEFAULT '0',
+  `redirects_encadenados` int DEFAULT '0',
+  `google_search_console_configurado` tinyint(1) DEFAULT '1',
+  `google_analytics_configurado` tinyint(1) DEFAULT '1',
+  `google_tag_manager_configurado` tinyint(1) DEFAULT '1',
+  `google_business_profile_configurado` tinyint(1) DEFAULT '0',
+  `ultima_auditoria_completa` datetime DEFAULT NULL,
+  `puntuacion_seo_tecnico` tinyint DEFAULT '0' COMMENT '0-100',
+  `criticidad_issues` enum('critica','alta','media','baja') COLLATE utf8mb4_unicode_ci DEFAULT 'media',
+  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_actualizacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_tecnico`),
+  KEY `idx_puntuacion` (`puntuacion_seo_tecnico`),
+  KEY `idx_ultima_auditoria` (`ultima_auditoria_completa`),
+  KEY `idx_criticidad` (`criticidad_issues`),
+  KEY `idx_velocidad` (`velocidad_carga_ms`),
+  KEY `idx_indexacion` (`estado_indexacion`),
+  KEY `idx_mobile` (`mobile_friendly`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id_sessio` int NOT NULL AUTO_INCREMENT,
+  `id_pacient` int NOT NULL,
+  `data_sessio` date NOT NULL,
+  `hora_inici` time NOT NULL,
+  `hora_fi` time NOT NULL,
+  `tipus_sessio` enum('Individual','Pareja','Familiar','Grupo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Individual',
+  `estat_sessio` enum('Programada','Realizada','Cancelada','No asistida') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Programada',
+  `ubicacio` enum('Presencial','Online') COLLATE utf8mb4_unicode_ci DEFAULT 'Presencial',
+  `preu_sessio` decimal(8,2) NOT NULL,
+  `notes_terapeuta` text COLLATE utf8mb4_unicode_ci,
+  `data_creacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_sessio`),
+  KEY `idx_data_sessio` (`data_sessio`),
+  KEY `idx_pacient_data` (`id_pacient`,`data_sessio`),
+  KEY `idx_estat` (`estat_sessio`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `sessions`
+--
+
+INSERT INTO `sessions` (`id_sessio`, `id_pacient`, `data_sessio`, `hora_inici`, `hora_fi`, `tipus_sessio`, `estat_sessio`, `ubicacio`, `preu_sessio`, `notes_terapeuta`, `data_creacio`) VALUES
+(1, 1, '2025-10-06', '17:00:00', '18:00:00', 'Individual', 'Programada', 'Online', 30.00, '', '2025-10-06 13:22:46');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `usuarios_panel`
+--
+
+DROP TABLE IF EXISTS `usuarios_panel`;
+CREATE TABLE IF NOT EXISTS `usuarios_panel` (
+  `id_usuario` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `apellidos` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telefono` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `avatar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rol` enum('superadmin','admin','editor','seo_manager','viewer') COLLATE utf8mb4_unicode_ci DEFAULT 'editor',
+  `permisos` json DEFAULT NULL COMMENT 'Permisos específics sobre mòduls',
+  `activo` tinyint(1) DEFAULT '1',
+  `ultimo_acceso` datetime DEFAULT NULL,
+  `fecha_expiracion` date DEFAULT NULL COMMENT 'Data de caducitat del compte',
+  `intentos_login` tinyint DEFAULT '0',
+  `bloqueado` tinyint(1) DEFAULT '0',
+  `idioma` enum('ca','es','en') COLLATE utf8mb4_unicode_ci DEFAULT 'ca',
+  `zona_horiana` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'Europe/Madrid',
+  `notificaciones_email` tinyint(1) DEFAULT '1',
+  `notificaciones_push` tinyint(1) DEFAULT '1',
+  `token_restablecimiento` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `token_expiracion` datetime DEFAULT NULL,
+  `two_factor_auth` tinyint(1) DEFAULT '0',
+  `two_factor_secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fecha_actualizacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `creado_por` int DEFAULT NULL COMMENT 'Usuari que va crear aquest compte',
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE KEY `email` (`email`),
+  KEY `creado_por` (`creado_por`),
+  KEY `idx_email` (`email`),
+  KEY `idx_rol` (`rol`),
+  KEY `idx_activo` (`activo`),
+  KEY `idx_ultimo_acceso` (`ultimo_acceso`),
+  KEY `idx_bloqueado` (`bloqueado`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `usuarios_panel`
+--
+
+INSERT INTO `usuarios_panel` (`id_usuario`, `email`, `password_hash`, `nombre`, `apellidos`, `telefono`, `avatar`, `rol`, `permisos`, `activo`, `ultimo_acceso`, `fecha_expiracion`, `intentos_login`, `bloqueado`, `idioma`, `zona_horiana`, `notificaciones_email`, `notificaciones_push`, `token_restablecimiento`, `token_expiracion`, `two_factor_auth`, `two_factor_secret`, `fecha_creacion`, `fecha_actualizacion`, `creado_por`) VALUES
+(1, 'marcmataro@gmail.com', '$2y$12$aNnVyrdzHqmw.xKsvh2qD.USM7WjIRIT0QZYUAdrPR50oLrmmUD4W', 'Marc', 'Mataró Malleu', NULL, NULL, 'superadmin', NULL, 1, '2025-10-08 18:22:17', NULL, 0, 0, 'ca', 'Europe/Madrid', 1, 1, NULL, NULL, 0, NULL, '2025-10-08 18:10:04', '2025-10-08 18:22:17', NULL);
+
+--
+-- Índexs per a les taules bolcades
+--
+
+--
+-- Índexs per a la taula `seo_onpage_paginas`
+--
+ALTER TABLE `seo_onpage_paginas` ADD FULLTEXT KEY `idx_contenido_ca` (`contenido_principal_ca`);
+ALTER TABLE `seo_onpage_paginas` ADD FULLTEXT KEY `idx_contenido_es` (`contenido_principal_es`);
+
+--
+-- Restriccions per a les taules bolcades
+--
+
+--
+-- Restriccions per a la taula `pagaments`
+--
+ALTER TABLE `pagaments`
+  ADD CONSTRAINT `pagaments_ibfk_1` FOREIGN KEY (`id_sessio`) REFERENCES `sessions` (`id_sessio`) ON DELETE RESTRICT;
+
+--
+-- Restriccions per a la taula `seo_onpage_paginas`
+--
+ALTER TABLE `seo_onpage_paginas`
+  ADD CONSTRAINT `seo_onpage_paginas_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `seo_onpage_paginas` (`id_pagina`) ON DELETE SET NULL;
+
+--
+-- Restriccions per a la taula `sessions`
+--
+ALTER TABLE `sessions`
+  ADD CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`id_pacient`) REFERENCES `pacients` (`id_pacient`) ON DELETE RESTRICT;
+
+--
+-- Restriccions per a la taula `usuarios_panel`
+--
+ALTER TABLE `usuarios_panel`
+  ADD CONSTRAINT `usuarios_panel_ibfk_1` FOREIGN KEY (`creado_por`) REFERENCES `usuarios_panel` (`id_usuario`);
+COMMIT;

@@ -11,7 +11,62 @@
 
 session_start();
 
-// Verificar autenticación
+// Manejo de inicio de sesión enviado desde la pantalla de login
+require_once __DIR__ . '/../classes/connexio.php';
+require_once __DIR__ . '/../classes/usuaris_panell.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
+    $username = trim($_POST['username']);
+    $password = $_POST['password'];
+
+    try {
+        $pdo = Connexio::getInstance()->getConnexio();
+    } catch (Exception $e) {
+        // Si no hi ha connexió, redirigir al login amb error
+        header('Location: index.php?error=1');
+        exit;
+    }
+
+    $usersModel = new UsuarisPanell($pdo);
+    $userRow = $usersModel->buscarPerEmail($username);
+
+    if ($userRow && isset($userRow['password_hash']) && password_verify($password, $userRow['password_hash'])) {
+        // Comprobaciones adicionales: activo y no bloqueado
+        if (isset($userRow['activo']) && !$userRow['activo']) {
+            header('Location: index.php?error=1');
+            exit;
+        }
+        if (isset($userRow['bloqueado']) && $userRow['bloqueado']) {
+            header('Location: index.php?error=1');
+            exit;
+        }
+
+        // Autenticación correcta: inicializar sesión
+        $_SESSION['logged_in'] = true;
+        $_SESSION['user_id'] = $userRow['id_usuario'];
+        $_SESSION['user_email'] = $userRow['email'];
+        $_SESSION['user_name'] = trim(($userRow['nombre'] ?? '') . ' ' . ($userRow['apellidos'] ?? ''));
+        $_SESSION['user_role'] = $userRow['rol'] ?? 'editor';
+
+        // Actualizar último acceso
+        try {
+            $stmt = $pdo->prepare("UPDATE usuarios_panel SET ultimo_acceso = NOW(), intentos_login = 0 WHERE id_usuario = :id");
+            $stmt->execute([':id' => $userRow['id_usuario']]);
+        } catch (Exception $e) {
+            // No crítico
+        }
+
+        // Redirigir al dashboard (GET) para evitar reenvío de formulario
+        header('Location: dashboard.php');
+        exit;
+    }
+
+    // Si no autenticó, llevar al login con error
+    header('Location: index.php?error=1');
+    exit;
+}
+
+// Verificar autenticación para acceso directo por GET
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: index.php');
     exit;
@@ -174,7 +229,7 @@ $properesSessions = $properes->fetchAll(PDO::FETCH_ASSOC);
                                     <i class="fas fa-coffee"></i>
                                     <p>No hay sesiones programadas para hoy</p>
                                     <button class="btn-link" onclick="obrirModalSession()">
-                                        <i class="fas fa-plus"></i> Programar sesión
+                                        Programar sesión
                                     </button>
                                 </div>
                             <?php else: ?>

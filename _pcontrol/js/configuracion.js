@@ -110,22 +110,35 @@ document.addEventListener('DOMContentLoaded', function() {
     addPasswordToggle();
     
     // Unsaved changes warning
+    // NOTE: we intentionally ignore changes inside the Users tab to avoid
+    // spurious "unsaved changes" dialogs when managing users in the same form.
     let formChanged = false;
     const formInputs = form.querySelectorAll('input, select');
-    
+
+    function isInsideUsers(el) {
+        return el && el.closest && el.closest('#users');
+    }
+
     formInputs.forEach(input => {
-        input.addEventListener('change', function() {
+        input.addEventListener('change', function(e) {
+            // Do not mark the form as changed when the change happens inside the Users pane
+            if (isInsideUsers(e.target)) return;
             formChanged = true;
         });
     });
-    
+
     window.addEventListener('beforeunload', function(e) {
+        // If the active tab is Users, skip the unload warning
+        const usersTabBtn = document.querySelector('.settings-tabs .tab-btn[data-tab="users"]');
+        const usersActive = usersTabBtn && usersTabBtn.classList.contains('active');
+        if (usersActive) return;
+
         if (formChanged) {
             e.preventDefault();
             e.returnValue = '';
         }
     });
-    
+
     form.addEventListener('submit', function() {
         formChanged = false;
     });
