@@ -223,13 +223,9 @@ $ingressosMes = $session->ingressosAquestMes();
                 </div>
             </div>
             <div class="top-bar-right">
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </button>
                 <div class="user-profile">
                     <img src="../img/Logo.png" alt="Profile" class="profile-img">
-                    <span class="profile-name">Yanina P.</span>
+                    <span class="profile-name"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?></span>
                 </div>
             </div>
         </header>

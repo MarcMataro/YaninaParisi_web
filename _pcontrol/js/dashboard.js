@@ -58,14 +58,7 @@ function formatDate() {
 // Call on load
 formatDate();
 
-// Notification button
-const notificationBtn = document.querySelector('.notification-btn');
-if (notificationBtn) {
-    notificationBtn.addEventListener('click', function() {
-        alert('Tienes 3 notificaciones pendientes');
-        // Aquí se podría abrir un modal con las notificaciones
-    });
-}
+// Notification button removed — no-op
 
 // Quick actions buttons
 const actionButtons = document.querySelectorAll('.action-btn');

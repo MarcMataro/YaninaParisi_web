@@ -34,8 +34,8 @@ function mostrarFormulari(tipus, dades = null) {
         const avui = new Date().toISOString().split('T')[0];
         document.getElementById('data_pagament').value = avui;
         
-        // Estado por defecto
-        document.getElementById('estat').value = 'Completado';
+    // Estado por defecto
+    document.getElementById('estat_pagament').value = 'Completado';
         
         // Ocultar grupo de número de factura
         document.getElementById('grupoNumeroFactura').style.display = 'none';
@@ -47,17 +47,36 @@ function mostrarFormulari(tipus, dades = null) {
         
         // Rellenar campos
         document.getElementById('idPagament').value = dades.id_pagament;
+        // Assegurar que l'opció de sessió existeix al select (pot ser que estigui filtrada)
+        const selectSessio = document.getElementById('id_sessio');
+        let opc = selectSessio.querySelector(`option[value="${dades.id_sessio}"]`);
+        if (!opc) {
+            // Afegim una opció temporal amb la informació mínima (preu, pacient)
+            opc = document.createElement('option');
+            opc.value = dades.id_sessio;
+            opc.text = (dades.data_sessio ? (new Date(dades.data_sessio)).toLocaleDateString() : '') + ' - ' + (dades.nom_pacient || '') + ' ' + (dades.cognoms_pacient || '');
+            opc.setAttribute('data-preu', dades.preu_sessio || dades.import || 0);
+            // També afegim data-date i data-tipus per al resum
+            if (dades.data_sessio) opc.setAttribute('data-date', dades.data_sessio);
+            if (dades.tipus_sessio) opc.setAttribute('data-tipus', dades.tipus_sessio);
+            if (dades.nom_pacient && dades.cognoms_pacient) {
+                opc.setAttribute('data-pacient', `${dades.nom_pacient} ${dades.cognoms_pacient}`);
+            }
+            selectSessio.appendChild(opc);
+        }
         document.getElementById('id_sessio').value = dades.id_sessio;
         document.getElementById('data_pagament').value = dades.data_pagament;
-        document.getElementById('import').value = dades.import;
-        document.getElementById('metode_pagament').value = dades.metode_pagament;
-        document.getElementById('estat').value = dades.estat;
+    document.getElementById('import').value = parseFloat(dades.import).toFixed(2);
+    document.getElementById('metode_pagament').value = dades.metode_pagament;
+    document.getElementById('estat_pagament').value = dades.estat;
         document.getElementById('facturat').checked = dades.facturat == 1;
         document.getElementById('numero_factura').value = dades.numero_factura || '';
         document.getElementById('observacions').value = dades.observacions || '';
         
-        // Mostrar/ocultar grupo de número de factura
-        toggleNumeroFactura();
+    // Carregar preu de la sessió seleccionada (si està disponible), mostrar resum i número factura
+    carregarPreuSessio();
+    mostrarResumSessio();
+    toggleNumeroFactura();
     }
     
     modal.style.display = 'flex';
@@ -112,6 +131,31 @@ function carregarPreuSessio() {
         if (preu) {
             importInput.value = parseFloat(preu).toFixed(2);
         }
+    }
+}
+
+/**
+ * Omple el resum de la sessió seleccionada i el mostra
+ */
+function mostrarResumSessio() {
+    const selectSessio = document.getElementById('id_sessio');
+    const selectedOption = selectSessio.options[selectSessio.selectedIndex];
+    const resum = document.getElementById('resumSessio');
+
+    if (selectedOption && selectedOption.value) {
+        const date = selectedOption.getAttribute('data-date') || '';
+        const pacient = selectedOption.getAttribute('data-pacient') || '';
+        const tipus = selectedOption.getAttribute('data-tipus') || '';
+        const preu = selectedOption.getAttribute('data-preu') || '';
+
+        document.getElementById('resumSessioData').textContent = date ? (new Date(date)).toLocaleDateString() : '-';
+        document.getElementById('resumSessioPacient').textContent = pacient || '-';
+        document.getElementById('resumSessioTipus').textContent = tipus || '-';
+        document.getElementById('resumSessioPreu').textContent = preu ? parseFloat(preu).toFixed(2) : '-';
+
+        resum.style.display = 'block';
+    } else {
+        resum.style.display = 'none';
     }
 }
 

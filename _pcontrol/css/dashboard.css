@@ -211,24 +211,7 @@ body {
     gap: 20px;
 }
 
-.notification-btn {
-    position: relative;
-    background: none;
-    border: none;
-    font-size: 1.3rem;
-    color: var(--color-accent);
-    cursor: pointer;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-    border-radius: 8px;
-}
-
-.notification-btn:hover {
-    background: rgba(var(--color-light), 0.3);
-}
+/* notification button removed - styles intentionally omitted */
 
 .badge {
     position: absolute;
@@ -278,6 +261,24 @@ body {
     padding: 20px;
     max-width: 1400px;
     margin: 0 auto;
+}
+
+/* Ensure pages that use .content-wrapper (shared pattern) are wide like the SEO page
+   — occupy almost the full available content area while keeping small side padding. */
+.content-wrapper {
+    padding: 20px;
+    /* Use nearly full width but keep a small gutter */
+    max-width: calc(100% - 40px);
+    width: auto;
+    margin: 0;
+}
+
+/* Configuration container (used in configuracion.php) should follow same wide layout */
+.config-container {
+    padding: 20px;
+    max-width: calc(100% - 40px);
+    width: auto;
+    margin: 0;
 }
 
 /* Stats Section */

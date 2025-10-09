@@ -70,6 +70,10 @@
 
 .content-wrapper {
     padding: 30px;
+    /* Match wide layout: occupy almost full width with a small gutter */
+    max-width: calc(100% - 40px);
+    width: auto;
+    margin: 0;
 }
 
 .card {

@@ -22,7 +22,7 @@
                                     </label>
                                     <input type="text" name="site_title_ca" maxlength="60"
                                            value="<?php echo htmlspecialchars($seo_global->getSiteTitle('ca') ?? ''); ?>"
-                                           placeholder="Psicòloga Yanina Parisi | Barcelona">
+                                           placeholder="Psicòloga <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Yanina Parisi'); ?> | Barcelona">
                                     <small><i class="fas fa-info-circle"></i> Título principal del sitio en catalán</small>
                                 </div>
                                 <div class="language-field">
@@ -32,7 +32,7 @@
                                     </label>
                                     <input type="text" name="site_title_es" maxlength="60"
                                            value="<?php echo htmlspecialchars($seo_global->getSiteTitle('es') ?? ''); ?>"
-                                           placeholder="Psicóloga Yanina Parisi | Barcelona">
+                                           placeholder="Psicóloga <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Yanina Parisi'); ?> | Barcelona">
                                     <small><i class="fas fa-info-circle"></i> Título principal del sitio en español</small>
                                 </div>
                             </div>
@@ -80,7 +80,7 @@
                                     </label>
                                     <input type="text" name="default_title_template_ca" maxlength="100"
                                            value="<?php echo htmlspecialchars($seo_global->generarTitolPagina('{page}', 'ca') ?? ''); ?>"
-                                           placeholder="{page} | Psicòloga Yanina Parisi">
+                                           placeholder="{page} | Psicòloga <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Yanina Parisi'); ?>">
                                     <small><i class="fas fa-lightbulb"></i> Ejemplo: "Inici | Psicòloga Yanina Parisi"</small>
                                 </div>
                                 <div class="language-field">
@@ -89,7 +89,7 @@
                                     </label>
                                     <input type="text" name="default_title_template_es" maxlength="100"
                                            value="<?php echo htmlspecialchars($seo_global->generarTitolPagina('{page}', 'es') ?? ''); ?>"
-                                           placeholder="{page} | Psicóloga Yanina Parisi">
+                                           placeholder="{page} | Psicóloga <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Yanina Parisi'); ?>">
                                     <small><i class="fas fa-lightbulb"></i> Ejemplo: "Inicio | Psicóloga Yanina Parisi"</small>
                                 </div>
                             </div>

@@ -263,13 +263,9 @@ unset($_SESSION['missatge'], $_SESSION['tipusMissatge']);
                 </div>
             </div>
             <div class="top-bar-right">
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">0</span>
-                </button>
                 <div class="user-profile">
                     <img src="../img/Logo.png" alt="Profile" class="profile-img">
-                    <span class="profile-name">Yanina P.</span>
+                    <span class="profile-name"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?></span>
                 </div>
             </div>
         </header>
@@ -601,28 +597,35 @@ unset($_SESSION['missatge'], $_SESSION['tipusMissatge']);
                             <label for="id_sessio">Sesión <span class="required">*</span></label>
                             <select id="id_sessio" name="id_sessio" required onchange="carregarPreuSessio()">
                                 <option value="">Selecciona una sesión...</option>
-                                <?php
-                                // Obtenir sessions amb informació del pacient
-                                $query = "SELECT s.*, p.nom as nom_pacient, p.cognoms as cognoms_pacient 
-                                          FROM sessions s 
-                                          INNER JOIN pacients p ON s.id_pacient = p.id_pacient 
-                                          ORDER BY s.data_sessio DESC, s.hora_inici DESC";
-                                $stmt = $pdo->prepare($query);
-                                $stmt->execute();
-                                $sessions_amb_pacients = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                
-                                foreach ($sessions_amb_pacients as $sess):
-                                ?>
-                                    <option value="<?= $sess['id_sessio'] ?>" 
-                                            data-preu="<?= $sess['preu_sessio'] ?>"
-                                            data-pacient="<?= htmlspecialchars($sess['nom_pacient'] . ' ' . $sess['cognoms_pacient']) ?>">
-                                        <?= date('d/m/Y', strtotime($sess['data_sessio'])) ?> - 
-                                        <?= htmlspecialchars($sess['nom_pacient'] . ' ' . $sess['cognoms_pacient']) ?> - 
-                                        <?= htmlspecialchars($sess['tipus_sessio']) ?> -
-                                        <?= number_format($sess['preu_sessio'], 2) ?> €
-                                    </option>
-                                <?php endforeach; ?>
+                                        <?php
+                                        // Mostrar només les sessions realitzades que encara no tenen pagament completat
+                                        // Utilitzem l'array $sessionsSensePagar obtingut al principi de la pàgina
+                                        if (!empty($sessionsSensePagar)):
+                                            foreach ($sessionsSensePagar as $sess):
+                                        ?>
+                                            <option value="<?= $sess['id_sessio'] ?>" 
+                                                    data-preu="<?= $sess['preu_sessio'] ?>"
+                                                    data-pacient="<?= htmlspecialchars($sess['nom_pacient'] . ' ' . $sess['cognoms_pacient']) ?>"
+                                                    data-date="<?= $sess['data_sessio'] ?>"
+                                                    data-tipus="<?= htmlspecialchars($sess['tipus_sessio']) ?>">
+                                                <?= date('d/m/Y', strtotime($sess['data_sessio'])) ?> - 
+                                                <?= htmlspecialchars($sess['nom_pacient'] . ' ' . $sess['cognoms_pacient']) ?> - 
+                                                <?= htmlspecialchars($sess['tipus_sessio']) ?> -
+                                                <?= number_format($sess['preu_sessio'], 2) ?> €
+                                            </option>
+                                        <?php
+                                            endforeach;
+                                        else:
+                                        ?>
+                                            <option value="">No hay sesiones disponibles para seleccionar</option>
+                                        <?php endif; ?>
                             </select>
+                            <div id="resumSessio" class="session-summary" style="display:none; margin-top:10px; padding:10px; background:#f8f9fa; border:1px solid #e9ecef; border-radius:4px;">
+                                <div><strong>Sessió:</strong> <span id="resumSessioData">-</span></div>
+                                <div><strong>Pacient:</strong> <span id="resumSessioPacient">-</span></div>
+                                <div><strong>Tipus:</strong> <span id="resumSessioTipus">-</span></div>
+                                <div><strong>Preu:</strong> <span id="resumSessioPreu">-</span> €</div>
+                            </div>
                         </div>
                         
                         <!-- Fecha de pago -->
@@ -652,8 +655,8 @@ unset($_SESSION['missatge'], $_SESSION['tipusMissatge']);
                         
                         <!-- Estado -->
                         <div class="form-group">
-                            <label for="estat">Estado <span class="required">*</span></label>
-                            <select id="estat" name="estat" required>
+                            <label for="estat_pagament">Estado <span class="required">*</span></label>
+                            <select id="estat_pagament" name="estat" required>
                                 <option value="Completado">Completado</option>
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="Anulado">Anulado</option>

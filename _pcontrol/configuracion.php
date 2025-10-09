@@ -8,8 +8,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 // Dades de configuració (després es connectarà amb BD)
+$default_professional = trim($_SESSION['user_name'] ?? 'Yanina Parisi');
 $config = [
-    'nombre' => 'Yanina Parisi',
+    'nombre' => $default_professional,
     'email' => 'yanina@psicologiayanina.com',
     'telefono' => '+34 972 123 45 67',
     'colegiada' => 'COL-12345',
@@ -123,13 +124,9 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                 </div>
             </div>
             <div class="top-bar-right">
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </button>
                 <div class="user-profile">
                     <img src="../img/Logo.png" alt="Profile" class="profile-img">
-                    <span class="profile-name">Yanina P.</span>
+                    <span class="profile-name"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?></span>
                 </div>
             </div>
         </header>

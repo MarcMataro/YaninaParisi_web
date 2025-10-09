@@ -45,6 +45,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-cog"></i>
             <span>Configuración</span>
         </a>
+        <a href="documentation.php" class="nav-item <?php echo ($current_page == 'documentation.php') ? 'active' : ''; ?>">
+            <i class="fas fa-book"></i>
+            <span>Documentació</span>
+        </a>
     </nav>
     
     <div class="sidebar-footer">

@@ -796,19 +796,21 @@ class Pagament {
      * @return array Array de sessions sense pagar
      */
     public function sessionsSensePagar() {
-        $query = "SELECT s.*, 
-                         pac.nom as nom_pacient, 
-                         pac.cognoms as cognoms_pacient
-                  FROM sessions s
-                  INNER JOIN pacients pac ON s.id_pacient = pac.id_pacient
-                  LEFT JOIN (
-                      SELECT id_sessio, SUM(CASE WHEN estat = 'Completado' THEN 1 ELSE 0 END) as pagaments_completats
-                      FROM " . $this->table . "
-                      GROUP BY id_sessio
-                  ) p ON s.id_sessio = p.id_sessio
-                  WHERE s.estat_sessio = 'Realitzada'
-                    AND (p.pagaments_completats IS NULL OR p.pagaments_completats = 0)
-                  ORDER BY s.data_sessio DESC";
+                // Retorna sessions amb estat de sessió 'completada' i que no tinguin cap pagament associat
+                // Acceptem diverses variants d'etiqueta per compatibilitat amb idiomes ('Realitzada', 'Realizada', 'Completada')
+                $query = "SELECT s.*, 
+                                                 pac.nom as nom_pacient, 
+                                                 pac.cognoms as cognoms_pacient
+                                    FROM sessions s
+                                    INNER JOIN pacients pac ON s.id_pacient = pac.id_pacient
+                                    LEFT JOIN (
+                                            SELECT id_sessio, COUNT(*) as pagaments_total
+                                            FROM " . $this->table . "
+                                            GROUP BY id_sessio
+                                    ) p ON s.id_sessio = p.id_sessio
+                                    WHERE s.estat_sessio IN ('Realitzada', 'Realizada', 'Completada')
+                                        AND (p.pagaments_total IS NULL OR p.pagaments_total = 0)
+                                    ORDER BY s.data_sessio DESC";
         
         $stmt = $this->conn->prepare($query);
         $stmt->execute();

@@ -9,6 +9,10 @@
 
 .content-wrapper {
     padding: 30px;
+    /* Match wide layout: occupy almost full width with a small gutter */
+    max-width: calc(100% - 40px);
+    width: auto;
+    margin: 0;
 }
 
 /* ========================================
@@ -127,6 +131,17 @@
     display: flex;
     gap: 10px;
     align-items: flex-end;
+}
+
+/* Make filter area buttons a bit more compact and visually matched */
+.filters-form .filter-actions .btn {
+    padding: 9px 14px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.filters-form .filter-actions .btn i {
+    font-size: 0.98rem;
 }
 
 /* ========================================
@@ -527,6 +542,25 @@
 
 .btn-secondary:hover {
     background: #d4d4d4;
+}
+
+/* Strong override to ensure filter-area buttons have the exact same visual size
+   (placed after the general .btn rules so it wins). */
+.filters-form .filter-actions .btn,
+.filters-form .filter-actions a.btn,
+.filters-form .filter-actions button.btn {
+    padding: 9px 14px !important;
+    font-size: 0.9rem !important;
+    height: 38px !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+}
+
+.filters-form .filter-actions .btn i {
+    font-size: 0.98rem !important;
 }
 
 .btn-success {
