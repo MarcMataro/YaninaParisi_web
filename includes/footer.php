@@ -12,7 +12,7 @@
                         <li><a href="#serveis"><?php echo t('nav_services'); ?></a></li>
                         <li><a href="#sobre-mi"><?php echo t('nav_about'); ?></a></li>
                         <li><a href="#testimonis"><?php echo t('nav_testimonials'); ?></a></li>
-                        <li><a href="#tarifes"><?php echo t('nav_pricing'); ?></a></li>
+                        <li><a href="#serveis-especials" class="love-link"><?php echo t('nav_couple_search'); ?></a></li>
                         <li><a href="#contacte"><?php echo t('nav_contact'); ?></a></li>
                     </ul>
                 </div>

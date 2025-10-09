@@ -1,6 +1,33 @@
 <?php 
+// Inicialitzar sessió si no està iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Debug ABANS del processament
+echo "<!-- DEBUG INDEX ABANS: GET lang: " . ($_GET['lang'] ?? 'no definit') . " -->";
+echo "<!-- DEBUG INDEX ABANS: Session lang abans: " . ($_SESSION['language'] ?? 'no definit') . " -->";
+
+// Processar canvi d'idioma PRIMER
+if (isset($_GET['lang'])) {
+    echo "<!-- DEBUG INDEX: Processant canvi d'idioma a " . $_GET['lang'] . " -->";
+    if (in_array($_GET['lang'], array('ca', 'es'))) {
+        $_SESSION['language'] = $_GET['lang'];
+        echo "<!-- DEBUG INDEX: Idioma canviat a sessió: " . $_SESSION['language'] . " -->";
+    }
+    // Redirigir per evitar reenviar formulari
+    $redirect_url = strtok($_SERVER["REQUEST_URI"], '?');
+    echo "<!-- DEBUG INDEX: Redirigint a: " . $redirect_url . " -->";
+    header('Location: ' . $redirect_url);
+    exit;
+}
+
 // Incluir sistema de traducció
 include 'includes/lang.php';
+
+// Debug DESPRÉS
+echo "<!-- DEBUG INDEX DESPRÉS: Session lang després: " . ($_SESSION['language'] ?? 'no definit') . " -->";
+echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() . " -->";
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo getCurrentLanguage(); ?>">
@@ -169,22 +196,17 @@ include 'includes/lang.php';
     </section>
 
     <!-- Sobre mi -->
-    <section id="sobre-mi">
+    <section id="sobre-mi" class="about-section">
         <div class="container">
-            <div class="section-title">
-                <h2><?php echo t('about_title'); ?></h2>
-                <p><?php echo t('about_subtitle'); ?></p>
-            </div>
-            <div class="about-grid">
-                <div class="about-content">
-                    <h3><?php echo t('about_name'); ?></h3>
+            <div class="about-content">
+                <span class="about-label"><?php echo getCurrentLanguage() === 'ca' ? 'Psicòloga Col·legiada' : 'Psicóloga Colegiada'; ?></span>
+                <h2><?php echo t('about_name'); ?></h2>
+                <div class="about-description">
                     <p><?php echo t('about_desc1'); ?></p>
                     <p><?php echo t('about_desc2'); ?></p>
-                    <p><?php echo t('about_desc3'); ?></p>
-                    <a href="#contacte" class="btn"><?php echo t('about_btn'); ?></a>
                 </div>
-                <div class="about-image">
-                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='400' viewBox='0 0 500 400'><rect width='500' height='400' fill='%236a9fb5'/><circle cx='250' cy='150' r='80' fill='%239f86c0'/><rect x='170' y='250' width='160' height='100' fill='%23a5c882'/></svg>" alt="Yanina Parisi - Psicòloga">
+                <div class="about-location">
+                    <?php echo getCurrentLanguage() === 'ca' ? 'Girona · Sessions presencials i online' : 'Girona · Sesiones presenciales y online'; ?>
                 </div>
             </div>
         </div>
@@ -405,16 +427,61 @@ include 'includes/lang.php';
 
         // Script per al selector d'idioma
         function changeLanguage(lang) {
+            console.log('Canviant idioma a:', lang);
             window.location.href = window.location.pathname + '?lang=' + lang;
         }
         
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Eliminar classe active de tots els botons
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                // Afegir classe active al botó clickat
-                this.classList.add('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Obtenir l'idioma del data attribute
+                    const lang = this.getAttribute('data-lang');
+                    console.log('Botó clickat, idioma:', lang);
+                    
+                    // Eliminar classe active de tots els botons (tant desktop com mòbil)
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    // Afegir classe active a tots els botons del mateix idioma
+                    document.querySelectorAll(`.lang-btn[data-lang="${lang}"]`).forEach(b => b.classList.add('active'));
+                    
+                    // Tancar menú mòbil si està obert
+                    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+                    const navMenu = document.querySelector('.nav-menu ul');
+                    if (mobileMenuToggle && navMenu) {
+                        mobileMenuToggle.classList.remove('active');
+                        navMenu.classList.remove('show');
+                    }
+                    
+                    // Canviar idioma
+                    changeLanguage(lang);
+                });
             });
+
+            // Funcionalitat del menú hamburguesa
+            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            const navMenu = document.querySelector('.nav-menu ul');
+
+            if (mobileMenuToggle && navMenu) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('show');
+                });
+
+                // Tancar menú quan es clica un enllaç
+                document.querySelectorAll('.nav-menu ul li a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenuToggle.classList.remove('active');
+                        navMenu.classList.remove('show');
+                    });
+                });
+
+                // Tancar menú quan es clica fora
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                        mobileMenuToggle.classList.remove('active');
+                        navMenu.classList.remove('show');
+                    }
+                });
+            }
         });
     </script>
 </body>

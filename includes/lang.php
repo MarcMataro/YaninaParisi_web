@@ -18,7 +18,7 @@ $translations = array(
         'nav_services' => 'Serveis',
         'nav_about' => 'Sobre mi',
         'nav_testimonials' => 'Testimonis',
-        'nav_pricing' => 'Tarifes',
+        'nav_couple_search' => 'Dues ànimes',
         'nav_contact' => 'Contacte',
         'nav_appointment' => 'Demana una cita',
         
@@ -230,7 +230,72 @@ $translations = array(
         'footer_service4' => 'Acompanyament Cerca de Parella',
         'footer_service5' => 'Psicologia Pericial',
         'footer_social_title' => 'Xarxes socials',
-        'footer_copyright' => '© 2023 Psicologia Yanina. Tots els drets reservats.'
+        'footer_copyright' => '© 2025 Psicologia Yanina. Tots els drets reservats.',
+        
+        // Pàgina Sobre Mi
+        'about_page_title' => 'Sobre',
+        'about_page_title_highlight' => 'mi',
+        'about_page_subtitle' => 'La meva trajectòria professional i personal',
+        'about_page_badge' => 'Psicòloga General Sanitària Col·legiada',
+        
+        'about_vocation_title' => 'Una Vocació Nascuda en Família',
+        'about_vocation_text' => 'La psicologia ha estat el fil conductor de la meva vida. Vaig créixer en una família de psicòlegs i psicoanalistes argentins, on les converses sobre la ment humana i la complexitat de les relacions no eren només temes de professió, sinó part de la vida quotidiana. Aquest entorn únic va despertar en mi una vocació primerenca i una mirada particular: atenta, sensible i profundament curiosa cap a l\'ésser humà.',
+        
+        'about_journey_title' => 'La Meva Trajectòria i Compromís Professional',
+        'about_credential1_title' => 'Psicòloga General Sanitària',
+        'about_credential1_desc' => 'Col·legiada amb més d\'una dècada d\'experiència',
+        'about_credential2_title' => 'Perita Judicial',
+        'about_credential2_desc' => 'Especialitzada en casos de família i custòdia',
+        'about_credential3_title' => 'Mediadora Familiar',
+        'about_credential3_desc' => 'Facilitant la resolució de conflictes familiars',
+        'about_credential4_title' => 'Coach Certificada',
+        'about_credential4_desc' => 'Acompanyant processos de canvi i creixement personal',
+        'about_journey_desc' => 'Amb més d\'una dècada d\'experiència, he consolidat una pràctica que em permet acompanyar a persones en els seus processos de canvi des del rigor i l\'empatia. Atenc online a tota Espanya i de forma presencial a Girona.',
+        
+        'about_pillars_title' => 'Els Meus Pilars Fonamentals',
+        'about_pillar1_title' => 'Teràpia de Parella',
+        'about_pillar1_desc' => 'Ajudar a les parelles a superar crisis o a construir una relació estable i significativa des de l\'inici.',
+        'about_pillar2_title' => 'Teràpia Individual',
+        'about_pillar2_desc' => 'Acompanyar a individus que busquen superar el malestar i reconnectar amb el seu benestar.',
+        
+        'about_unique_title' => 'Un Servei Únic: Cerca de Parella Conscient',
+        'about_unique_desc' => 'Fruit de la meva especialització, ofereixo un servei distintiu de cerca de parella basat en criteris psicològics. Aquest enfocament va més enllà de les aplicacions de cites convencionals. Es tracta d\'un procés guiat on la prioritat és la compatibilitat real i la construcció de vincles autèntics, evitant la saturació i la desmotivació de les cites sense rumb.',
+        
+        'about_specialization_title' => 'Àmbits d\'Especialització',
+        'about_specialization_intro' => 'El meu treball s\'estén també a l\'àmbit jurídic, exercint com:',
+        'about_spec1_title' => 'Perita Psicòloga Judicial',
+        'about_spec1_desc' => 'Elaboro informes pericials per a casos de família, custòdia i violència filio-parental.',
+        'about_spec2_title' => 'Mediadora Familiar',
+        'about_spec2_desc' => 'Facilito la resolució de conflictes familiars en un marc de diàleg i respecte mutu.',
+        
+        'about_approach_title' => 'El Meu Enfocament Terapèutic: Integrador i Personalitzat',
+        'about_approach_desc' => 'No crec en les solucions úniques. Per això, integro diverses corrents com la psicoanàlisi, la teràpia cognitiu-conductual (TCC), la teràpia humanista i la Teràpia d\'Acceptació i Compromís (ACT). Aquesta flexibilitat em permet adaptar cada intervenció a la singularitat de la persona, oferint un abordatge a mida de les seves necessitats.',
+        'about_therapy1' => 'Psicoanàlisi',
+        'about_therapy2' => 'TCC',
+        'about_therapy3' => 'Teràpia Humanista',
+        'about_therapy4' => 'ACT',
+        
+        'about_heart_title' => 'El Cor de la Meva Pràctica',
+        'about_heart_desc1' => 'Considero que qui fa el pas d\'iniciar una teràpia són extraordinàriament valents. El meu compromís és correspondre a aquesta valentia amb un espai segur, de confiança i absolutament confidencial, on et sentiràs escoltat i comprès sense judicis.',
+        'about_specialties_title' => 'Especialitats Clíniques',
+        'about_specialty1' => 'Ansietat',
+        'about_specialty2' => 'Depressió',
+        'about_specialty3' => 'Dol',
+        'about_specialty4' => 'TOC',
+        'about_specialty5' => 'Problemes d\'autoestima',
+        'about_specialty6' => 'Crisis vitals',
+        'about_heart_desc2' => 'Estic convençuda que tota crisis, per dolorosa que sigui, tanca una oportunitat de transformació. El meu objectiu no és només alleujar el patiment, sinó dotar-te de perspectives renovades i eines pràctiques perquè puguis reconstruir la teva vida d\'una manera més conscient, lliure i plena.',
+        
+        'about_beyond_title' => 'Més Enllà de la Consulta',
+        'about_beyond_desc' => 'Crec fermament en fer la psicologia accessible. Per això, complemento la meva labor clínica amb la divulgació, escrivint articles en mitjans especialitzats i creant contingut de valor a xarxes socials. El meu objectiu és apropar recursos útils i una mirada comprensiva de la salut mental a un públic ampli.',
+        'about_activity1' => 'Articles especialitzats',
+        'about_activity2' => 'Contingut a xarxes socials',
+        'about_activity3' => 'Divulgació en salut mental',
+        
+        'about_cta_title' => 'Comença el teu Procés de Transformació',
+        'about_cta_desc' => 'Si sents que és el moment de fer un canvi en la teva vida, estic aquí per acompanyar-te en aquest viatge de descobriment i creixement personal.',
+        'about_cta_btn1' => 'Reserva la teva Cita',
+        'about_cta_btn2' => 'Veure Serveis'
     ),
     
     'es' => array(
@@ -248,7 +313,7 @@ $translations = array(
         'nav_services' => 'Servicios',
         'nav_about' => 'Sobre mí',
         'nav_testimonials' => 'Testimonios',
-        'nav_pricing' => 'Tarifas',
+        'nav_couple_search' => 'Dos almas',
         'nav_contact' => 'Contacto',
         'nav_appointment' => 'Pide una cita',
         
@@ -443,16 +508,93 @@ $translations = array(
         'footer_service4' => 'Acompañamiento Búsqueda de Pareja',
         'footer_service5' => 'Psicología Pericial',
         'footer_social_title' => 'Redes sociales',
-        'footer_copyright' => '© 2023 Psicología Yanina. Todos los derechos reservados.'
+        'footer_copyright' => '© 2025 Psicología Yanina. Todos los derechos reservados.',
+        
+        // Página Sobre Mí
+        'about_page_title' => 'Sobre',
+        'about_page_title_highlight' => 'mí',
+        'about_page_subtitle' => 'Mi trayectoria profesional y personal',
+        'about_page_badge' => 'Psicóloga General Sanitaria Colegiada',
+        
+        'about_vocation_title' => 'Una Vocación Nacida en Familia',
+        'about_vocation_text' => 'La psicología ha sido el hilo conductor de mi vida. Crecí en una familia de psicólogos y psicoanalistas argentinos, donde las conversaciones sobre la mente humana y la complejidad de las relaciones no eran solo temas de profesión, sino parte de la vida cotidiana. Este entorno único despertó en mí una vocación temprana y una mirada particular: atenta, sensible y profundamente curiosa hacia el ser humano.',
+        
+        'about_journey_title' => 'Mi Trayectoria y Compromiso Profesional',
+        'about_credential1_title' => 'Psicóloga General Sanitaria',
+        'about_credential1_desc' => 'Colegiada con más de una década de experiencia',
+        'about_credential2_title' => 'Perito Judicial',
+        'about_credential2_desc' => 'Especializada en casos de familia y custodia',
+        'about_credential3_title' => 'Mediadora Familiar',
+        'about_credential3_desc' => 'Facilitando la resolución de conflictos familiares',
+        'about_credential4_title' => 'Coach Certificada',
+        'about_credential4_desc' => 'Acompañando procesos de cambio y crecimiento personal',
+        'about_journey_desc' => 'Con más de una década de experiencia, he consolidado una práctica que me permite acompañar a personas en sus procesos de cambio desde el rigor y la empatía. Atiendo online en toda España y de forma presencial en Girona.',
+        
+        'about_pillars_title' => 'Mis Pilares Fundamentales',
+        'about_pillar1_title' => 'Terapia de Pareja',
+        'about_pillar1_desc' => 'Ayudar a las parejas a superar crisis o a construir una relación estable y significativa desde el inicio.',
+        'about_pillar2_title' => 'Terapia Individual',
+        'about_pillar2_desc' => 'Acompañar a individuos que buscan superar el malestar y reconectar con su bienestar.',
+        
+        'about_unique_title' => 'Un Servicio Único: Búsqueda de Pareja Consciente',
+        'about_unique_desc' => 'Fruto de mi especialización, ofrezco un servicio distintivo de búsqueda de pareja basado en criterios psicológicos. Este enfoque va más allá de las aplicaciones de citas convencionales. Se trata de un proceso guiado donde la prioridad es la compatibilidad real y la construcción de vínculos auténticos, evitando la saturación y la desmotivación de las citas sin rumbo.',
+        
+        'about_specialization_title' => 'Ámbitos de Especialización',
+        'about_specialization_intro' => 'Mi trabajo se extiende también al ámbito jurídico, ejerciendo como:',
+        'about_spec1_title' => 'Perito Psicóloga Judicial',
+        'about_spec1_desc' => 'Elaboro informes periciales para casos de familia, custodia y violencia filio-parental.',
+        'about_spec2_title' => 'Mediadora Familiar',
+        'about_spec2_desc' => 'Facilito la resolución de conflictos familiares en un marco de diálogo y respeto mutuo.',
+        
+        'about_approach_title' => 'Mi Enfoque Terapéutico: Integrador y Personalizado',
+        'about_approach_desc' => 'No creo en las soluciones únicas. Por ello, integro diversas corrientes como el psicoanálisis, la terapia cognitivo-conductual (TCC), la terapia humanista y la Terapia de Aceptación y Compromiso (ACT). Esta flexibilidad me permite adaptar cada intervención a la singularidad de la persona, ofreciendo un abordaje a la medida de sus necesidades.',
+        'about_therapy1' => 'Psicoanálisis',
+        'about_therapy2' => 'TCC',
+        'about_therapy3' => 'Terapia Humanista',
+        'about_therapy4' => 'ACT',
+        
+        'about_heart_title' => 'El Corazón de mi Práctica',
+        'about_heart_desc1' => 'Considero que quienes dan el paso de iniciar una terapia son extraordinariamente valientes. Mi compromiso es corresponder a esa valentía con un espacio seguro, de confianza y absolutamente confidencial, donde te sentirás escuchado y comprendido sin juicios.',
+        'about_specialties_title' => 'Especialidades Clínicas',
+        'about_specialty1' => 'Ansiedad',
+        'about_specialty2' => 'Depresión',
+        'about_specialty3' => 'Duelo',
+        'about_specialty4' => 'TOC',
+        'about_specialty5' => 'Problemas de autoestima',
+        'about_specialty6' => 'Crisis vitales',
+        'about_heart_desc2' => 'Estoy convencida de que toda crisis, por dolorosa que sea, encierra una oportunidad de transformación. Mi objetivo no es solo aliviar el sufrimiento, sino dotarte de perspectivas renovadas y herramientas prácticas para que puedas reconstruir tu vida de una manera más consciente, libre y plena.',
+        
+        'about_beyond_title' => 'Más Allá de la Consulta',
+        'about_beyond_desc' => 'Creo firmemente en hacer la psicología accesible. Por eso, complemento mi labor clínica con la divulgación, escribiendo artículos en medios especializados y creando contenido de valor en redes sociales. Mi objetivo es acercar recursos útiles y una mirada comprensiva de la salud mental a un público amplio.',
+        'about_activity1' => 'Artículos especializados',
+        'about_activity2' => 'Contenido en redes sociales',
+        'about_activity3' => 'Divulgación en salud mental',
+        
+        'about_cta_title' => 'Comienza tu Proceso de Transformación',
+        'about_cta_desc' => 'Si sientes que es el momento de hacer un cambio en tu vida, estoy aquí para acompañarte en este viaje de descubrimiento y crecimiento personal.',
+        'about_cta_btn1' => 'Reserva tu Cita',
+        'about_cta_btn2' => 'Ver Servicios'
     )
 );
 
 // Función para obtener el idioma actual
 function getCurrentLanguage() {
-    if (isset($_SESSION['language'])) {
+    // Primer mirar si està a la sessió
+    if (isset($_SESSION['language']) && in_array($_SESSION['language'], array('ca', 'es'))) {
         return $_SESSION['language'];
     }
-    // Idioma por defecto
+    
+    // Si no hi ha sessió, mirar si ve del navegador (Accept-Language)
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        $browser_lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+        if ($browser_lang === 'ca') {
+            $_SESSION['language'] = 'ca';
+            return 'ca';
+        }
+    }
+    
+    // Idioma per defecte
+    $_SESSION['language'] = 'es';
     return 'es';
 }
 
@@ -481,11 +623,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Procesar cambio de idioma si se envía por GET
-if (isset($_GET['lang'])) {
-    setLanguage($_GET['lang']);
-    // Redireccionar para evitar reenvío del formulario
-    header('Location: ' . strtok($_SERVER["REQUEST_URI"], '?'));
-    exit;
-}
+// El processament del canvi d'idioma ara es fa a cada pàgina individual
+// per evitar conflictes amb altres processaments
+
 ?>

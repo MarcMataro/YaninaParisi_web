@@ -95,7 +95,7 @@
         padding: 10px 12px;
     }
     .score-card:not(.score-main) .score-circle {
-        max-width: 64px;
+        max-width: 120px;
     }
     .score-card:not(.score-main) .score-number {
         font-size: 1.2rem;
@@ -164,7 +164,7 @@
 
 .score-main .score-circle {
     margin: 10px 0 4px; /* push the chart slightly lower under the title */
-    max-width: 130px; /* larger main chart */
+    max-width: 160px; /* larger main chart */
     flex-shrink: 0;
 }
 
