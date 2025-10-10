@@ -18,6 +18,7 @@ $translations = array(
         'nav_services' => 'Serveis',
         'nav_about' => 'Sobre mi',
         'nav_testimonials' => 'Testimonis',
+        'nav_blog' => 'Blog',
         'nav_couple_search' => 'Dues ànimes',
         'nav_contact' => 'Contacte',
         'nav_appointment' => 'Demana una cita',
@@ -45,6 +46,10 @@ $translations = array(
         // Frase inspiradora
         'quote_text' => 'El primer pas cap al canvi és l\'acceptació. El segon és l\'acció. Aquí t\'acompanyaré en ambdós.',
         'quote_author' => 'Yanina Parisi',
+        
+        // Segona frase inspiradora
+        'quote2_text' => 'Recorda: sempre tens l\'última llibertat, la de triar la teva actitud. Triar demanar consell i acompanyament és el primer pas per transformar el teu destí.',
+        'quote2_author' => 'Yanina Parisi',
         
         // Serveis
         'services_title' => 'Especialitats i Àrees d\'Intervenció',
@@ -219,6 +224,7 @@ $translations = array(
         'contact_message' => 'Missatge',
         'contact_message_placeholder' => 'Com et puc ajudar?',
         'contact_send' => 'Enviar missatge',
+        'contact_submit' => 'Enviar missatge',
         
         // Footer
         'footer_tagline' => 'Ajudant-te a trobar el teu camí cap al benestar mental i emocional.',
@@ -295,7 +301,21 @@ $translations = array(
         'about_cta_title' => 'Comença el teu Procés de Transformació',
         'about_cta_desc' => 'Si sents que és el moment de fer un canvi en la teva vida, estic aquí per acompanyar-te en aquest viatge de descobriment i creixement personal.',
         'about_cta_btn1' => 'Reserva la teva Cita',
-        'about_cta_btn2' => 'Veure Serveis'
+        'about_cta_btn2' => 'Veure Serveis',
+        
+        // Secció Sobre Mi - Index
+        'about_main_title' => 'Psicologia Pràctica per al Teu Benestar i la Teva Relació',
+        'about_main_intro' => 'Sóc Yanina Parisi, psicòloga general sanitària col·legiada amb més de cinc anys d\'experiència. El meu objectiu és oferir-te un espai segur on puguis superar el malestar i construir la vida que vols, ja sigui recuperant el teu equilibri emocional o trobant una parella realment compatible.',
+        'about_services_title' => 'Com treballo?',
+        'about_service1_title' => 'Teràpia Individual:',
+        'about_service1_desc' => 'Especialitzada en ansietat, depressió, TOC i crisis vitals. Junts, trobarem les eines perquè recuperis el control.',
+        'about_service2_title' => 'Teràpia de Parella:',
+        'about_service2_desc' => 'Gestionem conflictes i millorem la comunicació per enfortir el vostre vincle.',
+        'about_service3_title' => 'Cerca de Parella Conscient:',
+        'about_service3_desc' => 'Un servei únic basat en criteris psicològics per a qui busca relacions estables i de qualitat, lluny del desgast de les apps convencionals.',
+        'about_location_text' => 'Atenció personalitzada online a tota Espanya i presencial a Girona.',
+        'about_btn_primary' => 'Reserva la teva primera sessió',
+        'about_btn_secondary' => 'Descobreix el meu mètode'
     ),
     
     'es' => array(
@@ -313,6 +333,7 @@ $translations = array(
         'nav_services' => 'Servicios',
         'nav_about' => 'Sobre mí',
         'nav_testimonials' => 'Testimonios',
+        'nav_blog' => 'Blog',
         'nav_couple_search' => 'Dos almas',
         'nav_contact' => 'Contacto',
         'nav_appointment' => 'Pide una cita',
@@ -340,6 +361,10 @@ $translations = array(
         // Frase inspiradora
         'quote_text' => 'El primer paso hacia el cambio es la aceptación. El segundo es la acción. Aquí te acompañaré en ambos.',
         'quote_author' => 'Yanina Parisi',
+        
+        // Segunda frase inspiradora
+        'quote2_text' => 'Recuerda: siempre tienes la última libertad, la de elegir tu actitud. Elegir pedir consejo y guía es el primer paso para transformar tu destino.',
+        'quote2_author' => 'Yanina Parisi',
         
         // Servicios
         'services_title' => 'Especialidades y Áreas de Intervención',
@@ -497,6 +522,7 @@ $translations = array(
         'contact_message' => 'Mensaje',
         'contact_message_placeholder' => '¿Cómo puedo ayudarte?',
         'contact_send' => 'Enviar mensaje',
+        'contact_submit' => 'Enviar mensaje',
         
         // Footer
         'footer_tagline' => 'Ayudándote a encontrar tu camino hacia el bienestar mental y emocional.',
@@ -573,7 +599,21 @@ $translations = array(
         'about_cta_title' => 'Comienza tu Proceso de Transformación',
         'about_cta_desc' => 'Si sientes que es el momento de hacer un cambio en tu vida, estoy aquí para acompañarte en este viaje de descubrimiento y crecimiento personal.',
         'about_cta_btn1' => 'Reserva tu Cita',
-        'about_cta_btn2' => 'Ver Servicios'
+        'about_cta_btn2' => 'Ver Servicios',
+        
+        // Sección Sobre Mí - Index
+        'about_main_title' => 'Psicología Práctica para Tu Bienestar y Tu Relación',
+        'about_main_intro' => 'Soy Yanina Parisi, psicóloga general sanitaria colegiada con más de cinco años de experiencia. Mi objetivo es ofrecerte un espacio seguro donde puedas superar el malestar y construir la vida que deseas, ya sea recuperando tu equilibrio emocional o encontrando una pareja realmente compatible.',
+        'about_services_title' => '¿Cómo trabajo?',
+        'about_service1_title' => 'Terapia Individual:',
+        'about_service1_desc' => 'Especializada en ansiedad, depresión, TOC y crisis vitales. Juntos, encontraremos las herramientas para que recuperes el control.',
+        'about_service2_title' => 'Terapia de Pareja:',
+        'about_service2_desc' => 'Gestionamos conflictos y mejoramos la comunicación para fortalecer vuestro vínculo.',
+        'about_service3_title' => 'Búsqueda de Pareja Consciente:',
+        'about_service3_desc' => 'Un servicio único basado en criterios psicológicos para quienes buscan relaciones estables y de calidad, lejos del desgaste de las apps convencionales.',
+        'about_location_text' => 'Atención personalizada online en toda España y presencial en Girona.',
+        'about_btn_primary' => 'Reserva tu primera sesión',
+        'about_btn_secondary' => 'Descubre mi método'
     )
 );
 

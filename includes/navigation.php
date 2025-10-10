@@ -11,9 +11,9 @@
             <ul>
                 <li><a href="index.php"><?php echo t('nav_home'); ?></a></li>
                 <li><a href="#serveis"><?php echo t('nav_services'); ?></a></li>
-                <li><a href="#testimonis"><?php echo t('nav_testimonials'); ?></a></li>
                 <li><a href="#serveis-especials" class="love-link"><?php echo t('nav_couple_search'); ?></a></li>
-                <li><a href="#sobre-mi"><?php echo t('nav_about'); ?></a></li>
+                <li><a href="blog.php"><?php echo t('nav_blog'); ?></a></li>
+                <li><a href="sobremi.php"><?php echo t('nav_about'); ?></a></li>
                 <li><a href="contacta.php"><?php echo t('nav_contact'); ?></a></li>
                 <!-- Selector d'idiomes dins del menú mòbil -->
                 <li class="mobile-language-selector">

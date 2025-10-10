@@ -768,6 +768,8 @@
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 600;
+    font-family: inherit;
+    outline: none;
 }
 
 .action-btn-aside:hover {
@@ -791,6 +793,55 @@
 
 .action-btn-aside span {
     flex: 1;
+}
+
+/* Estils específics per buttons action-btn-aside per eliminar estils per defecte */
+button.action-btn-aside {
+    border: 2px solid transparent;
+    background: #f8f9fa;
+    font-family: inherit;
+    outline: none;
+    text-align: left;
+    width: 100%;
+}
+
+button.action-btn-aside:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+/* Botón de acción principal (para área de calendario) */
+.action-btn-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    font-family: inherit;
+}
+
+.action-btn-main:hover {
+    background: #8b7f4b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn-main i {
+    font-size: 1.1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Responsive para aside */

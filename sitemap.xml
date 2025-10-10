@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <!-- Página principal -->
+    <url>
+        <loc>https://yaninaparisi.com/</loc>
+        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/?lang=ca"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/?lang=es"/>
+    </url>
+    
+    <!-- Página Sobre Mi -->
+    <url>
+        <loc>https://yaninaparisi.com/sobremi.php</loc>
+        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/sobremi.php?lang=ca"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/sobremi.php?lang=es"/>
+    </url>
+    
+    <!-- Página Contacto -->
+    <url>
+        <loc>https://yaninaparisi.com/contacta.php</loc>
+        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/contacta.php?lang=ca"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/contacta.php?lang=es"/>
+    </url>
+</urlset>

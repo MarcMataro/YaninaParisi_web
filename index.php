@@ -40,6 +40,16 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <meta name="description" content="<?php echo t('meta_description'); ?>">
     <meta name="keywords" content="<?php echo t('meta_keywords'); ?>">
     <meta name="author" content="<?php echo t('meta_author'); ?>">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#aa9e6b">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="<?php echo 'https://' . $_SERVER['HTTP_HOST'] . strtok($_SERVER['REQUEST_URI'], '?'); ?>">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/Logo16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -61,6 +71,49 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Schema Markup JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Psychologist",
+        "name": "Yanina Parisi",
+        "description": "<?php echo t('meta_description'); ?>",
+        "url": "<?php echo 'https://' . $_SERVER['HTTP_HOST']; ?>",
+        "telephone": "+34-XXX-XXX-XXX",
+        "email": "info@yaninaparisi.com",
+        "image": "<?php echo 'https://' . $_SERVER['HTTP_HOST']; ?>/img/img_2282.jpeg",
+        "priceRange": "€€",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Girona",
+            "addressRegion": "Catalunya", 
+            "addressCountry": "ES"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "41.9794",
+            "longitude": "2.8214"
+        },
+        "openingHours": "Mo-Fr 09:00-19:00",
+        "serviceArea": {
+            "@type": "Country",
+            "name": "España"
+        },
+        "medicalSpecialty": [
+            "Psychology",
+            "Couple Therapy", 
+            "Individual Therapy",
+            "Anxiety Treatment",
+            "Depression Treatment"
+        ],
+        "areaServed": [
+            "Girona",
+            "Catalunya", 
+            "España"
+        ]
+    }
+    </script>
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -70,11 +123,6 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
         <div class="container hero-content">
             <h1><?php echo t('hero_title'); ?> <span class="highlight"><?php echo t('hero_name'); ?></span></h1>
             <h2 class="hero-subtitle"><?php echo t('hero_subtitle'); ?></h2>
-            
-            <div class="hero-badge">
-                <i class="fas fa-shield-alt"></i>
-                <span><?php echo t('hero_badge'); ?></span>
-            </div>
 
             <div class="hero-buttons">
                 <a href="#contacte" class="btn btn-primary">
@@ -199,15 +247,67 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <section id="sobre-mi" class="about-section">
         <div class="container">
             <div class="about-content">
-                <span class="about-label"><?php echo getCurrentLanguage() === 'ca' ? 'Psicòloga Col·legiada' : 'Psicóloga Colegiada'; ?></span>
-                <h2><?php echo t('about_name'); ?></h2>
-                <div class="about-description">
-                    <p><?php echo t('about_desc1'); ?></p>
-                    <p><?php echo t('about_desc2'); ?></p>
+                <div class="about-image">
+                    <img src="img/img_2282.jpeg" 
+                         alt="Yanina Parisi - Psicòloga General Sanitària Col·legiada a Girona"
+                         width="300" 
+                         height="350"
+                         loading="lazy">
                 </div>
-                <div class="about-location">
-                    <?php echo getCurrentLanguage() === 'ca' ? 'Girona · Sessions presencials i online' : 'Girona · Sesiones presenciales y online'; ?>
+                
+                <div class="about-text">
+                    <h2 class="about-title">
+                        <?php echo t('about_main_title'); ?>
+                    </h2>
+                    
+                    <div class="about-intro">
+                        <p><?php echo t('about_main_intro'); ?></p>
+                    </div>
+                    
+                    <div class="about-services">
+                        <h3><?php echo t('about_services_title'); ?></h3>
+                        
+                        <div class="service-item">
+                            <h4><?php echo t('about_service1_title'); ?></h4>
+                            <p><?php echo t('about_service1_desc'); ?></p>
+                        </div>
+                        
+                        <div class="service-item">
+                            <h4><?php echo t('about_service2_title'); ?></h4>
+                            <p><?php echo t('about_service2_desc'); ?></p>
+                        </div>
+                        
+                        <div class="service-item">
+                            <h4><?php echo t('about_service3_title'); ?></h4>
+                            <p><?php echo t('about_service3_desc'); ?></p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-location">
+                        <p><?php echo t('about_location_text'); ?></p>
+                    </div>
+                    
+                    <div class="about-actions">
+                        <a href="contacta.php" class="btn btn-primary">
+                            <?php echo t('about_btn_primary'); ?>
+                        </a>
+                        <a href="sobremi.php" class="btn btn-secondary">
+                            <?php echo t('about_btn_secondary'); ?>
+                        </a>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Segona cita inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <blockquote>
+                    <p>"<?php echo t('quote2_text'); ?>"</p>
+                </blockquote>
+                <cite>— <?php echo t('quote2_author'); ?></cite>
             </div>
         </div>
     </section>
@@ -343,59 +443,59 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <section id="contacte">
         <div class="container">
             <div class="section-title">
-                <h2>Contacte</h2>
-                <p>No dubtis a posar-te en contacte amb mi</p>
+                <h2><?php echo t('contact_title'); ?></h2>
+                <p><?php echo t('contact_subtitle'); ?></p>
             </div>
             <div class="contact-grid">
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt contact-icon"></i>
                         <div>
-                            <h4>Adreça</h4>
-                            <p>Carrer de la Pau, 23, Girona</p>
+                            <h4><?php echo t('contact_address'); ?></h4>
+                            <p><?php echo t('contact_address_text'); ?></p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone contact-icon"></i>
                         <div>
-                            <h4>Telèfon</h4>
-                            <p>+34 972 123 45 67</p>
+                            <h4><?php echo t('contact_phone'); ?></h4>
+                            <p><?php echo t('contact_phone_text'); ?></p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope contact-icon"></i>
                         <div>
-                            <h4>Email</h4>
-                            <p>yanina@psicologiayanina.com</p>
+                            <h4><?php echo t('contact_email'); ?></h4>
+                            <p><?php echo t('contact_email_text'); ?></p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-clock contact-icon"></i>
                         <div>
-                            <h4>Horari</h4>
-                            <p>Dilluns a Divendres: 9:00 - 20:00</p>
-                            <p>Dissabte: 10:00 - 14:00</p>
+                            <h4><?php echo t('contact_hours'); ?></h4>
+                            <p><?php echo t('contact_hours_weekdays'); ?></p>
+                            <p><?php echo t('contact_hours_saturday'); ?></p>
                         </div>
                     </div>
                 </div>
                 <form>
                     <div class="form-group">
-                        <label for="name">Nom</label>
-                        <input type="text" id="name" placeholder="El teu nom">
+                        <label for="name"><?php echo t('contact_name'); ?></label>
+                        <input type="text" id="name" placeholder="<?php echo t('contact_name_placeholder'); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="El teu email">
+                        <label for="email"><?php echo t('contact_email'); ?></label>
+                        <input type="email" id="email" placeholder="<?php echo t('contact_email_placeholder'); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="phone">Telèfon</label>
-                        <input type="tel" id="phone" placeholder="El teu telèfon">
+                        <label for="phone"><?php echo t('contact_phone'); ?></label>
+                        <input type="tel" id="phone" placeholder="<?php echo t('contact_phone_placeholder'); ?>">
                     </div>
                     <div class="form-group">
-                        <label for="message">Missatge</label>
-                        <textarea id="message" placeholder="Com et puc ajudar?"></textarea>
+                        <label for="message"><?php echo t('contact_message'); ?></label>
+                        <textarea id="message" placeholder="<?php echo t('contact_message_placeholder'); ?>"></textarea>
                     </div>
-                    <button type="submit" class="btn">Enviar missatge</button>
+                    <button type="submit" class="btn"><?php echo t('contact_submit'); ?></button>
                 </form>
             </div>
         </div>

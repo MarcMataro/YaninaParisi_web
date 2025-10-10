@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yaninaparisi.com/sitemap.xml
+
+# Disallow admin areas
+Disallow: /_pcontrol/
+Disallow: /_secret/
+Disallow: /classes/
+Disallow: /vendor/
+
+# Allow specific files
+Allow: /css/
+Allow: /js/
+Allow: /img/

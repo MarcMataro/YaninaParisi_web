@@ -225,8 +225,8 @@ $properesSessions = $properes->fetchAll(PDO::FETCH_ASSOC);
                                 <div class="no-appointments">
                                     <i class="fas fa-coffee"></i>
                                     <p>No hay sesiones programadas para hoy</p>
-                                    <button class="btn-link" onclick="obrirModalSession()">
-                                        Programar sesión
+                                    <button class="action-btn-main" onclick="obrirModalSession()">
+                                        <span>Programar sesión</span>
                                     </button>
                                 </div>
                             <?php else: ?>
