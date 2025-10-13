@@ -10,7 +10,7 @@
         <nav class="nav-menu">
             <ul>
                 <li><a href="index.php"><?php echo t('nav_home'); ?></a></li>
-                <li><a href="#serveis"><?php echo t('nav_services'); ?></a></li>
+                <li><a href="clinica.php"><?php echo t('nav_services'); ?></a></li>
                 <li><a href="#serveis-especials" class="love-link"><?php echo t('nav_couple_search'); ?></a></li>
                 <li><a href="blog.php"><?php echo t('nav_blog'); ?></a></li>
                 <li><a href="sobremi.php"><?php echo t('nav_about'); ?></a></li>

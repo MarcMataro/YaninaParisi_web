@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test AJAX</title>
+</head>
+<body>
+    <h1>Test AJAX Entrades</h1>
+    <button onclick="testAjax()">Provar obtenir_entrades</button>
+    <pre id="result"></pre>
+
+    <script>
+        function testAjax() {
+            console.log('=== INICIANT TEST AJAX ===');
+            document.getElementById('result').textContent = 'Carregant...';
+            
+            fetch('gblog.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'action=obtenir_entrades'
+            })
+            .then(response => {
+                console.log('Status:', response.status);
+                console.log('Headers:', response.headers);
+                return response.text();
+            })
+            .then(text => {
+                console.log('Response text:', text);
+                document.getElementById('result').textContent = text;
+                
+                try {
+                    const json = JSON.parse(text);
+                    console.log('JSON parsed:', json);
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').textContent = 'ERROR: ' + error.message;
+            });
+        }
+        
+        // Executar automàticament
+        window.onload = () => testAjax();
+    </script>
+</body>
+</html>

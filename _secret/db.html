@@ -1008,6 +1008,192 @@
                         <span class="keyword">INDEX</span> idx_bloqueado (bloqueado)
                     ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
             </div>
+            <h3>Gestió del blog</h3>
+            <p class="description">Aquí pots veure la estructura de la taula de Categories per al blog.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> categories (
+                        id_category <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- Noms en català i castellà
+                        nom_ca <span class="keyword">VARCHAR(100) NOT NULL</span>,
+                        nom_es <span class="keyword">VARCHAR(100) NOT NULL</span>,
+                        
+                        -- Slugs per a URLs
+                        slug_ca <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE NOT NULL</span>,
+                        slug_es <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE NOT NULL</span>,
+                        
+                        -- Descripcions opcionals
+                        descripcio_ca <span class="keyword">TEXT</span>,
+                        descripcion_es <span class="keyword">TEXT</span>,
+                        
+                        -- Ordre i estat
+                        ordre <span class="keyword">INT DEFAULT</span> 0,
+                        activa <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- Dates
+                        data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        
+                        -- Índexs
+                        <span class="keyword">INDEX</span> idx_slug_ca (slug_ca),
+                        <span class="keyword">INDEX</span> idx_slug_es (slug_es),
+                        <span class="keyword">INDEX</span> idx_activ (activa),
+                        <span class="keyword">INDEX</span> idx_ordre (ordre)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula d'Etiquetes per al blog.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> etiquetes (
+                        id_etiqueta <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- Noms en català i castellà
+                        nom_ca <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        nom_es <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        
+                        -- Slugs per a URLs
+                        slug_ca <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE NOT NULL</span>,
+                        slug_es <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE NOT NULL</span>,
+                        
+                        -- Descripcions opcionals
+                        descripcio_ca <span class="keyword">TEXT</span>,
+                        descripcion_es <span class="keyword">TEXT</span>,
+                        
+                        -- Ordre i estat
+                        ordre <span class="keyword">INT DEFAULT</span> 0,
+                        activa <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- Dates
+                        data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        
+                        -- Índexs
+                        <span class="keyword">INDEX</span> idx_slug_ca (slug_ca),
+                        <span class="keyword">INDEX</span> idx_slug_es (slug_es),
+                        <span class="keyword">INDEX</span> idx_activ (activa),
+                        <span class="keyword">INDEX</span> idx_ordre (ordre)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula d'Articles del blog.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> blog_entrades (
+                        id_entrada <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. TÍTOLS I CONTINGUT MULTILINGÜE
+                        titol_ca <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        titol_es <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        slug_ca <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE NOT NULL</span>,
+                        slug_es <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE NOT NULL</span>,
+                        contingut_ca <span class="keyword">LONGTEXT</span> <span class="keyword">NOT NULL</span>,
+                        contingut_es <span class="keyword">LONGTEXT</span> <span class="keyword">NOT NULL</span>,
+                        resum_ca <span class="keyword">TEXT</span>,
+                        resum_es <span class="keyword">TEXT</span>,
+                        
+                        -- 2. ESTAT I VISIBILITAT
+                        estat <span class="keyword">ENUM</span>('esborrany', 'revisio', 'publicat', 'programat', 'arxivat') <span class="keyword">DEFAULT</span> 'esborrany',
+                        data_publicacio <span class="keyword">DATETIME NULL</span>,
+                        data_arxivat <span class="keyword">DATETIME NULL</span>,
+                        visible <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 3. IMATGES I MULTIMÈDIA
+                        imatge_portada <span class="keyword">VARCHAR</span>(255),
+                        alt_imatge_ca <span class="keyword">VARCHAR</span>(125),
+                        alt_imatge_es <span class="keyword">VARCHAR</span>(125),
+                        galeria_imatges <span class="keyword">JSON</span>,
+                        
+                        -- 4. SEO PER A CADA IDIOMA
+                        meta_title_ca <span class="keyword">VARCHAR</span>(60),
+                        meta_title_es <span class="keyword">VARCHAR</span>(60),
+                        meta_description_ca <span class="keyword">VARCHAR</span>(160),
+                        meta_description_es <span class="keyword">VARCHAR</span>(160),
+                        meta_keywords_ca <span class="keyword">VARCHAR</span>(255),
+                        meta_keywords_es <span class="keyword">VARCHAR</span>(255),
+
+                        -- 5. AUTORIA I PROPIETAT
+                        id_autor <span class="keyword">INT NOT NULL</span>,
+                        temps_lectura_ca <span class="keyword">TINYINT</span> COMMENT 'Temps de lectura en minuts',
+                        temps_lectura_es <span class="keyword">TINYINT</span> COMMENT 'Tiempo de lectura en minutos',
+                        
+                        -- 6. ESTADÍSTIQUES I ENGATJAMENT
+                        visualitzacions <span class="keyword">INT DEFAULT</span> 0,
+                        compartits <span class="keyword">INT DEFAULT</span> 0,
+                        comentaris_actius <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 7. DATES DEL SISTEMA
+                        data_creacio <span class="keyword">DATETIME DEFAULT</span> CURRENT_TIMESTAMP,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        data_modificacio <span class="keyword">DATETIME NULL</span>,
+                        
+                        -- 8. ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_slug_ca (slug_ca),
+                        <span class="keyword">INDEX</span> idx_slug_es (slug_es),
+                        <span class="keyword">INDEX</span> idx_estat (estat),
+                        <span class="keyword">INDEX</span> idx_data_publicacio (data_publicacio),
+                        <span class="keyword">INDEX</span> idx_autor (id_autor),
+                        <span class="keyword">INDEX</span> idx_visible (visible),
+                        <span class="keyword">INDEX</span> idx_visualitzacions (visualitzacions),
+                        <span class="keyword">INDEX</span> idx_contingut_ca (contingut_ca),
+                        <span class="keyword">FULLTEXT</span> idx_contingut_es (contingut_es),
+                        <span class="keyword">FULLTEXT</span> idx_titol_ca (titol_ca),
+                        <span class="keyword">FULLTEXT</span> idx_titol_es (titol_es)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula de relació entre entrades i categories.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> blog_entrades_categories (
+                        id_relacio <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        id_entrada <span class="keyword">INT NOT NULL</span>,
+                        id_categoria <span class="keyword">INT NOT NULL</span>,
+                        data_assignacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+
+                        <span class="keyword">UNIQUE KEY</span> unique_entrada_categoria (id_entrada, id_categoria),
+                        <span class="keyword">FOREIGN KEY</span> (id_entrada) <span class="keyword">REFERENCES</span> blog_entrades(id_entrada) <span class="keyword">ON DELETE CASCADE</span>,
+                        <span class="keyword">FOREIGN KEY</span> (id_categoria) <span class="keyword">REFERENCES</span> categories(id_category) <span class="keyword">ON DELETE CASCADE</span>,
+
+                        <span class="keyword">INDEX</span> idx_entrada (id_entrada),
+                        <span class="keyword">INDEX</span> idx_categoria (id_categoria)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula de relació entre entrades i etiquetes.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> blog_entrades_etiquetes (
+                        id_relacio <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        id_entrada <span class="keyword">INT NOT NULL</span>,
+                        id_etiqueta <span class="keyword">INT NOT NULL</span>,
+                        data_assignacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+
+                        <span class="keyword">UNIQUE KEY</span> unique_entrada_etiqueta (id_entrada, id_etiqueta),
+                        <span class="keyword">FOREIGN KEY</span> (id_entrada) <span class="keyword">REFERENCES</span> blog_entrades(id_entrada) <span class="keyword">ON DELETE CASCADE</span>,
+                        <span class="keyword">FOREIGN KEY</span> (id_etiqueta) <span class="keyword">REFERENCES</span> etiquetes(id_etiqueta) <span class="keyword">ON DELETE CASCADE</span>,
+
+                        <span class="keyword">INDEX</span> idx_entrada (id_entrada),
+                        <span class="keyword">INDEX</span> idx_etiqueta (id_etiqueta)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-table"></i>

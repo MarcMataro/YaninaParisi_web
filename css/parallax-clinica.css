@@ -1,0 +1,41 @@
+/* Parallax i missatges inspiradors per la clínica */
+.parallax-section {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(120deg, #f7f5ee 60%, #e7e2d2 100%);
+}
+.parallax-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url('../img/Portada.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  z-index: 1;
+  will-change: transform;
+  transition: opacity 0.5s;
+}
+.parallax-message {
+  position: relative;
+  z-index: 2;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 2em;
+  color: #a89968;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(168,153,104,0.08);
+  animation: fadeInUp 1.2s;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
