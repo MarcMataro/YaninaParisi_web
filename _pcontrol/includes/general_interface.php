@@ -18,9 +18,9 @@
                                 <div class="language-field">
                                     <label>
                                         <i class="fas fa-heading"></i> Título del Sitio (Català)
-                                        <span class="char-counter">Máx 60 caracteres</span>
+                                        <span class="char-counter">Máx 70 caracteres</span>
                                     </label>
-                                    <input type="text" name="site_title_ca" maxlength="60"
+                                    <input type="text" name="site_title_ca" maxlength="70"
                                            value="<?php echo htmlspecialchars($seo_global->getSiteTitle('ca') ?? ''); ?>"
                                            placeholder="Psicòloga <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Yanina Parisi'); ?> | Barcelona">
                                     <small><i class="fas fa-info-circle"></i> Título principal del sitio en catalán</small>
@@ -28,9 +28,9 @@
                                 <div class="language-field">
                                     <label>
                                         <i class="fas fa-heading"></i> Título del Sitio (Español)
-                                        <span class="char-counter">Máx 60 caracteres</span>
+                                        <span class="char-counter">Máx 70 caracteres</span>
                                     </label>
-                                    <input type="text" name="site_title_es" maxlength="60"
+                                    <input type="text" name="site_title_es" maxlength="70"
                                            value="<?php echo htmlspecialchars($seo_global->getSiteTitle('es') ?? ''); ?>"
                                            placeholder="Psicóloga <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Yanina Parisi'); ?> | Barcelona">
                                     <small><i class="fas fa-info-circle"></i> Título principal del sitio en español</small>

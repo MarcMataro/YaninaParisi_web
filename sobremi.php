@@ -45,7 +45,7 @@ include 'includes/lang.php';
     <meta name="twitter:description" content="<?php echo getCurrentLanguage() === 'ca' ? 'Coneix la trajectòria professional de Yanina Parisi, Psicòloga General Sanitària especialitzada en teràpia de parella i individual.' : 'Conoce la trayectoria profesional de Yanina Parisi, Psicóloga General Sanitaria especializada en terapia de pareja e individual.'; ?>">
     <meta name="twitter:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/estils.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
