@@ -143,127 +143,272 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
             </div>
             <?php endif; ?>
 
-            <!-- Tabs navigation -->
+
+            <!-- Sistema de tabs modern i accessible -->
             <div class="settings-tabs">
-                <button class="tab-btn active" data-tab="users">Usuarios</button>
-                <button class="tab-btn" data-tab="rates">Tarifas</button>
-                <button class="tab-btn" data-tab="psych">Psicóloga</button>
-                <button class="tab-btn" data-tab="other">Otros</button>
+                <button class="tab-btn active" onclick="switchTab('users')"><i class="fas fa-users-cog"></i> Usuarios</button>
+                <button class="tab-btn" onclick="switchTab('rates')"><i class="fas fa-euro-sign"></i> Tarifas</button>
+                <button class="tab-btn" onclick="switchTab('psych')"><i class="fas fa-user-md"></i> Psicóloga</button>
+                <button class="tab-btn" onclick="switchTab('other')"><i class="fas fa-cogs"></i> Otros</button>
             </div>
+            <div id="users-tab" class="tab-content active">
+                <!-- CONTINGUT USUARIOS -->
+                <div class="section-header">
+                    <h2><i class="fas fa-users-cog"></i> Gestión de usuarios</h2>
+                    <p>Usuarios que pueden acceder al panel de control</p>
+                </div>
+                <div class="config-section">
+                    <p class="muted">Aquí puedes ver y gestionar los roles/permiso.</p>
+                    <?php if (!$usersModel): ?>
+                        <div class="alert alert-warning">La gestión de usuarios requiere conexión a base de datos. Revisa la configuración.</div>
+                    <?php else: ?>
+                        <?php
+                            $users = $usersModel->llistar([], 200, 0);
+                        ?>
+                        <table class="table users-table">
+                            <thead>
+                                <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th>Acciones</th></tr>
+                            </thead>
+                            <tbody>
+                                <?php if ($users): foreach ($users as $u): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($u['nombre'] . ' ' . $u['apellidos']); ?></td>
+                                        <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($u['rol']); ?></td>
+                                        <td><input type="checkbox" <?php echo $u['activo'] ? 'checked' : ''; ?> disabled></td>
+                                        <td>
+                                            <button type="button" class="btn btn-secondary" disabled>Editar</button>
+                                            <button type="button" class="btn btn-danger" disabled>Eliminar</button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; else: ?>
+                                    <tr><td colspan="5">No hay usuarios registrados.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
 
-            <!-- The Users tab uses its own form (separate). The main config form starts after the Users tab. -->
-
-                <!-- Users tab -->
-                <div id="users" class="tab-content active">
-                    <div class="section-header">
-                        <h2><i class="fas fa-users-cog"></i> Gestión de usuarios</h2>
-                        <p>Usuarios que pueden acceder al panel de control</p>
-                    </div>
-                    <div class="config-section">
-                        <p class="muted">Aquí puedes ver y gestionar los roles/permiso.</p>
-                        <?php if (!$usersModel): ?>
-                            <div class="alert alert-warning">La gestión de usuarios requiere conexión a base de datos. Revisa la configuración.</div>
-                        <?php else: ?>
+                        <!-- Simple Add User form -->
+                        <details class="add-user-panel" style="margin-top:18px;">
+                            <summary class="btn btn-secondary">Añadir usuario</summary>
+                            <div style="padding:16px; background:#fff; border-radius:8px; margin-top:10px; box-shadow:var(--shadow);">
+                                <form method="POST" action="configuracion.php">
+                                    <input type="hidden" name="create_user" value="1">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="user_nombre">Nombre</label>
+                                            <input type="text" id="user_nombre" name="user_nombre" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_apellidos">Apellidos</label>
+                                            <input type="text" id="user_apellidos" name="user_apellidos" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_email">Email</label>
+                                            <input type="email" id="user_email" name="user_email" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_password">Contraseña</label>
+                                            <input type="password" id="user_password" name="user_password" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_rol">Rol</label>
+                                            <select id="user_rol" name="user_rol">
+                                                <option value="superadmin">Superadmin</option>
+                                                <option value="admin">Admin</option>
+                                                <option value="editor">Editor</option>
+                                                <option value="seo_manager">SEO Manager</option>
+                                                <option value="viewer">Viewer</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
+                                        <button type="submit" class="btn btn-save">Crear usuario</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </details>
+                    <?php endif; ?>
+                </div>
+            </div>
+            </div>
+            <div id="rates-tab" class="tab-content">
+                <!-- CONTINGUT TARIFAS -->
+                <div class="section-header">
+                    <h2><i class="fas fa-euro-sign"></i> Tarifas</h2>
+                    <p>Gestiona las tarifas por tipo de sesión</p>
+                </div>
+                <div class="config-section">
+                    <button type="button" class="btn btn-primary" onclick="abrirModalTarifa()"><i class="fas fa-plus"></i> Añadir tarifa</button>
+                    <table class="table tarifas-table" style="margin-top:18px;">
+                        <thead>
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Tipo</th>
+                                <th>Duración</th>
+                                <th>Precio base</th>
+                                <th>Promoción</th>
+                                <th>IVA (%)</th>
+                                <th>Moneda</th>
+                                <th>Disponible</th>
+                                <th>Visible</th>
+                                <th>Destacado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             <?php
-                                $users = $usersModel->llistar([], 200, 0);
-                            ?>
-                            <table class="table users-table">
-                                <thead>
-                                    <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th>Acciones</th></tr>
-                                </thead>
-                                <tbody>
-                                    <?php if ($users): foreach ($users as $u): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($u['nombre'] . ' ' . $u['apellidos']); ?></td>
-                                            <td><?php echo htmlspecialchars($u['email']); ?></td>
-                                            <td><?php echo htmlspecialchars($u['rol']); ?></td>
-                                            <td><input type="checkbox" <?php echo $u['activo'] ? 'checked' : ''; ?> disabled></td>
-                                            <td>
-                                                <button type="button" class="btn btn-secondary" disabled>Editar</button>
-                                                <button type="button" class="btn btn-danger" disabled>Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; else: ?>
-                                        <tr><td colspan="5">No hay usuarios registrados.</td></tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-
-                            <!-- Simple Add User form -->
-                            <details class="add-user-panel" style="margin-top:18px;">
-                                <summary class="btn btn-secondary">Añadir usuario</summary>
-                                <div style="padding:16px; background:#fff; border-radius:8px; margin-top:10px; box-shadow:var(--shadow);">
-                                    <form method="POST" action="configuracion.php">
-                                        <input type="hidden" name="create_user" value="1">
-                                        <div class="form-grid">
-                                            <div class="form-group">
-                                                <label for="user_nombre">Nombre</label>
-                                                <input type="text" id="user_nombre" name="user_nombre" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="user_apellidos">Apellidos</label>
-                                                <input type="text" id="user_apellidos" name="user_apellidos" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="user_email">Email</label>
-                                                <input type="email" id="user_email" name="user_email" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="user_password">Contraseña</label>
-                                                <input type="password" id="user_password" name="user_password" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="user_rol">Rol</label>
-                                                <select id="user_rol" name="user_rol">
-                                                    <option value="superadmin">Superadmin</option>
-                                                    <option value="admin">Admin</option>
-                                                    <option value="editor">Editor</option>
-                                                    <option value="seo_manager">SEO Manager</option>
-                                                    <option value="viewer">Viewer</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end;">
-                                            <button type="submit" class="btn btn-save">Crear usuario</button>
-                                        </div>
-                                    </form>
+                            require_once __DIR__ . '/../classes/tarifes.php';
+                            $tarifas = Tarifa::obtenerTodas();
+                            if ($tarifas):
+                                foreach ($tarifas as $t): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($t->nom_servei_es); ?></td>
+                                        <td><?php echo htmlspecialchars($t->tipus_servei); ?></td>
+                                        <td><?php echo htmlspecialchars($t->durada_minuts); ?> min</td>
+                                        <td><?php echo number_format($t->preu_base, 2); ?></td>
+                                        <td><?php echo $t->preu_promocio !== null ? number_format($t->preu_promocio, 2) : '-'; ?></td>
+                                        <td><?php echo number_format($t->iva_percentatge, 2); ?></td>
+                                        <td><?php echo htmlspecialchars($t->moneda); ?></td>
+                                        <td><i class="fas fa-<?php echo $t->disponible ? 'check' : 'times'; ?>" style="color:<?php echo $t->disponible ? '#22c55e' : '#ef4444'; ?>;"></i></td>
+                                        <td><i class="fas fa-<?php echo $t->visible_web ? 'eye' : 'eye-slash'; ?>" style="color:<?php echo $t->visible_web ? '#3b82f6' : '#6b7280'; ?>;"></i></td>
+                                        <td><i class="fas fa-<?php echo $t->destacat ? 'star' : 'star-half-alt'; ?>" style="color:<?php echo $t->destacat ? '#f59e42' : '#d1d5db'; ?>;"></i></td>
+                                        <td>
+                                            <button type="button" class="btn btn-secondary" onclick="abrirModalTarifaEditar(<?php echo $t->id_tarifa; ?>)"><i class="fas fa-edit"></i></button>
+                                            <button type="button" class="btn btn-danger" onclick="abrirModalTarifaEliminar(<?php echo $t->id_tarifa; ?>)"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach;
+                            else: ?>
+                                <tr><td colspan="11">No hay tarifas registradas.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Modal para crear/editar tarifa -->
+                <div id="modalTarifa" class="modal" style="display:none;">
+                    <div class="modal-content" style="max-width:700px;">
+                        <span class="close" onclick="cerrarModalTarifa()">&times;</span>
+                        <form id="formTarifa" method="POST" action="configuracion.php">
+                            <input type="hidden" name="id_tarifa" id="id_tarifa">
+                            <h3 id="modalTarifaTitulo">Añadir tarifa</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="nom_servei_es">Nombre del servicio</label>
+                                    <input type="text" name="nom_servei_es" id="nom_servei_es" required>
                                 </div>
-                            </details>
-                        <?php endif; ?>
+                                <div class="form-group">
+                                    <label for="tipus_servei">Tipo de servicio</label>
+                                    <select name="tipus_servei" id="tipus_servei" required>
+                                        <option value="individual">Individual</option>
+                                        <option value="pareja">Pareja</option>
+                                        <option value="familiar">Familiar</option>
+                                        <option value="grupo">Grupo</option>
+                                        <option value="evaluacion">Evaluación</option>
+                                        <option value="urgente">Urgente</option>
+                                        <option value="pack">Pack</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="durada_minuts">Duración (minutos)</label>
+                                    <input type="number" name="durada_minuts" id="durada_minuts" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="preu_base">Precio base (€)</label>
+                                    <input type="number" name="preu_base" id="preu_base" step="0.01" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="preu_promocio">Precio promoción (€)</label>
+                                    <input type="number" name="preu_promocio" id="preu_promocio" step="0.01" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="iva_percentatge">IVA (%)</label>
+                                    <input type="number" name="iva_percentatge" id="iva_percentatge" step="0.01" min="0" max="100" value="21.00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="moneda">Moneda</label>
+                                    <input type="text" name="moneda" id="moneda" maxlength="3" value="EUR" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="disponible">Disponible</label>
+                                    <select name="disponible" id="disponible">
+                                        <option value="1">Sí</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="visible_web">Visible en la web</label>
+                                    <select name="visible_web" id="visible_web">
+                                        <option value="1">Sí</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="destacat">Destacado</label>
+                                    <select name="destacat" id="destacat">
+                                        <option value="1">Sí</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="modalitat">Modalidad</label>
+                                    <select name="modalitat" id="modalitat">
+                                        <option value="presencial">Presencial</option>
+                                        <option value="online">Online</option>
+                                        <option value="hibrida">Híbrida</option>
+                                        <option value="telefonica">Telefónica</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sessions_pack">Sesiones (si es pack)</label>
+                                    <input type="number" name="sessions_pack" id="sessions_pack" min="1" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="validesa_dies">Validez (días)</label>
+                                    <input type="number" name="validesa_dies" id="validesa_dies" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="requisits">Requisitos/condiciones</label>
+                                    <textarea name="requisits" id="requisits"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="beneficios_es">Beneficios</label>
+                                    <textarea name="beneficios_es" id="beneficios_es"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ordre_visualitzacio">Orden visualización</label>
+                                    <input type="number" name="ordre_visualitzacio" id="ordre_visualitzacio" min="0" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="color_etiqueta">Color etiqueta</label>
+                                    <input type="color" name="color_etiqueta" id="color_etiqueta" value="#3B82F6">
+                                </div>
+                            </div>
+                            <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+                                <button type="submit" class="btn btn-save">Guardar</button>
+                                <button type="button" class="btn btn-secondary" onclick="cerrarModalTarifa()">Cancelar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <!-- Rates tab -->
-                <form id="configForm" class="config-form" action="configuracion.php" method="POST">
-                <div id="rates" class="tab-content">
-                    <div class="section-header">
-                        <h2><i class="fas fa-euro-sign"></i> Tarifas</h2>
-                        <p>Gestiona las tarifas por tipo de sesión</p>
-                    </div>
-                    <div class="config-section">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="tarifa_individual">Sesión Individual (€)</label>
-                                <input type="number" id="tarifa_individual" name="tarifa_individual" value="<?php echo $config['tarifas']['individual']; ?>" min="0" step="5">
+                <!-- Modal para eliminar tarifa -->
+                <div id="modalTarifaEliminar" class="modal" style="display:none;">
+                    <div class="modal-content" style="max-width:400px;">
+                        <span class="close" onclick="cerrarModalTarifaEliminar()">&times;</span>
+                        <form id="formTarifaEliminar" method="POST" action="configuracion.php">
+                            <input type="hidden" name="id_tarifa_eliminar" id="id_tarifa_eliminar">
+                            <h3>¿Eliminar tarifa?</h3>
+                            <p>¿Seguro que quieres eliminar esta tarifa? Esta acción no se puede deshacer.</p>
+                            <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-secondary" onclick="cerrarModalTarifaEliminar()">Cancelar</button>
                             </div>
-                            <div class="form-group">
-                                <label for="tarifa_pareja">Terapia de Pareja (€)</label>
-                                <input type="number" id="tarifa_pareja" name="tarifa_pareja" value="<?php echo $config['tarifas']['pareja']; ?>" min="0" step="5">
-                            </div>
-                            <div class="form-group">
-                                <label for="tarifa_online">Terapia Online (€)</label>
-                                <input type="number" id="tarifa_online" name="tarifa_online" value="<?php echo $config['tarifas']['online']; ?>" min="0" step="5">
-                            </div>
-                            <div class="form-group">
-                                <label for="tarifa_infantil">Terapia Infantil (€)</label>
-                                <input type="number" id="tarifa_infantil" name="tarifa_infantil" value="<?php echo $config['tarifas']['infantil']; ?>" min="0" step="5">
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
                 <!-- Psychologist tab -->
-                <div id="psych" class="tab-content">
+            </div>
+            <div id="psych-tab" class="tab-content">
                     <div class="section-header">
                         <h2><i class="fas fa-user-md"></i> Datos de la psicóloga</h2>
                         <p>Datos personales y de contacto</p>
@@ -295,7 +440,8 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                 </div>
 
                 <!-- Other settings tab -->
-                <div id="other" class="tab-content">
+            </div>
+            <div id="other-tab" class="tab-content">
                     <div class="section-header">
                         <h2><i class="fas fa-cogs"></i> Otros ajustes</h2>
                         <p>Ajustes varios del panel</p>
@@ -323,27 +469,30 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
     </div>
 
     <script src="js/dashboard.js"></script>
-    <script src="js/configuracion.js"></script>
     <script>
-        // Simple tab switching for the configuracion page
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.settings-tabs .tab-btn');
-            const contents = document.querySelectorAll('.tab-content');
-
-            function activate(tabName) {
-                tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
-                contents.forEach(c => c.classList.toggle('active', c.id === tabName));
-            }
-
-            tabs.forEach(t => {
-                t.addEventListener('click', function() {
-                    activate(this.dataset.tab);
-                });
+        function switchTab(tab) {
+            // Oculta tots els tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            // Mostra el tab seleccionat
+            const tabContent = document.getElementById(tab + '-tab');
+            if (tabContent) tabContent.classList.add('active');
+            // Activa el botó corresponent
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(tab)) {
+                    btn.classList.add('active');
+                }
             });
-
-            // Ensure initial state respects default active tab
-            const initial = document.querySelector('.settings-tabs .tab-btn.active');
-            if (initial) activate(initial.dataset.tab);
+            // Actualitza la URL
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tab);
+            window.history.pushState({}, '', url);
+        }
+        // Inicialitza el tab actiu segons la URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab') || 'users';
+            switchTab(tab);
         });
     </script>
 </body>

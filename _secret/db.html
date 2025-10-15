@@ -1194,6 +1194,74 @@
                     ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
                 </pre>
             </div>
+            <!-- Taula sobre les tarifacions de la clinica-->
+            <p class="description">Aquí pots veure la estructura de la taula de Tarifes de la clínica.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> tarifes (
+                        id_tarifa <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. IDENTIFICACIÓ DEL SERVEI
+                        nom_servei_ca <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        nom_servei_es <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        tipus_servei <span class="keyword">ENUM</span>('individual', 'pareja', 'familiar', 'grupo', 'evaluación', 'urgente', 'pack') <span class="keyword">NOT NULL</span>,
+
+                        -- 2. DESCRIPCIÓ DEL SERVEI
+                        descripcio_ca <span class="keyword">TEXT NOT NULL</span>,
+                        descripcio_es <span class="keyword">TEXT NOT NULL</span>,
+                        durada_minuts <span class="keyword">INT NOT NULL</span> COMMENT 'Durada en minuts de la sessió',
+
+                        -- 3. PREUS I TARIFES
+                        preu_base <span class="keyword">DECIMAL</span>(8,2) <span class="keyword">NOT NULL</span> COMMENT 'Preu normal',
+                        preu_promocio <span class="keyword">DECIMAL</span>(8,2) <span class="keyword">NULL</span> COMMENT 'Preu en promoció',
+                        iva_percentatge <span class="keyword">DECIMAL</span>(4,2) <span class="keyword">DEFAULT</span> 21.00 COMMENT 'Percentatge d''IVA',
+                        moneda <span class="keyword">VARCHAR</span>(3) <span class="keyword">DEFAULT</span> 'EUR',
+
+                        -- 4. DISPONIBILITAT I VISIBILITAT
+                        disponible BOOLEAN <span class="keyword">DEFAULT TRUE</span>,
+                        visible_web BOOLEAN <span class="keyword">DEFAULT TRUE</span>,
+                        destacat BOOLEAN <span class="keyword">DEFAULT FALSE</span> COMMENT 'Si apareix com a servei destacat',
+
+                        -- 5. MODALITAT DE LA SESSIÓ
+                        modalitat ENUM('presencial', 'online', 'híbrida', 'telefónica') <span class="keyword">DEFAULT</span> 'presencial',
+
+                        -- 6. OPCIONS DE PACK I FRECQÜÈNCIA
+                        sessions_pack TINYINT <span class="keyword">DEFAULT</span> 1 COMMENT 'Nombre de sessions si és un pack',
+                        validesa_dies INT <span class="keyword">NULL</span> COMMENT 'Dies de validesa des de la compra',
+
+                        -- 7. INFORMACIÓ ADDICIONAL
+                        requisits <span class="keyword">TEXT</span> COMMENT 'Requisits o condicions especials',
+                        beneficios_ca <span class="keyword">TEXT</span> COMMENT 'Beneficis d''aquest servei',
+                        beneficios_es <span class="keyword">TEXT</span> COMMENT 'Beneficios de este servicio',
+
+                        -- 8. ORDRE I CATEGORITZACIÓ
+                        ordre_visualitzacio <span class="keyword">INT DEFAULT</span> 0,
+                        color_etiqueta <span class="keyword">VARCHAR</span>(7) <span class="keyword">DEFAULT</span> '#3B82F6' COMMENT 'Color per a la web',
+
+                        -- 9. ESTADÍSTIQUES
+                        vegades_contractat <span class="keyword">INT DEFAULT</span> 0,
+
+                        -- 10. DATES DEL SISTEMA
+                        data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        data_inici_promocio <span class="keyword">DATE NULL</span>,
+                        data_fi_promocio <span class="keyword">DATE NULL</span>,
+
+                        -- ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_tipus_servei (tipus_servei),
+                        <span class="keyword">INDEX</span> idx_disponible (disponible),
+                        <span class="keyword">INDEX</span> idx_visible_web (visible_web),
+                        <span class="keyword">INDEX</span> idx_destacat (destacat),
+                        <span class="keyword">INDEX</span> idx_modalitat (modalitat),
+                        <span class="keyword">INDEX</span> idx_ordre (ordre_visualitzacio),
+                        <span class="keyword">INDEX</span> idx_preu_base (preu_base),
+                        <span class="keyword">INDEX</span> idx_data_promocio (data_inici_promocio, data_fi_promocio)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-table"></i>
