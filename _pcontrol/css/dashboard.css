@@ -266,18 +266,20 @@ body {
 /* Ensure pages that use .content-wrapper (shared pattern) are wide like the SEO page
    — occupy almost the full available content area while keeping small side padding. */
 .content-wrapper {
-    padding: 20px;
-    /* Use nearly full width but keep a small gutter */
-    max-width: calc(100% - 40px);
-    width: auto;
-    margin: 0;
+    padding: 0 24px;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 /* Configuration container (used in configuracion.php) should follow same wide layout */
 .config-container {
-    padding: 20px;
-    max-width: calc(100% - 40px);
-    width: auto;
+    padding: 0 24px;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    box-sizing: border-box;
     margin: 0;
 }
 
@@ -349,8 +351,10 @@ body {
 /* Dashboard Grid */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Card Styles */

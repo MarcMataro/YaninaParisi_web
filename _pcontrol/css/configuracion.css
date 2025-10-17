@@ -1,9 +1,62 @@
+/* Blocs verticals de configuració */
+.config-block.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(23,23,23,0.08);
+    margin-bottom: 32px;
+    padding: 28px 32px 24px 32px;
+    width: 100%;
+    transition: box-shadow 0.2s;
+}
+.config-block.card:hover {
+    box-shadow: 0 8px 32px rgba(23,23,23,0.13);
+}
+
+/* Modal estil modern */
+.modal {
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(23,23,23,0.12);
+    padding: 32px 24px 24px 24px;
+    position: relative;
+    min-width: 320px;
+}
+.modal .close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-size: 1.6rem;
+    color: #888;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .config-block.card {
+        padding: 18px 8px 16px 8px;
+        max-width: 98vw;
+    }
+    .modal-content {
+        padding: 18px 8px 16px 8px;
+        min-width: 0;
+        width: 98vw;
+    }
+}
 /* Configuración Page Styles */
 
 .config-container {
-    max-width: 1200px;
+    width: 100%;
+    padding: 0 24px;
     margin: 0 auto;
-    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* Gentle page background to reduce contrast */
@@ -482,4 +535,15 @@ input:checked + .slider:before {
     .switch-group {
         flex-direction: row;
     }
+}
+
+/* Dashboard Grid - Responsive Cards */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }

@@ -3,18 +3,18 @@
     <div class="header-container">
         <div class="logo">
             <a href="#inici">
-                <img src="../img/Logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
+                <img src="../img/logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
             </a>
         </div>
         
         <nav class="nav-menu">
             <ul>
-                <li><a href="index.php"><?php echo t('nav_home'); ?></a></li>
-                <li><a href="clinica.php"><?php echo t('nav_services'); ?></a></li>
-                <li><a href="#serveis-especials" class="love-link"><?php echo t('nav_couple_search'); ?></a></li>
-                <li><a href="blog.php"><?php echo t('nav_blog'); ?></a></li>
-                <li><a href="sobremi.php"><?php echo t('nav_about'); ?></a></li>
-                <li><a href="contacta.php"><?php echo t('nav_contact'); ?></a></li>
+                <li><a href="index.php">Inici</a></li>
+                <li><a href="clinica.php">Consulta</a></li>
+                <li><a href="#serveis-especials" class="love-link">Dues ànimes</a></li>
+                <li><a href="blog.php">Blog</a></li>
+                <li><a href="sobremi.php">Sobre mi</a></li>
+                <li><a href="contacta.php">Contacta</a></li>
                 <!-- Selector d'idiomes dins del menú mòbil -->
                 <li class="mobile-language-selector">
                     <div class="mobile-language-buttons">

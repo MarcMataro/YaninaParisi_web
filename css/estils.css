@@ -1,3 +1,37 @@
+.score-config-btn-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+.score-config-btn-bar {
+    min-width: 160px;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.2s;
+    border-radius: 2em;
+    background: #f7f7fa;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    padding: 0.5em 1.2em;
+    gap: 0.5em;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+}
+.score-config-btn-bar:hover {
+    background: #e9ecef;
+    color: #1a1a1a;
+    text-decoration: none;
+}
+.score-config-btn-bar i {
+    margin-right: 0.4em;
+}
+.score-card {
+    position: relative;
+}
 /* Variables i estils generals - COLORS ACTUALITZATS */
 :root {
     --color-primary: #CCCCA7;       /* Blau suau i tranquil */

@@ -97,7 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_pagina = $_POST['id_pagina'] ?? null;
             
             $data = [
-                'url_relativa' => $_POST['url_relativa'] ?? '',
+                'url_relativa_ca' => $_POST['url_relativa_ca'] ?? '',
+                'url_relativa_es' => $_POST['url_relativa_es'] ?? '',
                 'titulo_pagina' => $_POST['titulo_pagina'] ?? '',
                 'tipo_pagina' => $_POST['tipo_pagina'] ?? 'landing',
                 'title_ca' => $_POST['title_ca'] ?? '',
@@ -620,7 +621,11 @@ $seoConfig = [
                         <div class="score-number"><?php echo $seo_global_score['score']; ?><span>/100</span></div>
                     </div>
                     <p class="score-status"><?php echo htmlspecialchars($seo_global_score['estat']); ?></p>
-                    
+                    <div class="score-config-btn-bar">
+                        <a href="gseogeneral.php" class="btn btn-secondary score-config-btn-bar">
+                            <i class="fas fa-cog"></i> Configurar
+                        </a>
+                    </div>
                     <!-- Detalle de secciones -->
                     <div class="config-details">
                         <div class="config-detail-item">
@@ -671,7 +676,11 @@ $seoConfig = [
                         <div class="score-number"><?php echo $seo_onpage_stats['score']; ?><span>/100</span></div>
                     </div>
                     <p class="score-status"><?php echo htmlspecialchars($seo_onpage_stats['estat']); ?></p>
-                    
+                    <div class="score-config-btn-bar">
+                        <a href="gseoonpage.php" class="btn btn-secondary score-config-btn-bar">
+                            <i class="fas fa-cog"></i> Configurar
+                        </a>
+                    </div>
                     <!-- Detalle de On-Page -->
                     <div class="config-details">
                         <div class="config-detail-item">
@@ -751,6 +760,11 @@ $seoConfig = [
                         else echo 'Necesita mejora';
                         ?>
                     </p>
+                    <div class="score-config-btn-bar">
+                        <a href="gseo.php?tab=offpage" class="btn btn-secondary score-config-btn-bar">
+                            <i class="fas fa-cog"></i> Configurar
+                        </a>
+                    </div>
                     
                     <!-- Detalle de Off-Page -->
                     <div class="config-details">
@@ -804,7 +818,6 @@ $seoConfig = [
                     </div>
                     <?php endif; ?>
                 </div>
-                
                 <!-- Card 4: Informació SEO (nova) -->
                 <div class="score-card score-info">
                     <div class="score-header">
@@ -834,22 +847,20 @@ $seoConfig = [
 
             <!-- Tabs -->
             <div class="seo-tabs">
-                <button class="tab-btn <?php echo $activeTab === 'global' ? 'active' : ''; ?>" onclick="switchTab('global')">
+                <a href="javascript:void(0)" class="tab-link <?php echo $activeTab === 'global' ? 'active' : ''; ?>" onclick="switchTab('global')">
                     <i class="fas fa-globe-americas"></i> SEO Global
-                </button>
-                <button class="tab-btn <?php echo $activeTab === 'onpage' ? 'active' : ''; ?>" onclick="switchTab('onpage')">
+                </a>
+                <a href="javascript:void(0)" class="tab-link <?php echo $activeTab === 'onpage' ? 'active' : ''; ?>" onclick="switchTab('onpage')">
                     <i class="fas fa-file-code"></i> SEO On-Page
-                </button>
-                <button class="tab-btn <?php echo $activeTab === 'offpage' ? 'active' : ''; ?>" onclick="switchTab('offpage')">
+                </a>
+                <a href="javascript:void(0)" class="tab-link <?php echo $activeTab === 'offpage' ? 'active' : ''; ?>" onclick="switchTab('offpage')">
                     <i class="fas fa-globe"></i> SEO Off-Page
-                </button>
+                </a>
                 <!-- SEO Técnico tab button removed (functionality disabled) -->
             </div>
 
-            <!-- SEO Global Tab -->
-            <?php include 'includes/general_interface.php'; ?>
 
-            <!-- On-Page SEO Tab -->
+            <?php include 'includes/general_interface.php'; ?>
             <?php include 'includes/onpage_interface.php'; ?>
 
             <!-- Off-Page SEO Tab with Sub-tabs -->
@@ -889,21 +900,21 @@ $seoConfig = [
         function switchTab(tab) {
             // Ocultar tots els tabs
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
+            document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
+
             // Mostrar el tab seleccionat
             const tabContent = document.getElementById(tab + '-tab');
             if (tabContent) {
                 tabContent.classList.add('active');
             }
-            
-            // Activar el botó corresponent
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if (btn.getAttribute('onclick').includes(tab)) {
-                    btn.classList.add('active');
+
+            // Activar l'enllaç corresponent
+            document.querySelectorAll('.tab-link').forEach(link => {
+                if (link.getAttribute('onclick').includes(tab)) {
+                    link.classList.add('active');
                 }
             });
-            
+
             // Actualitzar URL
             const url = new URL(window.location);
             url.searchParams.set('tab', tab);

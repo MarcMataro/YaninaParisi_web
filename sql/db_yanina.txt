@@ -1,21 +1,195 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1:3306
--- Temps de generació: 08-10-2025 a les 16:24:34
--- Versió del servidor: 9.1.0
--- Versió de PHP: 8.4.0
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
---
 -- Base de dades: `db_cp_yanina_parisi`
 --
-CREATE DATABASE IF NOT EXISTS `db_cp_yanina_parisi` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `db_cp_yanina_parisi`;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `blog_entrades`
+--
+
+DROP TABLE IF EXISTS `blog_entrades`;
+CREATE TABLE IF NOT EXISTS `blog_entrades` (
+  `id_entrada` int NOT NULL AUTO_INCREMENT,
+  `titol_ca` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `titol_es` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug_ca` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug_es` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contingut_ca` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contingut_es` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `resum_ca` text COLLATE utf8mb4_unicode_ci,
+  `resum_es` text COLLATE utf8mb4_unicode_ci,
+  `estat` enum('esborrany','revisio','publicat','programat','arxivat') COLLATE utf8mb4_unicode_ci DEFAULT 'esborrany',
+  `data_publicacio` datetime DEFAULT NULL,
+  `data_arxivat` datetime DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '1',
+  `imatge_portada` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alt_imatge_ca` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alt_imatge_es` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `galeria_imatges` json DEFAULT NULL,
+  `meta_title_ca` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_title_es` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description_ca` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description_es` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_keywords_ca` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_keywords_es` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_autor` int NOT NULL,
+  `temps_lectura_ca` tinyint DEFAULT NULL COMMENT 'Temps de lectura en minuts',
+  `temps_lectura_es` tinyint DEFAULT NULL COMMENT 'Tiempo de lectura en minutos',
+  `visualitzacions` int DEFAULT '0',
+  `compartits` int DEFAULT '0',
+  `comentaris_actius` tinyint(1) DEFAULT '1',
+  `data_creacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_actualitzacio` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `data_modificacio` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_entrada`),
+  UNIQUE KEY `slug_ca` (`slug_ca`),
+  UNIQUE KEY `slug_es` (`slug_es`),
+  KEY `idx_slug_ca` (`slug_ca`),
+  KEY `idx_slug_es` (`slug_es`),
+  KEY `idx_estat` (`estat`),
+  KEY `idx_data_publicacio` (`data_publicacio`),
+  KEY `idx_autor` (`id_autor`),
+  KEY `idx_visible` (`visible`),
+  KEY `idx_visualitzacions` (`visualitzacions`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `blog_entrades`
+--
+
+INSERT INTO `blog_entrades` (`id_entrada`, `titol_ca`, `titol_es`, `slug_ca`, `slug_es`, `contingut_ca`, `contingut_es`, `resum_ca`, `resum_es`, `estat`, `data_publicacio`, `data_arxivat`, `visible`, `imatge_portada`, `alt_imatge_ca`, `alt_imatge_es`, `galeria_imatges`, `meta_title_ca`, `meta_title_es`, `meta_description_ca`, `meta_description_es`, `meta_keywords_ca`, `meta_keywords_es`, `id_autor`, `temps_lectura_ca`, `temps_lectura_es`, `visualitzacions`, `compartits`, `comentaris_actius`, `data_creacio`, `data_actualitzacio`, `data_modificacio`) VALUES
+(1, 'Entrada de prova', 'Entrada de prueba', 'entrada-de-prova', 'entrada-de-prueba', '\r\n\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at tortor lorem. Vestibulum non arcu eget quam semper commodo. Maecenas ultricies ex libero, non sagittis augue maximus nec. Sed eu enim ligula. Proin faucibus elementum erat, nec rutrum erat bibendum nec. Nullam aliquet ipsum varius condimentum suscipit. Ut et enim sit amet nibh placerat sagittis id sollicitudin massa. Ut bibendum erat ut sapien sodales, eu ullamcorper nulla pellentesque. Sed ut massa nec tellus commodo vehicula.\r\n\r\nSed venenatis justo et neque congue, vel accumsan felis viverra. Nulla facilisi. Etiam lobortis mauris vitae odio porttitor, eget fermentum turpis tincidunt. Praesent tempus vitae augue sit amet molestie. Maecenas venenatis, nisl eu accumsan consequat, tortor orci convallis dui, non iaculis erat risus vel turpis. Morbi sit amet porttitor lacus. Suspendisse sit amet leo dolor. Suspendisse lacinia nulla id convallis scelerisque. Curabitur metus lectus, viverra non aliquam non, mollis a urna. Proin ac cursus massa. Nunc in nisl massa. Donec pulvinar sodales vestibulum. Curabitur ut erat sit amet augue lobortis fringilla non non dui.\r\n\r\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent quis sollicitudin odio. Suspendisse dignissim sit amet sem eget volutpat. Nulla posuere pulvinar arcu et viverra. Vivamus vehicula urna quis nunc elementum venenatis. Praesent ut fermentum urna. Integer sed semper tellus. Nullam neque justo, suscipit sit amet lorem a, consequat eleifend justo. Sed commodo magna eu augue eleifend, in malesuada sapien elementum. Morbi iaculis, elit eget accumsan lobortis, elit neque auctor turpis, nec vehicula orci ligula vitae enim.\r\n\r\nIn eu dui nisi. Curabitur ac iaculis felis, iaculis fermentum erat. In convallis elementum convallis. Etiam egestas, nibh sit amet egestas vestibulum, leo lectus tristique nulla, sed maximus purus libero ut leo. Vivamus eget sagittis mauris. Donec sit amet libero sagittis, tristique neque eget, tristique nibh. Fusce cursus, velit vel condimentum ultrices, lorem nisi hendrerit nunc, in condimentum turpis lectus in erat. Ut tincidunt enim nibh, id suscipit velit sollicitudin sed. Praesent sagittis mi risus, vestibulum volutpat enim lacinia consequat. Morbi finibus erat vel molestie egestas. Sed dictum sapien at nisl iaculis posuere. Quisque non ante eget odio varius dictum. Maecenas blandit felis ligula, sit amet facilisis mauris fringilla sed. Nullam pulvinar finibus magna, eu molestie felis aliquet non.\r\n\r\nNam id metus aliquet, gravida felis eu, auctor erat. Praesent vel nisi egestas, pulvinar ligula eget, ultricies nibh. Nulla ut nibh neque. Ut lectus enim, hendrerit ut massa vel, tincidunt tristique sem. Mauris elementum nisi placerat orci sollicitudin, vitae suscipit nulla congue. Fusce sit amet pharetra nibh. Proin eget orci sed velit sodales semper id eu leo. ', '\r\n\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at tortor lorem. Vestibulum non arcu eget quam semper commodo. Maecenas ultricies ex libero, non sagittis augue maximus nec. Sed eu enim ligula. Proin faucibus elementum erat, nec rutrum erat bibendum nec. Nullam aliquet ipsum varius condimentum suscipit. Ut et enim sit amet nibh placerat sagittis id sollicitudin massa. Ut bibendum erat ut sapien sodales, eu ullamcorper nulla pellentesque. Sed ut massa nec tellus commodo vehicula.\r\n\r\nSed venenatis justo et neque congue, vel accumsan felis viverra. Nulla facilisi. Etiam lobortis mauris vitae odio porttitor, eget fermentum turpis tincidunt. Praesent tempus vitae augue sit amet molestie. Maecenas venenatis, nisl eu accumsan consequat, tortor orci convallis dui, non iaculis erat risus vel turpis. Morbi sit amet porttitor lacus. Suspendisse sit amet leo dolor. Suspendisse lacinia nulla id convallis scelerisque. Curabitur metus lectus, viverra non aliquam non, mollis a urna. Proin ac cursus massa. Nunc in nisl massa. Donec pulvinar sodales vestibulum. Curabitur ut erat sit amet augue lobortis fringilla non non dui.\r\n\r\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent quis sollicitudin odio. Suspendisse dignissim sit amet sem eget volutpat. Nulla posuere pulvinar arcu et viverra. Vivamus vehicula urna quis nunc elementum venenatis. Praesent ut fermentum urna. Integer sed semper tellus. Nullam neque justo, suscipit sit amet lorem a, consequat eleifend justo. Sed commodo magna eu augue eleifend, in malesuada sapien elementum. Morbi iaculis, elit eget accumsan lobortis, elit neque auctor turpis, nec vehicula orci ligula vitae enim.\r\n\r\nIn eu dui nisi. Curabitur ac iaculis felis, iaculis fermentum erat. In convallis elementum convallis. Etiam egestas, nibh sit amet egestas vestibulum, leo lectus tristique nulla, sed maximus purus libero ut leo. Vivamus eget sagittis mauris. Donec sit amet libero sagittis, tristique neque eget, tristique nibh. Fusce cursus, velit vel condimentum ultrices, lorem nisi hendrerit nunc, in condimentum turpis lectus in erat. Ut tincidunt enim nibh, id suscipit velit sollicitudin sed. Praesent sagittis mi risus, vestibulum volutpat enim lacinia consequat. Morbi finibus erat vel molestie egestas. Sed dictum sapien at nisl iaculis posuere. Quisque non ante eget odio varius dictum. Maecenas blandit felis ligula, sit amet facilisis mauris fringilla sed. Nullam pulvinar finibus magna, eu molestie felis aliquet non.\r\n\r\nNam id metus aliquet, gravida felis eu, auctor erat. Praesent vel nisi egestas, pulvinar ligula eget, ultricies nibh. Nulla ut nibh neque. Ut lectus enim, hendrerit ut massa vel, tincidunt tristique sem. Mauris elementum nisi placerat orci sollicitudin, vitae suscipit nulla congue. Fusce sit amet pharetra nibh. Proin eget orci sed velit sodales semper id eu leo. JEJE', 'Resum de l&amp;#039;entrada de prova de Lorem Ipsum', 'Resumen de la entrada de prueba de Lorem Ipsum', 'publicat', '2025-10-12 13:00:00', NULL, 1, 'img/Logo.png', 'Logo de la Yanina', 'Logotipo de la Yanina', NULL, 'Lorem ipsum', 'Lorem ipsum', 'Un text de Lorem Ipsum', 'Un texto de Lorem ipsum', 'Lorem, ipsum, ue', 'Lorem, ipsum, ue', 1, 3, 3, 0, 0, 0, '2025-10-12 08:36:49', '2025-10-12 12:34:23', '2025-10-12 10:27:52'),
+(4, 'jeje', 'Jojo', 'jeje', 'jojo', '\r\n\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at tortor lorem. Vestibulum non arcu eget quam semper commodo. Maecenas ultricies ex libero, non sagittis augue maximus nec. Sed eu enim ligula. Proin faucibus elementum erat, nec rutrum erat bibendum nec. Nullam aliquet ipsum varius condimentum suscipit. Ut et enim sit amet nibh placerat sagittis id sollicitudin massa. Ut bibendum erat ut sapien sodales, eu ullamcorper nulla pellentesque. Sed ut massa nec tellus commodo vehicula.\r\n\r\nSed venenatis justo et neque congue, vel accumsan felis viverra. Nulla facilisi. Etiam lobortis mauris vitae odio porttitor, eget fermentum turpis tincidunt. Praesent tempus vitae augue sit amet molestie. Maecenas venenatis, nisl eu accumsan consequat, tortor orci convallis dui, non iaculis erat risus vel turpis. Morbi sit amet porttitor lacus. Suspendisse sit amet leo dolor. Suspendisse lacinia nulla id convallis scelerisque. Curabitur metus lectus, viverra non aliquam non, mollis a urna. Proin ac cursus massa. Nunc in nisl massa. Donec pulvinar sodales vestibulum. Curabitur ut erat sit amet augue lobortis fringilla non non dui.\r\n\r\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent quis sollicitudin odio. Suspendisse dignissim sit amet sem eget volutpat. Nulla posuere pulvinar arcu et viverra. Vivamus vehicula urna quis nunc elementum venenatis. Praesent ut fermentum urna. Integer sed semper tellus. Nullam neque justo, suscipit sit amet lorem a, consequat eleifend justo. Sed commodo magna eu augue eleifend, in malesuada sapien elementum. Morbi iaculis, elit eget accumsan lobortis, elit neque auctor turpis, nec vehicula orci ligula vitae enim.\r\n\r\nIn eu dui nisi. Curabitur ac iaculis felis, iaculis fermentum erat. In convallis elementum convallis. Etiam egestas, nibh sit amet egestas vestibulum, leo lectus tristique nulla, sed maximus purus libero ut leo. Vivamus eget sagittis mauris. Donec sit amet libero sagittis, tristique neque eget, tristique nibh. Fusce cursus, velit vel condimentum ultrices, lorem nisi hendrerit nunc, in condimentum turpis lectus in erat. Ut tincidunt enim nibh, id suscipit velit sollicitudin sed. Praesent sagittis mi risus, vestibulum volutpat enim lacinia consequat. Morbi finibus erat vel molestie egestas. Sed dictum sapien at nisl iaculis posuere. Quisque non ante eget odio varius dictum. Maecenas blandit felis ligula, sit amet facilisis mauris fringilla sed. Nullam pulvinar finibus magna, eu molestie felis aliquet non.\r\n\r\nNam id metus aliquet, gravida felis eu, auctor erat. Praesent vel nisi egestas, pulvinar ligula eget, ultricies nibh. Nulla ut nibh neque. Ut lectus enim, hendrerit ut massa vel, tincidunt tristique sem. Mauris elementum nisi placerat orci sollicitudin, vitae suscipit nulla congue. Fusce sit amet pharetra nibh. Proin eget orci sed velit sodales semper id eu leo. ', '\r\n\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at tortor lorem. Vestibulum non arcu eget quam semper commodo. Maecenas ultricies ex libero, non sagittis augue maximus nec. Sed eu enim ligula. Proin faucibus elementum erat, nec rutrum erat bibendum nec. Nullam aliquet ipsum varius condimentum suscipit. Ut et enim sit amet nibh placerat sagittis id sollicitudin massa. Ut bibendum erat ut sapien sodales, eu ullamcorper nulla pellentesque. Sed ut massa nec tellus commodo vehicula.\r\n\r\nSed venenatis justo et neque congue, vel accumsan felis viverra. Nulla facilisi. Etiam lobortis mauris vitae odio porttitor, eget fermentum turpis tincidunt. Praesent tempus vitae augue sit amet molestie. Maecenas venenatis, nisl eu accumsan consequat, tortor orci convallis dui, non iaculis erat risus vel turpis. Morbi sit amet porttitor lacus. Suspendisse sit amet leo dolor. Suspendisse lacinia nulla id convallis scelerisque. Curabitur metus lectus, viverra non aliquam non, mollis a urna. Proin ac cursus massa. Nunc in nisl massa. Donec pulvinar sodales vestibulum. Curabitur ut erat sit amet augue lobortis fringilla non non dui.\r\n\r\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent quis sollicitudin odio. Suspendisse dignissim sit amet sem eget volutpat. Nulla posuere pulvinar arcu et viverra. Vivamus vehicula urna quis nunc elementum venenatis. Praesent ut fermentum urna. Integer sed semper tellus. Nullam neque justo, suscipit sit amet lorem a, consequat eleifend justo. Sed commodo magna eu augue eleifend, in malesuada sapien elementum. Morbi iaculis, elit eget accumsan lobortis, elit neque auctor turpis, nec vehicula orci ligula vitae enim.\r\n\r\nIn eu dui nisi. Curabitur ac iaculis felis, iaculis fermentum erat. In convallis elementum convallis. Etiam egestas, nibh sit amet egestas vestibulum, leo lectus tristique nulla, sed maximus purus libero ut leo. Vivamus eget sagittis mauris. Donec sit amet libero sagittis, tristique neque eget, tristique nibh. Fusce cursus, velit vel condimentum ultrices, lorem nisi hendrerit nunc, in condimentum turpis lectus in erat. Ut tincidunt enim nibh, id suscipit velit sollicitudin sed. Praesent sagittis mi risus, vestibulum volutpat enim lacinia consequat. Morbi finibus erat vel molestie egestas. Sed dictum sapien at nisl iaculis posuere. Quisque non ante eget odio varius dictum. Maecenas blandit felis ligula, sit amet facilisis mauris fringilla sed. Nullam pulvinar finibus magna, eu molestie felis aliquet non.\r\n\r\nNam id metus aliquet, gravida felis eu, auctor erat. Praesent vel nisi egestas, pulvinar ligula eget, ultricies nibh. Nulla ut nibh neque. Ut lectus enim, hendrerit ut massa vel, tincidunt tristique sem. Mauris elementum nisi placerat orci sollicitudin, vitae suscipit nulla congue. Fusce sit amet pharetra nibh. Proin eget orci sed velit sodales semper id eu leo. ', 'Proooooooooooooooooooooooooova', 'Pruebaaaaaaaaaaaaaaaaaaaaaaaa', 'publicat', '2025-10-11 15:30:00', NULL, 1, 'img/Portada.jpg', 'ljyhfgkjh', 'ljhgfljyfgj', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 3, 3, 0, 0, 0, '2025-10-12 08:43:11', '2025-10-12 12:58:12', '2025-10-12 10:58:12'),
+(5, 'vwiuvhbw', 'qiofuygqreuoyvf', 'vwiuvhbw', 'qiofuygqreuoyvf', 'iueqwhvbeqriopuvhbqrepiuvbqrepiovb wrepoivbwe uoyveb iupyergbv pierug vpierugv peirug vp', 'qw eiyufgqweouiyfg qwouyfg qouyfgwe qiuofgwqeoi fgwqeopif gqwepi fgqwepiou g', 'ieuvhewsaolivubh', 'freyqgf eqroygqo gqo ygqeo fgq', 'publicat', '2025-10-12 10:58:53', NULL, 1, 'img/Logo.png', 'cqjuweyv', 'ljchsbvckja', NULL, 'fiuyehgqwreiuyg', 'fyewqgywegf', 'ivuwpoivuyghwerpivwerpivghwrepi ovyuewrg poivy', 'aewuiyf gaweouyf wqoeuygf q', 'fryuegfyre, fuyg fqreouy g, ygfuqy gfquoy', 'iyugqawciyue, uyqaweu uy, qf qewr', 1, 1, 1, 0, 0, 0, '2025-10-12 08:59:01', '2025-10-12 13:07:25', '2025-10-12 11:07:25'),
+(8, 'vejh ñrehv ñpu', 'liuae gflqerug leqrug l', 'vejh-nrehv-npu', 'liuae-gflqerug-leqrug-l', '`ñoiw ghpweroiugh wer`pioug hwer`pogh wer`pog hwer`pough wepriufv qewroiuygv qerukygcvqerkuygcf qeruycvgf erqwouy vgeruoy vgeruoyv gerlyu vgeruoyg veroqwuiygv eouiy', 'iu fliuqregflieuqrgf elqiugf qeriufgh qerloifg qeoriufg qweroilu fgqweilouf gqweoiluf gqweiufg qweriuf gqweiuyfg qweoif gqwy', 'if hgrñwhwñp hpñoihvñbpo iuerwhòwerh wperuioh wperiuh ', 'qwiu fglqeugf qelougf qewlrouigf qelriugf qeliuy', 'publicat', '2025-10-12 10:59:16', NULL, 1, 'img/Logo.png', 'leiu hgewr', 'ireugh weriluv ', NULL, 'weriu fghweiyu', 'iquw eghflqiuy', 'weri ufgwreiu fweriu ', 'qiau fghliuf gqepiruf gqerpiuf gqerilpuf gqer', 'reuhfg wreu, weliuy fqweilu', 'fuewf uer,  qweiuf lwiqeugf qil', 1, 1, 1, 0, 0, 0, '2025-10-12 09:09:25', '2025-10-12 12:59:16', '2025-10-12 10:59:16');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `blog_entrades_categories`
+--
+
+DROP TABLE IF EXISTS `blog_entrades_categories`;
+CREATE TABLE IF NOT EXISTS `blog_entrades_categories` (
+  `id_relacio` int NOT NULL AUTO_INCREMENT,
+  `id_entrada` int NOT NULL,
+  `id_categoria` int NOT NULL,
+  `data_assignacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_relacio`),
+  UNIQUE KEY `unique_entrada_categoria` (`id_entrada`,`id_categoria`),
+  KEY `idx_entrada` (`id_entrada`),
+  KEY `idx_categoria` (`id_categoria`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `blog_entrades_categories`
+--
+
+INSERT INTO `blog_entrades_categories` (`id_relacio`, `id_entrada`, `id_categoria`, `data_assignacio`) VALUES
+(4, 1, 1, '2025-10-12 12:27:52'),
+(5, 4, 2, '2025-10-12 12:58:12'),
+(8, 8, 1, '2025-10-12 12:59:16'),
+(9, 5, 1, '2025-10-12 13:07:25');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `blog_entrades_etiquetes`
+--
+
+DROP TABLE IF EXISTS `blog_entrades_etiquetes`;
+CREATE TABLE IF NOT EXISTS `blog_entrades_etiquetes` (
+  `id_relacio` int NOT NULL AUTO_INCREMENT,
+  `id_entrada` int NOT NULL,
+  `id_etiqueta` int NOT NULL,
+  `data_assignacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_relacio`),
+  UNIQUE KEY `unique_entrada_etiqueta` (`id_entrada`,`id_etiqueta`),
+  KEY `idx_entrada` (`id_entrada`),
+  KEY `idx_etiqueta` (`id_etiqueta`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `blog_entrades_etiquetes`
+--
+
+INSERT INTO `blog_entrades_etiquetes` (`id_relacio`, `id_entrada`, `id_etiqueta`, `data_assignacio`) VALUES
+(5, 1, 2, '2025-10-12 12:27:52'),
+(6, 8, 1, '2025-10-12 12:59:16'),
+(7, 5, 2, '2025-10-12 13:07:25'),
+(8, 5, 1, '2025-10-12 13:07:25');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `categories`
+--
+
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id_category` int NOT NULL AUTO_INCREMENT,
+  `nom_ca` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom_es` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug_ca` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug_es` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcio_ca` text COLLATE utf8mb4_unicode_ci,
+  `descripcion_es` text COLLATE utf8mb4_unicode_ci,
+  `ordre` int DEFAULT '0',
+  `activa` tinyint(1) DEFAULT '1',
+  `data_creacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_actualitzacio` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_category`),
+  UNIQUE KEY `slug_ca` (`slug_ca`),
+  UNIQUE KEY `slug_es` (`slug_es`),
+  KEY `idx_slug_ca` (`slug_ca`),
+  KEY `idx_slug_es` (`slug_es`),
+  KEY `idx_activ` (`activa`),
+  KEY `idx_ordre` (`ordre`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `categories`
+--
+
+INSERT INTO `categories` (`id_category`, `nom_ca`, `nom_es`, `slug_ca`, `slug_es`, `descripcio_ca`, `descripcion_es`, `ordre`, `activa`, `data_creacio`, `data_actualitzacio`) VALUES
+(1, 'Ansietat', 'Ansiedad', 'ansietat', 'ansiedad', 'Articles del blog relacionats amb l\'ansietat.', 'Artículos del blog relacionados con la ansiedad.', 0, 1, '2025-10-11 10:49:22', '2025-10-12 07:32:02'),
+(2, 'Estrès', 'Estrés', 'estres', 'estres', 'Articles del blog relacionats amb l\'estrès.', 'Artículos del blog relacionados con el estrés.', 0, 1, '2025-10-12 07:32:59', '2025-10-12 07:32:59');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `etiquetes`
+--
+
+DROP TABLE IF EXISTS `etiquetes`;
+CREATE TABLE IF NOT EXISTS `etiquetes` (
+  `id_etiqueta` int NOT NULL AUTO_INCREMENT,
+  `nom_ca` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom_es` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug_ca` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug_es` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcio_ca` text COLLATE utf8mb4_unicode_ci,
+  `descripcion_es` text COLLATE utf8mb4_unicode_ci,
+  `ordre` int DEFAULT '0',
+  `activa` tinyint(1) DEFAULT '1',
+  `data_creacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_actualitzacio` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_etiqueta`),
+  UNIQUE KEY `slug_ca` (`slug_ca`),
+  UNIQUE KEY `slug_es` (`slug_es`),
+  KEY `idx_slug_ca` (`slug_ca`),
+  KEY `idx_slug_es` (`slug_es`),
+  KEY `idx_activ` (`activa`),
+  KEY `idx_ordre` (`ordre`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Bolcament de dades per a la taula `etiquetes`
+--
+
+INSERT INTO `etiquetes` (`id_etiqueta`, `nom_ca`, `nom_es`, `slug_ca`, `slug_es`, `descripcio_ca`, `descripcion_es`, `ordre`, `activa`, `data_creacio`, `data_actualitzacio`) VALUES
+(1, 'Ansietat crònica', 'Ansiedad crónica', 'ansietat-cronica', 'ansiedad-cronica', 'Etiqueta d\'ansietat crònica', 'Etiqueta de ansiedad crónica', 0, 1, '2025-10-11 11:07:25', '2025-10-11 11:07:25'),
+(2, 'Ansietat aguda', 'Ansiedad aguda', 'ansietat-aguda', 'ansiedad-aguda', 'Hi ha casos d\'ansietat aguda', 'Hay casos de ansiedad aguda', 0, 1, '2025-10-12 09:40:14', '2025-10-12 09:40:14');
 
 -- --------------------------------------------------------
 
@@ -80,14 +254,15 @@ CREATE TABLE IF NOT EXISTS `pagaments` (
   KEY `idx_data_pagament` (`data_pagament`),
   KEY `idx_estat` (`estat`),
   KEY `idx_facturat` (`facturat`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Bolcament de dades per a la taula `pagaments`
 --
 
 INSERT INTO `pagaments` (`id_pagament`, `id_sessio`, `data_pagament`, `import`, `metode_pagament`, `estat`, `facturat`, `numero_factura`, `observacions`, `data_registre`) VALUES
-(1, 1, '2025-10-06', 60.00, 'Efectivo', 'Completado', 1, '2025-00112', '', '2025-10-06 15:25:04');
+(1, 1, '2025-10-10', 30.00, 'Bizum', 'Pendiente', 0, '', '', '2025-10-06 15:25:04'),
+(2, 2, '2025-10-09', 60.00, 'Bizum', 'Completado', 0, '', '', '2025-10-09 07:34:44');
 
 -- --------------------------------------------------------
 
@@ -98,8 +273,8 @@ INSERT INTO `pagaments` (`id_pagament`, `id_sessio`, `data_pagament`, `import`, 
 DROP TABLE IF EXISTS `seo_global`;
 CREATE TABLE IF NOT EXISTS `seo_global` (
   `id_global` int NOT NULL AUTO_INCREMENT,
-  `site_title_ca` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT 'Psicòloga Yanina Parisi | Barcelona',
-  `site_title_es` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT 'Psicóloga Yanina Parisi | Barcelona',
+  `site_title_ca` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Psicòloga Yanina Parisi | Barcelona',
+  `site_title_es` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Psicóloga Yanina Parisi | Barcelona',
   `site_description_ca` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `site_description_es` varchar(160) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `default_title_template_ca` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '{page} | Psicòloga Yanina Parisi',
@@ -143,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `seo_global` (
 --
 
 INSERT INTO `seo_global` (`id_global`, `site_title_ca`, `site_title_es`, `site_description_ca`, `site_description_es`, `default_title_template_ca`, `default_title_template_es`, `default_meta_template_ca`, `default_meta_template_es`, `organization_schema`, `local_business_schema`, `person_schema`, `facebook_url`, `twitter_url`, `linkedin_url`, `instagram_url`, `google_business_url`, `og_site_name`, `og_locale_ca`, `og_locale_es`, `default_og_image`, `twitter_site`, `twitter_creator`, `default_twitter_image`, `default_meta_robots`, `google_site_verification`, `bing_verification`, `google_analytics_id`, `google_tag_manager_id`, `breadcrumb_home_text_ca`, `breadcrumb_home_text_es`, `website_schema`, `webpage_schema`, `hreflang_default`, `hreflang_alternates`, `default_priority`, `default_changefreq`, `fecha_actualizacion`) VALUES
-(1, 'Yanina Parisi - Psicòloga col·legiada a Girona', 'Yanina Parisi - Psicóloga colegiada en Girona', 'Psicòloga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '{page} | Yanina Parisi - Psic??loga Girona', '{page} | Yanina Parisi - Psic??loga Girona', 'Descobreix m??s sobre {page}. Atenci?? psicol??gica professional a Girona amb primera sessi?? gratu??ta.', 'Descubre m??s sobre {page}. Atenci??n psicol??gica profesional en Girona con primera sesi??n gratuita.', '{\"url\": \"https://www.psicologiayanina.com\", \"logo\": \"https://www.psicologiayanina.com/img/Logo.png\", \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"Organization\", \"address\": {\"@type\": \"PostalAddress\", \"addressRegion\": \"Girona\", \"addressCountry\": \"ES\", \"addressLocality\": \"Girona\"}, \"@context\": \"https://schema.org\", \"contactPoint\": {\"@type\": \"ContactPoint\", \"telephone\": \"+34-XXX-XXX-XXX\", \"contactType\": \"customer service\", \"availableLanguage\": [\"ca\", \"es\"]}}', '{\"geo\": {\"@type\": \"GeoCoordinates\", \"latitude\": 41.9794, \"longitude\": 2.8214}, \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"LocalBusiness\", \"image\": \"https://www.psicologiayanina.com/img/Logo.png\", \"address\": {\"@type\": \"PostalAddress\", \"postalCode\": \"17001\", \"streetAddress\": \"Carrer Example, 123\", \"addressCountry\": \"ES\", \"addressLocality\": \"Girona\"}, \"@context\": \"https://schema.org\", \"priceRange\": \"??????\", \"openingHoursSpecification\": {\"@type\": \"OpeningHoursSpecification\", \"opens\": \"09:00\", \"closes\": \"20:00\", \"dayOfWeek\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"]}}', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"Yanina Parisi\", \"@type\": \"Person\", \"image\": \"https://www.psicologiayanina.com/img/yanina-parisi.jpg\", \"@context\": \"https://schema.org\", \"alumniOf\": {\"name\": \"Universitat de Girona\", \"@type\": \"CollegeOrUniversity\"}, \"jobTitle\": \"Psic??loga Col??legiada\", \"worksFor\": {\"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"Organization\"}, \"knowsAbout\": [\"Psicologia\", \"Ter??pia de Parella\", \"Psicologia Judicial\"]}', 'https://www.facebook.com/yaninaparisi', 'https://twitter.com/yaninaparisi', 'https://www.linkedin.com/in/yaninaparisi', 'https://www.instagram.com/yaninaparisi', 'https://g.page/yaninaparisi', 'Yanina Parisi - Psicologia', 'ca_ES', 'es_ES', 'https://www.psicologiayanina.com/img/og-default.jpg', '@yaninaparisi', '@yaninaparisi', 'https://www.psicologiayanina.com/img/twitter-default.jpg', 'index, follow', '', '', '', '', 'Inici', 'Inicio', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"WebSite\", \"@context\": \"https://schema.org\"}', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"P??gina\", \"@type\": \"WebPage\", \"@context\": \"https://schema.org\"}', 'es', '{\"ca\": \"https://www.psicologiayanina.com/ca/\", \"en\": \"https://www.psicologiayanina.com/en/\", \"es\": \"https://www.psicologiayanina.com/es/\"}', '0.8', 'weekly', '2025-10-07 17:42:55');
+(1, 'Psicòloga Yanina Parisi 🧠 | Teràpia per ansietat i depressió a Girona', 'Psicóloga Yanina Parisi 🧠 | Terapia ansiedad y depressión en Girona', 'Psicòloga col·legiada especialitzada en teràpia de parella, adults i psicologia judicial a Girona. Primera sessió gratuïta.', 'Psicóloga colegiada especializada en terapia de pareja, adultos y psicología judicial en Girona. Primera sesión gratuita.', '{page} | Yanina Parisi - Psic??loga Girona', '{page} | Yanina Parisi - Psic??loga Girona', 'Descobreix m??s sobre {page}. Atenci?? psicol??gica professional a Girona amb primera sessi?? gratu??ta.', 'Descubre m??s sobre {page}. Atenci??n psicol??gica profesional en Girona con primera sesi??n gratuita.', '{\"url\": \"https://www.psicologiayanina.com\", \"logo\": \"https://www.psicologiayanina.com/img/Logo.png\", \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"Organization\", \"address\": {\"@type\": \"PostalAddress\", \"addressRegion\": \"Girona\", \"addressCountry\": \"ES\", \"addressLocality\": \"Girona\"}, \"@context\": \"https://schema.org\", \"contactPoint\": {\"@type\": \"ContactPoint\", \"telephone\": \"+34-XXX-XXX-XXX\", \"contactType\": \"customer service\", \"availableLanguage\": [\"ca\", \"es\"]}}', '{\"geo\": {\"@type\": \"GeoCoordinates\", \"latitude\": 41.9794, \"longitude\": 2.8214}, \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"LocalBusiness\", \"image\": \"https://www.psicologiayanina.com/img/Logo.png\", \"address\": {\"@type\": \"PostalAddress\", \"postalCode\": \"17001\", \"streetAddress\": \"Carrer Example, 123\", \"addressCountry\": \"ES\", \"addressLocality\": \"Girona\"}, \"@context\": \"https://schema.org\", \"priceRange\": \"??????\", \"openingHoursSpecification\": {\"@type\": \"OpeningHoursSpecification\", \"opens\": \"09:00\", \"closes\": \"20:00\", \"dayOfWeek\": [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\"]}}', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"Yanina Parisi\", \"@type\": \"Person\", \"image\": \"https://www.psicologiayanina.com/img/yanina-parisi.jpg\", \"@context\": \"https://schema.org\", \"alumniOf\": {\"name\": \"Universitat de Girona\", \"@type\": \"CollegeOrUniversity\"}, \"jobTitle\": \"Psic??loga Col??legiada\", \"worksFor\": {\"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"Organization\"}, \"knowsAbout\": [\"Psicologia\", \"Ter??pia de Parella\", \"Psicologia Judicial\"]}', 'https://www.facebook.com/yaninaparisi', 'https://twitter.com/yaninaparisi', 'https://www.linkedin.com/in/yaninaparisi', 'https://www.instagram.com/yaninaparisi', 'https://g.page/yaninaparisi', 'Yanina Parisi - Psicologia', 'ca_ES', 'es_ES', 'https://www.psicologiayanina.com/img/og-default.jpg', '@yaninaparisi', '@yaninaparisi', 'https://www.psicologiayanina.com/img/twitter-default.jpg', 'index, follow', '', '', '', '', 'Inici', 'Inicio', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"Yanina Parisi - Psicologia\", \"@type\": \"WebSite\", \"@context\": \"https://schema.org\"}', '{\"url\": \"https://www.psicologiayanina.com\", \"name\": \"P??gina\", \"@type\": \"WebPage\", \"@context\": \"https://schema.org\"}', 'es', '{\"ca\": \"https://www.psicologiayanina.com/ca/\", \"en\": \"https://www.psicologiayanina.com/en/\", \"es\": \"https://www.psicologiayanina.com/es/\"}', '0.8', 'weekly', '2025-10-17 16:42:55');
 
 -- --------------------------------------------------------
 
@@ -255,7 +430,8 @@ CREATE TABLE IF NOT EXISTS `seo_offpage_directorios` (
 DROP TABLE IF EXISTS `seo_onpage_paginas`;
 CREATE TABLE IF NOT EXISTS `seo_onpage_paginas` (
   `id_pagina` int NOT NULL AUTO_INCREMENT,
-  `url_relativa` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL sense domini ej: /terapia-ansietat',
+  `url_relativa_ca` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL sense domini ej: /terapia-ansietat',
+  `url_relativa_es` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `titulo_pagina` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'T??tol visible de la p??gina',
   `tipo_pagina` enum('home','sobre-mi','servicios','blog','articulo','contacto','legal','landing') COLLATE utf8mb4_unicode_ci NOT NULL,
   `title_ca` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -305,10 +481,10 @@ CREATE TABLE IF NOT EXISTS `seo_onpage_paginas` (
   `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
   `fecha_modificacion` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pagina`),
-  UNIQUE KEY `url_relativa` (`url_relativa`),
+  UNIQUE KEY `url_relativa` (`url_relativa_ca`),
   UNIQUE KEY `slug_ca` (`slug_ca`),
   UNIQUE KEY `slug_es` (`slug_es`),
-  KEY `idx_url_relativa` (`url_relativa`),
+  KEY `idx_url_relativa` (`url_relativa_ca`),
   KEY `idx_tipo_pagina` (`tipo_pagina`),
   KEY `idx_activa` (`activa`),
   KEY `idx_slug_ca` (`slug_ca`),
@@ -323,10 +499,10 @@ CREATE TABLE IF NOT EXISTS `seo_onpage_paginas` (
 -- Bolcament de dades per a la taula `seo_onpage_paginas`
 --
 
-INSERT INTO `seo_onpage_paginas` (`id_pagina`, `url_relativa`, `titulo_pagina`, `tipo_pagina`, `title_ca`, `meta_description_ca`, `h1_ca`, `contenido_principal_ca`, `title_es`, `meta_description_es`, `h1_es`, `contenido_principal_es`, `breadcrumb_json`, `slug_ca`, `slug_es`, `parent_id`, `meta_robots`, `canonical_url`, `priority`, `changefreq`, `focus_keyword_ca`, `focus_keyword_es`, `keywords_secundarias_ca`, `keywords_secundarias_es`, `schema_json`, `og_title_ca`, `og_title_es`, `og_description_ca`, `og_description_es`, `og_image`, `twitter_title_ca`, `twitter_title_es`, `twitter_description_ca`, `twitter_description_es`, `twitter_image`, `featured_image`, `alt_image_ca`, `alt_image_es`, `image_caption_ca`, `image_caption_es`, `seo_score`, `word_count_ca`, `word_count_es`, `densidad_keyword_ca`, `densidad_keyword_es`, `activa`, `fecha_publicacion`, `fecha_ultima_actualizacion`, `fecha_creacion`, `fecha_modificacion`) VALUES
-(1, '/', 'Pàgina d\'Inici', 'home', 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psicòloga Yanina Parisi', NULL, 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', 'Psicóloga Yanina Parisi', NULL, NULL, 'inici', 'inicio', NULL, 'index, follow', '', '1.0', 'weekly', 'psic??loga girona online', 'psic??loga girona', '', '', NULL, 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '', 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '', '', '', '', NULL, NULL, 45, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:00', NULL, '2025-10-07 16:26:43', '2025-10-07 17:35:52'),
-(2, '/sobre-mi', 'Sobre M??', 'sobre-mi', 'Sobre M?? - Yanina Parisi | Psic??loga Col??legiada', 'Coneix m??s sobre la meva experi??ncia professional com a psic??loga col??legiada especialitzada en ter??pia de parella i psicologia judicial.', 'Sobre M?? - Yanina Parisi', NULL, 'Sobre M?? - Yanina Parisi | Psic??loga Colegiada', 'Conoce m??s sobre mi experiencia profesional como psic??loga colegiada especializada en terapia de pareja y psicolog??a judicial.', 'Sobre M?? - Yanina Parisi', NULL, NULL, 'sobre-mi', 'sobre-mi', NULL, 'index, follow', NULL, '0.8', 'monthly', 'psic??loga col??legiada girona', 'psic??loga colegiada girona', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:43', NULL, '2025-10-07 16:26:43', '2025-10-07 16:26:43'),
-(3, '/contacto', 'Contacto', 'contacto', 'Contacte - Primera Sessi?? Gratu??ta | Yanina Parisi', 'Posa\'t en contacte per reservar la teva primera sessi?? gratu??ta. Psic??loga a Girona especialitzada en ter??pia de parella i adults.', 'Contacte - Primera Sessi?? Gratu??ta', NULL, 'Contacto - Primera Sesi??n Gratuita | Yanina Parisi', 'Ponte en contacto para reservar tu primera sesi??n gratuita. Psic??loga en Girona especializada en terapia de pareja y adultos.', 'Contacto - Primera Sesi??n Gratuita', NULL, NULL, 'contacte', 'contacto', NULL, 'index, follow', NULL, '0.8', 'monthly', 'psic??loga girona contacte', 'psic??loga girona contacto', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:43', NULL, '2025-10-07 16:26:43', '2025-10-07 16:26:43');
+INSERT INTO `seo_onpage_paginas` (`id_pagina`, `url_relativa_ca`, `url_relativa_es`, `titulo_pagina`, `tipo_pagina`, `title_ca`, `meta_description_ca`, `h1_ca`, `contenido_principal_ca`, `title_es`, `meta_description_es`, `h1_es`, `contenido_principal_es`, `breadcrumb_json`, `slug_ca`, `slug_es`, `parent_id`, `meta_robots`, `canonical_url`, `priority`, `changefreq`, `focus_keyword_ca`, `focus_keyword_es`, `keywords_secundarias_ca`, `keywords_secundarias_es`, `schema_json`, `og_title_ca`, `og_title_es`, `og_description_ca`, `og_description_es`, `og_image`, `twitter_title_ca`, `twitter_title_es`, `twitter_description_ca`, `twitter_description_es`, `twitter_image`, `featured_image`, `alt_image_ca`, `alt_image_es`, `image_caption_ca`, `image_caption_es`, `seo_score`, `word_count_ca`, `word_count_es`, `densidad_keyword_ca`, `densidad_keyword_es`, `activa`, `fecha_publicacion`, `fecha_ultima_actualizacion`, `fecha_creacion`, `fecha_modificacion`) VALUES
+(1, '/', '', 'Pàgina d\'Inici', 'home', 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psicòloga Yanina Parisi', NULL, 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', 'Psicóloga Yanina Parisi', NULL, NULL, 'inici', 'inicio', NULL, 'index, follow', '', '1.0', 'weekly', 'psic??loga girona online', 'psic??loga girona', '', '', NULL, 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '', 'Yanina Parisi - Psic??loga Col??legiada a Girona', 'Yanina Parisi - Psic??loga Colegiada en Girona', 'Psic??loga col??legiada especialitzada en ter??pia de parella, adults i psicologia judicial a Girona. Primera sessi?? gratu??ta.', 'Psic??loga colegiada especializada en terapia de pareja, adultos y psicolog??a judicial en Girona. Primera sesi??n gratuita.', '', '', '', '', NULL, NULL, 45, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:00', NULL, '2025-10-07 16:26:43', '2025-10-07 17:35:52'),
+(2, '/sobre-mi', '', 'Sobre M??', 'sobre-mi', 'Sobre M?? - Yanina Parisi | Psic??loga Col??legiada', 'Coneix m??s sobre la meva experi??ncia professional com a psic??loga col??legiada especialitzada en ter??pia de parella i psicologia judicial.', 'Sobre M?? - Yanina Parisi', NULL, 'Sobre M?? - Yanina Parisi | Psic??loga Colegiada', 'Conoce m??s sobre mi experiencia profesional como psic??loga colegiada especializada en terapia de pareja y psicolog??a judicial.', 'Sobre M?? - Yanina Parisi', NULL, NULL, 'sobre-mi', 'sobre-mi', NULL, 'index, follow', NULL, '0.8', 'monthly', 'psic??loga col??legiada girona', 'psic??loga colegiada girona', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:43', NULL, '2025-10-07 16:26:43', '2025-10-07 16:26:43'),
+(3, '/contacto', '', 'Contacto', 'contacto', 'Contacte - Primera Sessi?? Gratu??ta | Yanina Parisi', 'Posa\'t en contacte per reservar la teva primera sessi?? gratu??ta. Psic??loga a Girona especialitzada en ter??pia de parella i adults.', 'Contacte - Primera Sessi?? Gratu??ta', NULL, 'Contacto - Primera Sesi??n Gratuita | Yanina Parisi', 'Ponte en contacto para reservar tu primera sesi??n gratuita. Psic??loga en Girona especializada en terapia de pareja y adultos.', 'Contacto - Primera Sesi??n Gratuita', NULL, NULL, 'contacte', 'contacto', NULL, 'index, follow', NULL, '0.8', 'monthly', 'psic??loga girona contacte', 'psic??loga girona contacto', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0.00, 0.00, 1, '2025-10-07 16:26:43', NULL, '2025-10-07 16:26:43', '2025-10-07 16:26:43');
 
 -- --------------------------------------------------------
 
@@ -438,14 +614,61 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   KEY `idx_data_sessio` (`data_sessio`),
   KEY `idx_pacient_data` (`id_pacient`,`data_sessio`),
   KEY `idx_estat` (`estat_sessio`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Bolcament de dades per a la taula `sessions`
 --
 
 INSERT INTO `sessions` (`id_sessio`, `id_pacient`, `data_sessio`, `hora_inici`, `hora_fi`, `tipus_sessio`, `estat_sessio`, `ubicacio`, `preu_sessio`, `notes_terapeuta`, `data_creacio`) VALUES
-(1, 1, '2025-10-06', '17:00:00', '18:00:00', 'Individual', 'Programada', 'Online', 30.00, '', '2025-10-06 13:22:46');
+(1, 1, '2025-10-10', '17:00:00', '18:00:00', 'Individual', 'Programada', 'Online', 30.00, '', '2025-10-06 13:22:46'),
+(2, 1, '2025-10-07', '10:00:00', '11:00:00', 'Individual', 'Realizada', 'Online', 60.00, '', '2025-10-09 07:24:53');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de la taula `tarifes`
+--
+
+DROP TABLE IF EXISTS `tarifes`;
+CREATE TABLE IF NOT EXISTS `tarifes` (
+  `id_tarifa` int NOT NULL AUTO_INCREMENT,
+  `nom_servei_ca` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom_servei_es` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipus_servei` enum('individual','pareja','familiar','grupo','evaluación','urgente','pack') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcio_ca` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descripcio_es` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `durada_minuts` int NOT NULL COMMENT 'Durada en minuts de la sessió',
+  `preu_base` decimal(8,2) NOT NULL COMMENT 'Preu normal',
+  `preu_promocio` decimal(8,2) DEFAULT NULL COMMENT 'Preu en promoció',
+  `iva_percentatge` decimal(4,2) DEFAULT '21.00' COMMENT 'Percentatge d''IVA',
+  `moneda` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT 'EUR',
+  `disponible` tinyint(1) DEFAULT '1',
+  `visible_web` tinyint(1) DEFAULT '1',
+  `destacat` tinyint(1) DEFAULT '0' COMMENT 'Si apareix com a servei destacat',
+  `modalitat` enum('presencial','online','híbrida','telefónica') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'presencial',
+  `sessions_pack` tinyint DEFAULT '1' COMMENT 'Nombre de sessions si és un pack',
+  `validesa_dies` int DEFAULT NULL COMMENT 'Dies de validesa des de la compra',
+  `requisits` text COLLATE utf8mb4_unicode_ci COMMENT 'Requisits o condicions especials',
+  `beneficios_ca` text COLLATE utf8mb4_unicode_ci COMMENT 'Beneficis d''aquest servei',
+  `beneficios_es` text COLLATE utf8mb4_unicode_ci COMMENT 'Beneficios de este servicio',
+  `ordre_visualitzacio` int DEFAULT '0',
+  `color_etiqueta` varchar(7) COLLATE utf8mb4_unicode_ci DEFAULT '#3B82F6' COMMENT 'Color per a la web',
+  `vegades_contractat` int DEFAULT '0',
+  `data_creacio` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_actualitzacio` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `data_inici_promocio` date DEFAULT NULL,
+  `data_fi_promocio` date DEFAULT NULL,
+  PRIMARY KEY (`id_tarifa`),
+  KEY `idx_tipus_servei` (`tipus_servei`),
+  KEY `idx_disponible` (`disponible`),
+  KEY `idx_visible_web` (`visible_web`),
+  KEY `idx_destacat` (`destacat`),
+  KEY `idx_modalitat` (`modalitat`),
+  KEY `idx_ordre` (`ordre_visualitzacio`),
+  KEY `idx_preu_base` (`preu_base`),
+  KEY `idx_data_promocio` (`data_inici_promocio`,`data_fi_promocio`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -488,18 +711,26 @@ CREATE TABLE IF NOT EXISTS `usuarios_panel` (
   KEY `idx_activo` (`activo`),
   KEY `idx_ultimo_acceso` (`ultimo_acceso`),
   KEY `idx_bloqueado` (`bloqueado`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Bolcament de dades per a la taula `usuarios_panel`
 --
 
 INSERT INTO `usuarios_panel` (`id_usuario`, `email`, `password_hash`, `nombre`, `apellidos`, `telefono`, `avatar`, `rol`, `permisos`, `activo`, `ultimo_acceso`, `fecha_expiracion`, `intentos_login`, `bloqueado`, `idioma`, `zona_horiana`, `notificaciones_email`, `notificaciones_push`, `token_restablecimiento`, `token_expiracion`, `two_factor_auth`, `two_factor_secret`, `fecha_creacion`, `fecha_actualizacion`, `creado_por`) VALUES
-(1, 'marcmataro@gmail.com', '$2y$12$aNnVyrdzHqmw.xKsvh2qD.USM7WjIRIT0QZYUAdrPR50oLrmmUD4W', 'Marc', 'Mataró Malleu', NULL, NULL, 'superadmin', NULL, 1, '2025-10-08 18:22:17', NULL, 0, 0, 'ca', 'Europe/Madrid', 1, 1, NULL, NULL, 0, NULL, '2025-10-08 18:10:04', '2025-10-08 18:22:17', NULL);
+(1, 'marcmataro@gmail.com', '$2y$12$aNnVyrdzHqmw.xKsvh2qD.USM7WjIRIT0QZYUAdrPR50oLrmmUD4W', 'Marc', 'Mataró Malleu', NULL, NULL, 'superadmin', NULL, 1, '2025-10-17 12:05:56', NULL, 0, 0, 'ca', 'Europe/Madrid', 1, 1, NULL, NULL, 0, NULL, '2025-10-08 18:10:04', '2025-10-17 12:05:56', NULL);
 
 --
 -- Índexs per a les taules bolcades
 --
+
+--
+-- Índexs per a la taula `blog_entrades`
+--
+ALTER TABLE `blog_entrades` ADD FULLTEXT KEY `idx_contingut_ca` (`contingut_ca`);
+ALTER TABLE `blog_entrades` ADD FULLTEXT KEY `idx_contingut_es` (`contingut_es`);
+ALTER TABLE `blog_entrades` ADD FULLTEXT KEY `idx_titol_ca` (`titol_ca`);
+ALTER TABLE `blog_entrades` ADD FULLTEXT KEY `idx_titol_es` (`titol_es`);
 
 --
 -- Índexs per a la taula `seo_onpage_paginas`
@@ -510,6 +741,20 @@ ALTER TABLE `seo_onpage_paginas` ADD FULLTEXT KEY `idx_contenido_es` (`contenido
 --
 -- Restriccions per a les taules bolcades
 --
+
+--
+-- Restriccions per a la taula `blog_entrades_categories`
+--
+ALTER TABLE `blog_entrades_categories`
+  ADD CONSTRAINT `blog_entrades_categories_ibfk_1` FOREIGN KEY (`id_entrada`) REFERENCES `blog_entrades` (`id_entrada`) ON DELETE CASCADE,
+  ADD CONSTRAINT `blog_entrades_categories_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categories` (`id_category`) ON DELETE CASCADE;
+
+--
+-- Restriccions per a la taula `blog_entrades_etiquetes`
+--
+ALTER TABLE `blog_entrades_etiquetes`
+  ADD CONSTRAINT `blog_entrades_etiquetes_ibfk_1` FOREIGN KEY (`id_entrada`) REFERENCES `blog_entrades` (`id_entrada`) ON DELETE CASCADE,
+  ADD CONSTRAINT `blog_entrades_etiquetes_ibfk_2` FOREIGN KEY (`id_etiqueta`) REFERENCES `etiquetes` (`id_etiqueta`) ON DELETE CASCADE;
 
 --
 -- Restriccions per a la taula `pagaments`

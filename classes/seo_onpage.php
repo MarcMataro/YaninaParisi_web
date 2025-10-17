@@ -26,77 +26,84 @@
 require_once __DIR__ . '/connexio.php';
 
 class SEO_OnPage {
-    
-    // ============================================
-    // PROPIETATS PRIVADES
-    // ============================================
-    
-    /**
-     * @var int|null ID de la pàgina
-     */
-    private $id_pagina;
-    
+    // ...existing code...
     /**
      * @var Connexio Instància de la connexió a la base de dades
      */
     private $conn;
-    
+
     /**
      * @var PDO Objecte PDO per a consultes
      */
     private $pdo;
-    
-    // ============================================
-    // 1. IDENTIFICACIÓ I URL
-    // ============================================
-    
+
     /**
-     * @var string URL relativa sense domini (ex: /terapia-ansietat)
+     * @var int|null ID de la pàgina
      */
-    private $url_relativa;
-    
+    private $id_pagina;
+
+    /**
+     * @var string URL relativa en català (ex: /terapia-ansietat)
+     */
+    private $url_relativa_ca;
+
+    /**
+     * @var string URL relativa en espanyol (ex: /terapia-ansiedad)
+     */
+    private $url_relativa_es;
+
     /**
      * @var string Títol visible de la pàgina
      */
     private $titulo_pagina;
-    
+
     /**
      * @var string Tipus de pàgina (home, sobre-mi, servicios, blog, articulo, contacto, legal, landing)
      */
     private $tipo_pagina;
-    
-    // ============================================
-    // 2. SEO BÀSIC CATALÀ
-    // ============================================
-    
+
     /**
      * @var string Meta title en català (màx 60 caràcters)
      */
     private $title_ca;
-    
+
     /**
      * @var string Meta description en català (màx 160 caràcters)
      */
     private $meta_description_ca;
-    
+
     /**
      * @var string H1 principal en català (màx 100 caràcters)
      */
     private $h1_ca;
-    
+
     /**
      * @var string|null Contingut principal de la pàgina en català
      */
     private $contenido_principal_ca;
-    
-    // ============================================
-    // 3. SEO BÀSIC CASTELLÀ
-    // ============================================
-    
+
     /**
      * @var string Meta title en espanyol (màx 60 caràcters)
      */
     private $title_es;
+
+
+    // ========== GETTERS PERSONALITZATS PER A LA TAULA =============
+    /**
+     * Obté la URL relativa en català
+     * @return string
+     */
+    public function getUrlRelativaCa() {
+        return $this->url_relativa_ca;
+    }
+
+    /**
+     * Obté la URL relativa en espanyol
+     * @return string
+     */
+    public function getUrlRelativaEs() {
+        return $this->url_relativa_es;
+    }
     
     /**
      * @var string Meta description en espanyol (màx 160 caràcters)
@@ -397,7 +404,8 @@ class SEO_OnPage {
             
             if ($row) {
                 // 1. Identificació i URL
-                $this->url_relativa = $row['url_relativa'];
+                $this->url_relativa_ca = $row['url_relativa_ca'];
+                $this->url_relativa_es = $row['url_relativa_es'];
                 $this->titulo_pagina = $row['titulo_pagina'];
                 $this->tipo_pagina = $row['tipo_pagina'];
                 
@@ -485,22 +493,19 @@ class SEO_OnPage {
      * @param string $url_relativa URL relativa de la pàgina (ex: /terapia-ansietat)
      * @return SEO_OnPage|null Objecte amb les dades de la pàgina o null si no existeix
      */
-    public static function carregarPerUrl($url_relativa) {
+    public static function carregarPerUrl($url_relativa, $lang = 'ca') {
         try {
             $conn = Connexio::getInstance();
             $pdo = $conn->getConnexio();
-            
-            $sql = "SELECT id_pagina FROM seo_onpage_paginas WHERE url_relativa = :url LIMIT 1";
+            $field = ($lang === 'es') ? 'url_relativa_es' : 'url_relativa_ca';
+            $sql = "SELECT id_pagina FROM seo_onpage_paginas WHERE $field = :url LIMIT 1";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':url', $url_relativa, PDO::PARAM_STR);
             $stmt->execute();
-            
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            
             if ($row) {
                 return new self($row['id_pagina']);
             }
-            
             return null;
             
         } catch (Exception $e) {
@@ -561,7 +566,9 @@ class SEO_OnPage {
      * @return string URL relativa (ex: /terapia-ansietat)
      */
     public function getUrlRelativa() {
-        return $this->url_relativa;
+    // Retorna la URL relativa segons l'idioma
+    $lang = isset($_SESSION['language']) ? $_SESSION['language'] : 'ca';
+    return ($lang === 'es') ? $this->url_relativa_es : $this->url_relativa_ca;
     }
     
     /**
@@ -1448,7 +1455,9 @@ class SEO_OnPage {
         $html .= '<meta name="description" content="' . htmlspecialchars($this->getMetaDescription($lang)) . '">' . "\n";
         $html .= '<meta name="robots" content="' . $this->meta_robots . '">' . "\n";
         
-        $canonical = $this->canonical_url ?: ($base_url . $this->url_relativa);
+    $lang = isset($_SESSION['language']) ? $_SESSION['language'] : 'ca';
+    $url_relativa = ($lang === 'es') ? $this->url_relativa_es : $this->url_relativa_ca;
+    $canonical = $this->canonical_url ?: ($base_url . $url_relativa);
         $html .= '<link rel="canonical" href="' . htmlspecialchars($canonical) . '">' . "\n";
         
         if ($keyword = $this->getFocusKeyword($lang)) {

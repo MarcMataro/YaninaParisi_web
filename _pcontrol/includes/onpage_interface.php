@@ -64,7 +64,8 @@ $modo_vista = isset($_GET['edit']) || isset($_GET['new']) ? 'edit' : 'list';
                 <tr>
                     <th><i class="fas fa-chart-line"></i> Score</th>
                     <th><i class="fas fa-heading"></i> Título</th>
-                    <th><i class="fas fa-link"></i> URL</th>
+                    <th><i class="fas fa-link"></i> URL CA</th>
+                    <th><i class="fas fa-link"></i> URL ES</th>
                     <th><i class="fas fa-tag"></i> Tipo</th>
                     <th><i class="fas fa-language"></i> Idiomas</th>
                     <th><i class="fas fa-calendar"></i> Publicación</th>
@@ -90,7 +91,10 @@ $modo_vista = isset($_GET['edit']) || isset($_GET['new']) ? 'edit' : 'list';
                         </div>
                     </td>
                     <td>
-                        <code class="url-code"><?php echo htmlspecialchars($pagina->getUrlRelativa()); ?></code>
+                        <code class="url-code"><?php echo htmlspecialchars($pagina->getUrlRelativaCa()); ?></code>
+                    </td>
+                    <td>
+                        <code class="url-code"><?php echo htmlspecialchars($pagina->getUrlRelativaEs()); ?></code>
                     </td>
                     <td>
                         <span class="type-badge type-<?php echo $pagina->getTipoPagina(); ?>">
@@ -172,11 +176,18 @@ $modo_vista = isset($_GET['edit']) || isset($_GET['new']) ? 'edit' : 'list';
 
             <div class="form-row">
                 <div class="form-group">
-                    <label><i class="fas fa-link"></i> URL Relativa <span class="required">*</span></label>
-                    <input type="text" name="url_relativa" required
-                           value="<?php echo $pagina_edit ? htmlspecialchars($pagina_edit->getUrlRelativa()) : ''; ?>"
+                    <label><i class="fas fa-link"></i> URL Relativa Català <span class="required">*</span></label>
+                    <input type="text" name="url_relativa_ca" required
+                           value="<?php echo $pagina_edit ? htmlspecialchars($pagina_edit->getUrlRelativaCa()) : ''; ?>"
+                           placeholder="Ej: /terapia-ansietat">
+                    <small>URL en català (sense domini, ha de començar per /)</small>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-link"></i> URL Relativa Español <span class="required">*</span></label>
+                    <input type="text" name="url_relativa_es" required
+                           value="<?php echo $pagina_edit ? htmlspecialchars($pagina_edit->getUrlRelativaEs()) : ''; ?>"
                            placeholder="Ej: /terapia-ansiedad">
-                    <small>URL sin dominio (debe empezar por /)</small>
+                    <small>URL en castellano (sin dominio, debe empezar por /)</small>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-tag"></i> Tipo de Página <span class="required">*</span></label>

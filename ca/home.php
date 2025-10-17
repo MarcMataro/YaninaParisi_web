@@ -1,0 +1,586 @@
+<?php 
+// Inicialitzar sessió si no està iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Debug ABANS del processament
+echo "<!-- DEBUG INDEX ABANS: GET lang: " . ($_GET['lang'] ?? 'no definit') . " -->";
+echo "<!-- DEBUG INDEX ABANS: Session lang abans: " . ($_SESSION['language'] ?? 'no definit') . " -->";
+
+// Forçar idioma català en aquesta pàgina
+$_SESSION['language'] = 'ca';
+// Processar canvi d'idioma PRIMER
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    if (in_array($lang, array('ca', 'es'))) {
+        $_SESSION['language'] = $lang;
+        header('Location: /' . $lang . '/home.php');
+        exit;
+    }
+}
+
+// Incluir sistema de traducció
+include '../includes/lang.php';
+
+// Debug DESPRÉS
+echo "<!-- DEBUG INDEX DESPRÉS: Session lang després: " . ($_SESSION['language'] ?? 'no definit') . " -->";
+echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() . " -->";
+?>
+<!DOCTYPE html>
+<html lang="<?php echo getCurrentLanguage(); ?>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- METAETIQUETES ESSENCIALS -->
+    <title><?php echo t('meta_title'); ?></title>
+    <meta name="description" content="<?php echo t('meta_description'); ?>">
+    <meta name="keywords" content="<?php echo t('meta_keywords'); ?>">
+    <meta name="author" content="Yanina Parisi">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#aa9e6b">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/ca/home.php">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../img/apple-touch-icon.png">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
+    <meta property="og:title" content="<?php echo t('meta_og_title'); ?>">
+    <meta property="og:description" content="<?php echo t('meta_og_description'); ?>">
+    <meta property="og:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
+    <meta property="og:site_name" content="<?php echo t('meta_og_site_name'); ?>">
+    <meta property="og:locale" content="<?php echo getCurrentLanguage() === 'ca' ? 'ca_ES' : 'es_ES'; ?>">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo t('meta_og_title'); ?>">
+    <meta name="twitter:description" content="<?php echo t('meta_og_description'); ?>">
+    <meta name="twitter:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/estils.css">
+    <link rel="stylesheet" href="../css/brands.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Schema Markup JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Psychologist",
+        "name": "Yanina Parisi",
+        "description": "<?php echo t('meta_description'); ?>",
+        "url": "<?php echo 'https://' . $_SERVER['HTTP_HOST']; ?>",
+        "telephone": "+34-XXX-XXX-XXX",
+        "email": "info@yaninaparisi.com",
+        "image": "<?php echo 'https://' . $_SERVER['HTTP_HOST']; ?>/img/img_2282.jpeg",
+        "priceRange": "€€",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Girona",
+            "addressRegion": "Catalunya", 
+            "addressCountry": "ES"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "41.9794",
+            "longitude": "2.8214"
+        },
+        "openingHours": "Mo-Fr 09:00-19:00",
+        "serviceArea": {
+            "@type": "Country",
+            "name": "España"
+        },
+        "medicalSpecialty": [
+            "Psychology",
+            "Couple Therapy", 
+            "Individual Therapy",
+            "Anxiety Treatment",
+            "Depression Treatment"
+        ],
+        "areaServed": [
+            "Girona",
+            "Catalunya", 
+            "España"
+        ]
+    }
+    </script>
+</head>
+<body>
+    <?php include '_includes/navigation.php'; ?>
+
+    <!-- Secció Hero -->
+    <section class="hero" id="inici">
+        <div class="container hero-content">
+            <h1><?php echo t('hero_title'); ?> <span class="highlight"><?php echo t('hero_name'); ?></span></h1>
+            <h2 class="hero-subtitle"><?php echo t('hero_subtitle'); ?></h2>
+
+            <div class="hero-buttons">
+                <a href="#contacte" class="btn btn-primary">
+                    <i class="fas fa-calendar-check"></i>
+                    <?php echo t('hero_btn_primary'); ?>
+                </a>
+                <a href="#serveis" class="btn btn-secondary">
+                    <?php echo t('hero_btn_secondary'); ?>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Frase inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <blockquote>
+                    <p>"<?php echo t('quote_text'); ?>"</p>
+                </blockquote>
+                <cite>— <?php echo t('quote_author'); ?></cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- Especialitats -->
+    <section id="serveis" class="specialties-section">
+        <div class="container">
+            <div class="section-title">
+                <h2><?php echo t('services_title'); ?></h2>
+                <p><?php echo t('services_subtitle'); ?></p>
+            </div>
+            <div class="specialties-grid">
+                <!-- Salut Mental Adults -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3><?php echo t('specialty1_title'); ?></h3>
+                    <ul>
+                        <li><?php echo t('specialty1_item1'); ?></li>
+                        <li><?php echo t('specialty1_item2'); ?></li>
+                        <li><?php echo t('specialty1_item3'); ?></li>
+                        <li><?php echo t('specialty1_item4'); ?></li>
+                        <li><?php echo t('specialty1_item5'); ?></li>
+                        <li><?php echo t('specialty1_item6'); ?></li>
+                    </ul>
+                </div>
+                
+                <!-- Teràpia de Parella i Família -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3><?php echo t('specialty2_title'); ?></h3>
+                    <ul>
+                        <li><?php echo t('specialty2_item1'); ?></li>
+                        <li><?php echo t('specialty2_item2'); ?></li>
+                        <li><?php echo t('specialty2_item3'); ?></li>
+                        <li><?php echo t('specialty2_item4'); ?></li>
+                        <li><?php echo t('specialty2_item5'); ?></li>
+                    </ul>
+                </div>
+                
+                <!-- Psicologia Judicial -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3><?php echo t('specialty3_title'); ?></h3>
+                    <ul>
+                        <li><?php echo t('specialty3_item1'); ?></li>
+                        <li><?php echo t('specialty3_item2'); ?></li>
+                        <li><?php echo t('specialty3_item3'); ?></li>
+                        <li><?php echo t('specialty3_item4'); ?></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serveis Especials -->
+    <section class="special-services">
+        <div class="container">
+            <div class="section-title">
+                <h2><?php echo t('special_services_title'); ?></h2>
+                <p><?php echo t('special_services_subtitle'); ?></p>
+            </div>
+            
+            <div class="services-special-grid">
+                <div class="service-special-card">
+                    <div class="service-special-header">
+                        <i class="fas fa-heart-circle-check"></i>
+                        <h3><?php echo t('special_service1_title'); ?></h3>
+                    </div>
+                    <p><?php echo t('special_service1_desc'); ?></p>
+                    <ul>
+                        <li><?php echo t('special_service1_item1'); ?></li>
+                        <li><?php echo t('special_service1_item2'); ?></li>
+                        <li><?php echo t('special_service1_item3'); ?></li>
+                    </ul>
+                </div>
+                
+                <div class="service-special-card">
+                    <div class="service-special-header">
+                        <i class="fas fa-scale-balanced"></i>
+                        <h3><?php echo t('special_service2_title'); ?></h3>
+                    </div>
+                    <p><?php echo t('special_service2_desc'); ?></p>
+                    <ul>
+                        <li><?php echo t('special_service2_item1'); ?></li>
+                        <li><?php echo t('special_service2_item2'); ?></li>
+                        <li><?php echo t('special_service2_item3'); ?></li>
+                        <li><?php echo t('special_service2_item4'); ?></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre mi -->
+    <section id="sobre-mi" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="../img/img_2282.jpeg" 
+                         alt="Yanina Parisi - Psicòloga General Sanitària Col·legiada a Girona"
+                         width="300" 
+                         height="350"
+                         loading="lazy">
+                </div>
+                
+                <div class="about-text">
+                    <h2 class="about-title">
+                        <?php echo t('about_main_title'); ?>
+                    </h2>
+                    
+                    <div class="about-intro">
+                        <p><?php echo t('about_main_intro'); ?></p>
+                    </div>
+                    
+                    <div class="about-services">
+                        <h3><?php echo t('about_services_title'); ?></h3>
+                        
+                        <div class="service-item">
+                            <h4><?php echo t('about_service1_title'); ?></h4>
+                            <p><?php echo t('about_service1_desc'); ?></p>
+                        </div>
+                        
+                        <div class="service-item">
+                            <h4><?php echo t('about_service2_title'); ?></h4>
+                            <p><?php echo t('about_service2_desc'); ?></p>
+                        </div>
+                        
+                        <div class="service-item">
+                            <h4><?php echo t('about_service3_title'); ?></h4>
+                            <p><?php echo t('about_service3_desc'); ?></p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-location">
+                        <p><?php echo t('about_location_text'); ?></p>
+                    </div>
+                    
+                    <div class="about-actions">
+                        <a href="../contacta.php" class="btn btn-primary">
+                            <?php echo t('about_btn_primary'); ?>
+                        </a>
+                        <a href="../sobremi.php" class="btn btn-secondary">
+                            <?php echo t('about_btn_secondary'); ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Segona cita inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <blockquote>
+                    <p>"<?php echo t('quote2_text'); ?>"</p>
+                </blockquote>
+                <cite>— <?php echo t('quote2_author'); ?></cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonis -->
+    <section id="testimonis">
+        <div class="container">
+            <div class="section-title">
+                <h2>Testimonis</h2>
+                <p>El que diuen els meus pacients</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"La Yanina m'ha ajudat a superar la meva ansietat com mai havia imaginat. Les seves tècniques i suport em van donar les eines necessàries per afrontar les meves pors."</p>
+                    <div class="testimonial-author">
+                        <div class="author-image"><i class="fas fa-user"></i></div>
+                        <div>
+                            <h4>Laura G.</h4>
+                            <p>Pacient des de 2021</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Després de poc més de sis mesos de teràpia de parella, la nostra relació ha millorat dràsticament. Gràcies a la Yanina per ensenyar-nos a comunicar-nos millor."</p>
+                    <div class="testimonial-author">
+                        <div class="author-image"><i class="fas fa-users"></i></div>
+                        <div>
+                            <h4>Marc i Elena</h4>
+                            <p>Pacients des de 2022</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarifes -->
+    <section id="tarifes">
+        <div class="container">
+            <div class="section-title">
+                <h2><?php echo t('pricing_title'); ?></h2>
+                <p><?php echo t('pricing_subtitle'); ?></p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-gift pricing-icon"></i>
+                        <h3><?php echo t('pricing_first_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="original-price">60</span>
+                            <span class="amount">0</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_session'); ?></span>
+                        </div>
+                        <p class="price-note"><?php echo t('pricing_first_note'); ?></p>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_first_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_first_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_first_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-heart pricing-icon"></i>
+                        <h3><?php echo t('pricing_individual_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">60</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_session'); ?></span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature1'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_individual_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-calendar-week pricing-icon"></i>
+                        <h3><?php echo t('pricing_biweekly_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">100</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_month'); ?></span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature1'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_biweekly_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-calendar-alt pricing-icon"></i>
+                        <h3><?php echo t('pricing_monthly_title'); ?></h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">180</span>
+                            <span class="currency">€</span>
+                            <span class="period"><?php echo t('pricing_month'); ?></span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature1'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature2'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature3'); ?></li>
+                            <li><i class="fas fa-check"></i> <?php echo t('pricing_monthly_feature4'); ?></li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn"><?php echo t('pricing_btn'); ?></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacte -->
+    <section id="contacte">
+        <div class="container">
+            <div class="section-title">
+                <h2><?php echo t('contact_title'); ?></h2>
+                <p><?php echo t('contact_subtitle'); ?></p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                        <div>
+                            <h4><?php echo t('contact_address'); ?></h4>
+                            <p><?php echo t('contact_address_text'); ?></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone contact-icon"></i>
+                        <div>
+                            <h4><?php echo t('contact_phone'); ?></h4>
+                            <p><?php echo t('contact_phone_text'); ?></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <div>
+                            <h4><?php echo t('contact_email'); ?></h4>
+                            <p><?php echo t('contact_email_text'); ?></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock contact-icon"></i>
+                        <div>
+                            <h4><?php echo t('contact_hours'); ?></h4>
+                            <p><?php echo t('contact_hours_weekdays'); ?></p>
+                            <p><?php echo t('contact_hours_saturday'); ?></p>
+                        </div>
+                    </div>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="name"><?php echo t('contact_name'); ?></label>
+                        <input type="text" id="name" placeholder="<?php echo t('contact_name_placeholder'); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><?php echo t('contact_email'); ?></label>
+                        <input type="email" id="email" placeholder="<?php echo t('contact_email_placeholder'); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><?php echo t('contact_phone'); ?></label>
+                        <input type="tel" id="phone" placeholder="<?php echo t('contact_phone_placeholder'); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="message"><?php echo t('contact_message'); ?></label>
+                        <textarea id="message" placeholder="<?php echo t('contact_message_placeholder'); ?>"></textarea>
+                    </div>
+                    <button type="submit" class="btn"><?php echo t('contact_submit'); ?></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Peu de pàgina -->
+    <?php include '_includes/footer.php'; ?>
+
+    <script>
+        // Script per a la navegació suau
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Script per l'efecte scroll de la navegació
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Script per al selector d'idioma
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Obtenir l'idioma del data attribute
+                    const lang = this.getAttribute('data-lang');
+                    console.log('Botó clickat, idioma:', lang);
+                    
+                    // Eliminar classe active de tots els botons (tant desktop com mòbil)
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    // Afegir classe active a tots els botons del mateix idioma
+                    document.querySelectorAll(`.lang-btn[data-lang="${lang}"]`).forEach(b => b.classList.add('active'));
+                    
+                    // Tancar menú mòbil si està obert
+                    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+                    const navMenu = document.querySelector('.nav-menu ul');
+                    if (mobileMenuToggle && navMenu) {
+                        mobileMenuToggle.classList.remove('active');
+                        navMenu.classList.remove('show');
+                    }
+                    
+                    // Canviar idioma
+                    changeLanguage(lang);
+                });
+            });
+
+            // Funcionalitat del menú hamburguesa
+            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            const navMenu = document.querySelector('.nav-menu ul');
+
+            if (mobileMenuToggle && navMenu) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('show');
+                });
+
+                // Tancar menú quan es clica un enllaç
+                document.querySelectorAll('.nav-menu ul li a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenuToggle.classList.remove('active');
+                        navMenu.classList.remove('show');
+                    });
+                });
+
+                // Tancar menú quan es clica fora
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuToggle.contains(e.target) && !navMenu.contains(e.target)) {
+                        mobileMenuToggle.classList.remove('active');
+                        navMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="../js/language.js"></script>
+</body>
+</html>
