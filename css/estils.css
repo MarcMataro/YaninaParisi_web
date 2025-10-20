@@ -424,30 +424,6 @@ header.scrolled .lang-btn.active {
     line-height: 1.2;
 }
 
-/* Hero Badge */
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 14px 28px;
-    border-radius: 50px;
-    margin-bottom: 50px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
-}
-
-.hero-badge i {
-    color: var(--color-accent);
-    font-size: 1.3rem;
-}
-
-.hero-badge span {
-    color: var(--color-dark);
-    font-weight: 600;
-    font-size: 1rem;
-}
-
 .hero-buttons {
     display: flex;
     justify-content: center;
@@ -508,12 +484,6 @@ section {
     font-size: 2.5rem;
     color: var(--color-accent);
     margin-bottom: 15px;
-}
-
-.section-title p {
-    color: var(--color-dark);
-    max-width: 700px;
-    margin: 0 auto;
 }
 
 /* Secció frase inspiradora */
@@ -695,6 +665,15 @@ section {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
+}
+
+/* Remove the thin line under the title for the specialties and special services
+   sections (it looks like a horizontal rule and is unwanted between title and cards). */
+.specialties-section .section-title,
+.special-services .section-title {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 30px; /* keep spacing between title and cards */
 }
 
 .services-special-grid {

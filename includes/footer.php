@@ -6,7 +6,7 @@
                     <p><?php echo t('footer_tagline'); ?></p>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_quick_links'); ?></h3>
+                    <h3>Enlaces rápidos</h3>
                     <ul>
                         <li><a href="#inici"><?php echo t('nav_home'); ?></a></li>
                         <li><a href="#serveis"><?php echo t('nav_services'); ?></a></li>
@@ -17,7 +17,7 @@
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_services_title'); ?></h3>
+                    <h3>Servicios</h3>
                     <ul>
                         <li><a href="#serveis"><?php echo t('footer_service1'); ?></a></li>
                         <li><a href="#serveis"><?php echo t('footer_service2'); ?></a></li>
@@ -27,7 +27,7 @@
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_social_title'); ?></h3>
+                    <h3>Redes sociales</h3>
                     <ul>
                         <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
                         <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>

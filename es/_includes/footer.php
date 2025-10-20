@@ -1,4 +1,4 @@
-    <footer>
+        <footer>
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-column">
@@ -6,28 +6,28 @@
                     <p>Ayudándote a encontrar tu camino hacia el bienestar mental y emocional.</p>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_quick_links'); ?></h3>
+                    <h3>Enlaces rápidos</h3>
                     <ul>
                         <li><a href="home.php">Inicio</a></li>
                         <li><a href="clinica.php">Consulta</a></li>
                         <li><a href="sobremi.php">Sobre mí</a></li>
                         <li><a href="blog.php">Blog</a></li>
-                        <li><a href="dos-almas.php" class="love-link">Dos almas</a></li>
+                        <li><a href="dues-animes.php" class="love-link">Dos almas</a></li>
                         <li><a href="contacta.php">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_services_title'); ?></h3>
+                    <h3>Servicios</h3>
                     <ul>
-                        <li><a href="#servicios"><?php echo t('footer_service1'); ?></a></li>
-                        <li><a href="#servicios"><?php echo t('footer_service2'); ?></a></li>
-                        <li><a href="#servicios"><?php echo t('footer_service3'); ?></a></li>
-                        <li><a href="#servicios-especiales"><?php echo t('footer_service4'); ?></a></li>
-                        <li><a href="#servicios-especiales"><?php echo t('footer_service5'); ?></a></li>
+                        <li><a href="#servicios">Salud mental para adultos</a></li>
+                        <li><a href="#servicios">Terapia de pareja y familia</a></li>
+                        <li><a href="#servicios-especiales">Especialidad en TOC, ansiedad y depresión</a></li>
+                        <li><a href="#servicios">Psicología judicial</a></li>
+                        <li><a href="#servicios-especiales">Búsqueda de pareja consciente / Dos almas</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_social_title'); ?></h3>
+                    <h3>Redes sociales</h3>
                     <ul>
                         <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
                         <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; <?php echo date("Y"); ?> Psicología Yanina. Todos los derechos reservados.</p>
+                <p>© <?php echo date("Y"); ?> Psicología Yanina. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>

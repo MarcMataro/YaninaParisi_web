@@ -1,7 +1,19 @@
 <?php
 session_start();
-// Verificar autenticació
+// Verificar autenticació (mateix comportament que a gseo.php)
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+	// Si demanem debug, no fem redirect: mostrem informació de sessió i cookies
+	if (isset($_GET['debug']) && $_GET['debug'] == '1') {
+		echo "<pre style='background:#f8f9fa;padding:12px;border:1px solid #ddd;border-radius:6px;'>";
+		echo "DEBUG: Accés sense autenticació\n";
+		echo "Session ID: " . session_id() . "\n\n";
+		echo "\$_SESSION:\n";
+		print_r($_SESSION);
+		echo "\n\n\$_COOKIE:\n";
+		print_r($_COOKIE);
+		echo "</pre>";
+		exit;
+	}
 	header('Location: index.php');
 	exit;
 }
@@ -99,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Carregar pàgines SEO On-Page
+$is_new = isset($_GET['new']) && $_GET['new'] == '1';
 $paginas_onpage = [];
 $pagina_edit = null;
 $tipo_filtro = $_GET['tipo'] ?? 'all';
@@ -114,8 +127,16 @@ try {
 	$stmt->execute();
 	$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	$paginas_onpage = [];
+	$load_errors = [];
+	$db_row_ids = array_map(function($r){ return $r['id_pagina']; }, $rows ?: []);
+	$db_rows_count = count($rows ?: []);
 	foreach ($rows as $row) {
-		$paginas_onpage[] = new SEO_OnPage($row['id_pagina']);
+		try {
+			$paginas_onpage[] = new SEO_OnPage($row['id_pagina']);
+		} catch (Exception $e) {
+			// collect but continue
+			$load_errors[] = ['id' => $row['id_pagina'], 'error' => $e->getMessage()];
+		}
 	}
 	$seo_onpage_stats = SEO_OnPage::calcularEstadistiquesGlobals();
 } catch (Exception $e) {
@@ -144,10 +165,18 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 	</header>
 	<div class="content-wrapper" style="margin-top:32px;">
 		<div class="onpage-table-container">
-				<div class="onpage-table-header">
-						<h2><i class="fas fa-list"></i> Pàgines SEO On Page</h2>
-						<button class="btn btn-primary" onclick="openEditModal('new')"><i class="fas fa-plus"></i> Nova pàgina</button>
+				<div class="onpage-table-header" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px;">
+					<h2 style="margin: 0;"><i class="fas fa-list"></i> Pàgines SEO On Page</h2>
+					<button type="button" onclick="openNewModal()" class="btn btn-small btn-primary" style="margin-left: 12px;"><i class="fas fa-plus"></i> Nova pàgina</button>
 				</div>
+				<style>
+				.onpage-table-header {
+					padding: 8px;
+				}
+				.onpage-table {
+					margin-top: 0;
+				}
+				</style>
 				<table class="onpage-table">
 						<thead>
 								<tr>
@@ -170,15 +199,48 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 											 <td><?php echo htmlspecialchars($pagina->getTitle('es')); ?></td>
 											 <td><?php echo ($pagina->isActiva() ? 'Sí' : 'No'); ?></td>
 											 <td>
-													 <button class="btn btn-sm btn-secondary" onclick="openEditModal(<?php echo $pagina->getIdPagina(); ?>, '<?php echo addslashes(json_encode([
-															 'id_pagina' => $pagina->getIdPagina(),
-															 'url_relativa_ca' => $pagina->getUrlRelativaCa(),
-															 'url_relativa_es' => $pagina->getUrlRelativaEs(),
-															 'title_ca' => $pagina->getTitle('ca'),
-															 'title_es' => $pagina->getTitle('es'),
-															 'activa' => $pagina->isActiva()
-													 ])); ?>')"><i class="fas fa-edit"></i> Edita</button>
-													 <button class="btn btn-sm btn-danger" onclick="openDeleteModal(<?php echo $pagina->getIdPagina(); ?>)"><i class="fas fa-trash"></i> Elimina</button>
+													<?php $json_payload = htmlspecialchars(json_encode([
+														'id_pagina' => $pagina->getIdPagina(),
+														'url_relativa_ca' => $pagina->getUrlRelativaCa(),
+														'url_relativa_es' => $pagina->getUrlRelativaEs(),
+														'titulo_pagina' => $pagina->getTituloPagina(),
+														'tipo_pagina' => $pagina->getTipoPagina(),
+														'title_ca' => $pagina->getTitle('ca'),
+														'meta_description_ca' => $pagina->getMetaDescription('ca'),
+														'h1_ca' => $pagina->getH1('ca'),
+															'contenido_principal_ca' => $pagina->getContenido('ca'),
+														'title_es' => $pagina->getTitle('es'),
+														'meta_description_es' => $pagina->getMetaDescription('es'),
+														'h1_es' => $pagina->getH1('es'),
+															'contenido_principal_es' => $pagina->getContenido('es'),
+														'slug_ca' => $pagina->getSlug('ca'),
+														'slug_es' => $pagina->getSlug('es'),
+														'meta_robots' => $pagina->getMetaRobots(),
+														'canonical_url' => $pagina->getCanonicalUrl(),
+														'priority' => $pagina->getPriority(),
+														'changefreq' => $pagina->getChangefreq(),
+														'focus_keyword_ca' => $pagina->getFocusKeyword('ca'),
+														'focus_keyword_es' => $pagina->getFocusKeyword('es'),
+														'keywords_secundarias_ca' => $pagina->getKeywordsSecundarias('ca'),
+														'keywords_secundarias_es' => $pagina->getKeywordsSecundarias('es'),
+														'og_title_ca' => $pagina->getOgTitle('ca'),
+														'og_title_es' => $pagina->getOgTitle('es'),
+														'og_description_ca' => $pagina->getOgDescription('ca'),
+														'og_description_es' => $pagina->getOgDescription('es'),
+														'og_image' => $pagina->getOgImage(),
+														'twitter_title_ca' => $pagina->getTwitterTitle('ca'),
+														'twitter_title_es' => $pagina->getTwitterTitle('es'),
+														'twitter_description_ca' => $pagina->getTwitterDescription('ca'),
+														'twitter_description_es' => $pagina->getTwitterDescription('es'),
+														'twitter_image' => $pagina->getTwitterImage(),
+														'featured_image' => $pagina->getFeaturedImage(),
+														'alt_image_ca' => $pagina->getAltImage('ca'),
+														'alt_image_es' => $pagina->getAltImage('es'),
+														'activa' => $pagina->isActiva(),
+														'fecha_publicacion' => $pagina->getFechaPublicacion()
+													]), ENT_QUOTES, 'UTF-8'); ?>
+													<button type="button" data-json="<?php echo $json_payload; ?>" onclick="(function(btn){ try{ openEditModal(<?php echo $pagina->getIdPagina(); ?>, btn.dataset.json); }catch(e){ console.error(e); } })(this)" class="btn btn-small btn-secondary"><i class="fas fa-edit"></i> Edita</button>
+													<button class="btn btn-small btn-danger" onclick="openDeleteModal(<?php echo $pagina->getIdPagina(); ?>)"><i class="fas fa-trash"></i> Elimina</button>
 											 </td>
 									 </tr>
 							 <?php endforeach; ?>
@@ -186,40 +248,338 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 				</table>
 		</div>
 
+				<?php if (isset($_GET['debug']) && $_GET['debug'] == '1'): ?>
+					<div style="background:#e9f7ef;border:1px solid #c7eed8;padding:12px;border-radius:8px;margin-top:16px;color:#155724;">
+						<strong>Debug DB:</strong> Filas devueltas por la consulta: <?php echo $db_rows_count ?? 0; ?>.
+						<div style="margin-top:6px;"><strong>IDs:</strong> <?php echo htmlspecialchars(json_encode($db_row_ids ?? [], JSON_UNESCAPED_UNICODE)); ?></div>
+						<div style="margin-top:6px;"><strong>Objetos cargados:</strong> <?php echo count($paginas_onpage); ?></div>
+					</div>
+				<?php endif; ?>
+
+				<?php if (!empty($load_errors)): ?>
+					<div style="background:#fff3cd;border:1px solid #ffeeba;padding:12px;border-radius:8px;margin-top:16px;color:#856404;">
+						<strong>Debug:</strong> Hi ha errors carregant algunes pàgines. Mostrant <?php echo count($paginas_onpage); ?> pàgines, errors: <?php echo count($load_errors); ?>.
+						<details style="margin-top:8px;"><summary>Mostrar errors</summary><pre><?php echo htmlspecialchars(json_encode($load_errors, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE)); ?></pre></details>
+					</div>
+				<?php endif; ?>
+
 		<!-- Modal Afegir/Editar SEO On Page -->
-		<div id="seoModal" class="modal" style="display:none;">
-			<div class="modal-content">
-				<span class="close" onclick="closeModal()">&times;</span>
-				<form id="seoForm" method="POST" action="gseoonpage.php">
-					<input type="hidden" name="action" value="save_onpage">
-					<input type="hidden" name="id_pagina" id="modal_id_pagina">
-					<div class="form-group">
-						<label>URL (CA)</label>
-						<input type="text" name="url_relativa_ca" id="modal_url_relativa_ca" required>
-					</div>
-					<div class="form-group">
-						<label>URL (ES)</label>
-						<input type="text" name="url_relativa_es" id="modal_url_relativa_es" required>
-					</div>
-					<div class="form-group">
-						<label>Títol (CA)</label>
-						<input type="text" name="title_ca" id="modal_title_ca" required>
-					</div>
-					<div class="form-group">
-						<label>Títol (ES)</label>
-						<input type="text" name="title_es" id="modal_title_es" required>
-					</div>
-					<div class="form-group">
-						<label>Activa</label>
-						<select name="activa" id="modal_activa">
-							<option value="1">Sí</option>
-							<option value="0">No</option>
-						</select>
-					</div>
-					<button type="submit" class="btn btn-success">Desa</button>
-				</form>
+		<div id="seoOnPageModal" onclick="closeModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:99999; animation:fadeIn 0.3s ease-out;">
+			<div class="modal-container" onclick="event.stopPropagation()" style="background-color:#fff; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.3); max-width:800px; width:90%; max-height:90vh; overflow-y:auto; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); animation:slideIn 0.3s ease-out;">
+				<div class="modal-header" style="padding:30px 40px 20px; border-bottom:1px solid #e0e0e0; display:flex; justify-content:space-between; align-items:center;">
+					<h2 style="margin:0; font-size:1.8rem; font-weight:700; color:#333; letter-spacing:0.5px;">Configuració SEO de la pàgina</h2>
+					<button type="button" onclick="closeModal()" style="background:none; border:none; font-size:2rem; color:#999; cursor:pointer; padding:0; line-height:1; transition:color 0.2s;">&times;</button>
+				</div>
+				<div class="modal-body" style="padding:30px 40px;">
+					<form id="seoOnPageForm" method="post" action="gseoonpage.php">
+						<input type="hidden" name="action" value="save_onpage">
+						<input type="hidden" name="id_pagina" id="modal_id_pagina">
+
+						<fieldset style="border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px;">
+							<legend style="font-weight:600; color:#555; padding:0 10px;">Informació Bàsica</legend>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_url_relativa_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">URL (CA)</label>
+									<input type="text" name="url_relativa_ca" id="modal_url_relativa_ca" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_url_relativa_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">URL (ES)</label>
+									<input type="text" name="url_relativa_es" id="modal_url_relativa_es" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_titulo_pagina" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Títol visible</label>
+								<input type="text" name="titulo_pagina" id="modal_titulo_pagina" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_tipo_pagina" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Tipus de pàgina</label>
+									<select name="tipo_pagina" id="modal_tipo_pagina" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+										<option value="landing">Landing</option>
+										<option value="blog">Blog</option>
+										<option value="servei">Servei</option>
+									</select>
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_activa" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Activa</label>
+									<select name="activa" id="modal_activa" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+										<option value="1">Sí</option>
+										<option value="0">No</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="modal_fecha_publicacion" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Data publicació</label>
+								<input type="date" name="fecha_publicacion" id="modal_fecha_publicacion" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+						</fieldset>
+
+						<fieldset style="border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px;">
+							<legend style="font-weight:600; color:#555; padding:0 10px;">Contingut Català</legend>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_title_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Meta Title (CA)</label>
+								<input type="text" name="title_ca" id="modal_title_ca" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_meta_description_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Meta Description (CA)</label>
+								<textarea name="meta_description_ca" id="modal_meta_description_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:80px;"></textarea>
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_h1_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">H1 (CA)</label>
+								<input type="text" name="h1_ca" id="modal_h1_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_contenido_principal_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Contingut principal (CA)</label>
+								<textarea name="contenido_principal_ca" id="modal_contenido_principal_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:100px;"></textarea>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_slug_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Slug (CA)</label>
+									<input type="text" name="slug_ca" id="modal_slug_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_focus_keyword_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Focus Keyword (CA)</label>
+									<input type="text" name="focus_keyword_ca" id="modal_focus_keyword_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+						</fieldset>
+
+						<fieldset style="border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px;">
+							<legend style="font-weight:600; color:#555; padding:0 10px;">Contingut Castellà</legend>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_title_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Meta Title (ES)</label>
+								<input type="text" name="title_es" id="modal_title_es" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_meta_description_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Meta Description (ES)</label>
+								<textarea name="meta_description_es" id="modal_meta_description_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:80px;"></textarea>
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_h1_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">H1 (ES)</label>
+								<input type="text" name="h1_es" id="modal_h1_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_contenido_principal_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Contingut principal (ES)</label>
+								<textarea name="contenido_principal_es" id="modal_contenido_principal_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:100px;"></textarea>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_slug_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Slug (ES)</label>
+									<input type="text" name="slug_es" id="modal_slug_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_focus_keyword_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Focus Keyword (ES)</label>
+									<input type="text" name="focus_keyword_es" id="modal_focus_keyword_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+						</fieldset>
+
+						<fieldset style="border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px;">
+							<legend style="font-weight:600; color:#555; padding:0 10px;">SEO Avançat</legend>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_meta_robots" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Meta Robots</label>
+									<input type="text" name="meta_robots" id="modal_meta_robots" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;" value="index, follow">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_canonical_url" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Canonical URL</label>
+									<input type="text" name="canonical_url" id="modal_canonical_url" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_priority" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Prioritat</label>
+									<input type="text" name="priority" id="modal_priority" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;" value="0.8">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_changefreq" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Changefreq</label>
+									<select name="changefreq" id="modal_changefreq" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+										<option value="always">Always</option>
+										<option value="hourly">Hourly</option>
+										<option value="daily">Daily</option>
+										<option value="weekly">Weekly</option>
+										<option value="monthly" selected>Monthly</option>
+										<option value="yearly">Yearly</option>
+										<option value="never">Never</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_keywords_secundarias_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Keywords Secundàries (CA)</label>
+								<input type="text" name="keywords_secundarias_ca" id="modal_keywords_secundarias_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-group">
+								<label for="modal_keywords_secundarias_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Keywords Secundàries (ES)</label>
+								<input type="text" name="keywords_secundarias_es" id="modal_keywords_secundarias_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+						</fieldset>
+
+						<fieldset style="border:1px solid #ddd; border-radius:10px; padding:20px;">
+							<legend style="font-weight:600; color:#555; padding:0 10px;">Open Graph i Imatges</legend>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_og_title_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">OG Title (CA)</label>
+									<input type="text" name="og_title_ca" id="modal_og_title_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_og_title_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">OG Title (ES)</label>
+									<input type="text" name="og_title_es" id="modal_og_title_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_og_description_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">OG Description (CA)</label>
+									<textarea name="og_description_ca" id="modal_og_description_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:60px;"></textarea>
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_og_description_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">OG Description (ES)</label>
+									<textarea name="og_description_es" id="modal_og_description_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:60px;"></textarea>
+								</div>
+							</div>
+							<div class="form-group" style="margin-bottom:15px;">
+								<label for="modal_og_image" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">OG Image</label>
+								<input type="text" name="og_image" id="modal_og_image" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+							</div>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_twitter_title_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Twitter Title (CA)</label>
+									<input type="text" name="twitter_title_ca" id="modal_twitter_title_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_twitter_title_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Twitter Title (ES)</label>
+									<input type="text" name="twitter_title_es" id="modal_twitter_title_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_twitter_description_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Twitter Description (CA)</label>
+									<textarea name="twitter_description_ca" id="modal_twitter_description_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:60px;"></textarea>
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_twitter_description_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Twitter Description (ES)</label>
+									<textarea name="twitter_description_es" id="modal_twitter_description_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem; min-height:60px;"></textarea>
+								</div>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_twitter_image" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Twitter Image</label>
+									<input type="text" name="twitter_image" id="modal_twitter_image" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_featured_image" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Featured Image</label>
+									<input type="text" name="featured_image" id="modal_featured_image" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+							<div class="form-row" style="display:flex; gap:20px;">
+								<div class="form-group" style="flex:1;">
+									<label for="modal_alt_image_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Alt Image (CA)</label>
+									<input type="text" name="alt_image_ca" id="modal_alt_image_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_alt_image_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Alt Image (ES)</label>
+									<input type="text" name="alt_image_es" id="modal_alt_image_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+							</div>
+						</fieldset>
+
+						<div class="modal-footer" style="padding:20px 0 0; border-top:1px solid #e0e0e0; display:flex; justify-content:flex-end; gap:15px;">
+							<button type="button" onclick="closeModal()" class="btn btn-secondary" style="padding:12px 24px; font-size:1rem; border-radius:8px;">Cancel·lar</button>
+							<button type="submit" class="btn btn-primary" style="padding:12px 24px; font-size:1rem; border-radius:8px;">Desar</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
+
+		<style>
+			.modal {
+				position: fixed;
+				z-index: 9999;
+				left: 0;
+				top: 0;
+				width: 100vw;
+				height: 100vh;
+				background: rgba(0,0,0,0.25);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.seo-modal-content {
+				background: #fff;
+				border-radius: 16px;
+				box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+				padding: 32px 28px 24px 28px;
+				max-width: 680px;
+				width: 95vw;
+				max-height: 90vh;
+				overflow-y: auto;
+				position: relative;
+			}
+			/* SEO modal form vertical style */
+			.seo-form {
+				display: flex;
+				flex-direction: column;
+				gap: 18px;
+			}
+			.seo-form .form-group {
+				display: flex;
+				flex-direction: column;
+				margin-bottom: 0;
+			}
+			.seo-form label {
+				font-weight: 600;
+				color: #474742;
+				margin-bottom: 5px;
+				font-size: 0.98rem;
+			}
+			.seo-form input,
+			.seo-form select,
+			.seo-form textarea {
+				padding: 8px 10px;
+				border-radius: 6px;
+				border: 1px solid #eceae2;
+				font-size: 0.97rem;
+				font-family: 'Libre Baskerville', serif;
+				background: #faf9f6;
+				resize: vertical;
+			}
+			.seo-form textarea {
+				min-height: 38px;
+				max-height: 120px;
+			}
+			.seo-modal-content .close {
+				position: absolute;
+				top: 18px;
+				right: 22px;
+				font-size: 1.7rem;
+				color: #aa9e6b;
+				cursor: pointer;
+				font-weight: bold;
+				background: none;
+				border: none;
+			}
+			@media (max-width: 700px) {
+				.seo-modal-content {
+					padding: 18px 6vw 18px 6vw;
+					max-width: 98vw;
+				}
+				.seo-form-grid {
+					grid-template-columns: 1fr;
+					gap: 14px 0;
+				}
+			}
+			</style>
+
+		<style>
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		@keyframes slideIn {
+			from { transform:translate(-50%, calc(-50% - 50px)); opacity:0; }
+			to { transform:translate(-50%, -50%); opacity:1; }
+		}
+		</style>
 
 		<!-- Modal Eliminar SEO On Page -->
 		<div id="deleteModal" class="modal" style="display:none;">
@@ -229,35 +589,14 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 					<input type="hidden" name="action" value="delete_onpage">
 					<input type="hidden" name="id_pagina" id="delete_id_pagina">
 					<p>Segur que vols eliminar aquesta pàgina SEO?</p>
-					<button type="submit" class="btn btn-danger">Elimina</button>
-					<button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel·la</button>
+					<button type="submit" class="btn btn-small btn-danger">Elimina</button>
+					<button type="button" class="btn btn-small btn-secondary" onclick="closeDeleteModal()">Cancel·la</button>
 				</form>
 			</div>
 		</div>
 
 		<script>
-		function openEditModal(id, dataJson) {
-			document.getElementById('seoModal').style.display = 'block';
-			if (id === 'new') {
-				document.getElementById('modal_id_pagina').value = '';
-				document.getElementById('modal_url_relativa_ca').value = '';
-				document.getElementById('modal_url_relativa_es').value = '';
-				document.getElementById('modal_title_ca').value = '';
-				document.getElementById('modal_title_es').value = '';
-				document.getElementById('modal_activa').value = '1';
-			} else if (dataJson) {
-				var data = JSON.parse(dataJson);
-				document.getElementById('modal_id_pagina').value = data.id_pagina;
-				document.getElementById('modal_url_relativa_ca').value = data.url_relativa_ca;
-				document.getElementById('modal_url_relativa_es').value = data.url_relativa_es;
-				document.getElementById('modal_title_ca').value = data.title_ca;
-				document.getElementById('modal_title_es').value = data.title_es;
-				document.getElementById('modal_activa').value = data.activa ? '1' : '0';
-			}
-		}
-		function closeModal() {
-			document.getElementById('seoModal').style.display = 'none';
-		}
+		// Delete modal handlers
 		function openDeleteModal(id) {
 			document.getElementById('deleteModal').style.display = 'block';
 			document.getElementById('delete_id_pagina').value = id;
@@ -265,5 +604,139 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 		function closeDeleteModal() {
 			document.getElementById('deleteModal').style.display = 'none';
 		}
+
+		// Open modal for new page
+		function openNewModal() {
+			setDefaults();
+			var overlay = document.getElementById('seoOnPageModal');
+			console.log('openNewModal called, overlay:', overlay);
+			if (overlay) overlay.style.display = 'block';
+			// small timeout to allow CSS animation and then focus
+			setTimeout(function(){
+				var field = document.getElementById('modal_url_relativa_ca');
+				if(field) field.focus();
+			}, 60);
+		}
+
+		// Open modal for editing an existing page. 'data' is a JSON string.
+		function openEditModal(id, data) {
+			try {
+				var parsed = typeof data === 'string' ? JSON.parse(data) : data;
+				populateFields(parsed);
+				document.getElementById('seoOnPageModal').style.display = 'block';
+				setTimeout(function(){
+					var field = document.getElementById('modal_title_ca');
+					if(field) field.focus();
+				}, 60);
+			} catch (e) {
+				console.error('openEditModal parse error', e);
+				// fallback: just open empty modal
+				openNewModal();
+			}
+		}
+
+		// Close overlay modal
+		function closeModal() {
+			document.getElementById('seoOnPageModal').style.display = 'none';
+		}
+
+		// Populate defaults for new record
+		function setDefaults() {
+			var safe = function(id, v){ var el = document.getElementById(id); if(el) el.value = v; };
+			safe('modal_id_pagina','');
+			safe('modal_url_relativa_ca','');
+			safe('modal_url_relativa_es','');
+			safe('modal_titulo_pagina','');
+			safe('modal_tipo_pagina','landing');
+			safe('modal_activa','1');
+			safe('modal_fecha_publicacion', new Date().toISOString().split('T')[0]);
+			safe('modal_title_ca','');
+			safe('modal_meta_description_ca','');
+			safe('modal_h1_ca','');
+			safe('modal_contenido_principal_ca','');
+			safe('modal_slug_ca','');
+			safe('modal_focus_keyword_ca','');
+			safe('modal_title_es','');
+			safe('modal_meta_description_es','');
+			safe('modal_h1_es','');
+			safe('modal_contenido_principal_es','');
+			safe('modal_slug_es','');
+			safe('modal_focus_keyword_es','');
+			safe('modal_meta_robots','index, follow');
+			safe('modal_canonical_url','');
+			safe('modal_priority','0.8');
+			safe('modal_changefreq','monthly');
+			safe('modal_keywords_secundarias_ca','');
+			safe('modal_keywords_secundarias_es','');
+			safe('modal_og_title_ca','');
+			safe('modal_og_title_es','');
+			safe('modal_og_description_ca','');
+			safe('modal_og_description_es','');
+			safe('modal_og_image','');
+			safe('modal_twitter_title_ca','');
+			safe('modal_twitter_title_es','');
+			safe('modal_twitter_description_ca','');
+			safe('modal_twitter_description_es','');
+			safe('modal_twitter_image','');
+			safe('modal_featured_image','');
+			safe('modal_alt_image_ca','');
+			safe('modal_alt_image_es','');
+		}
+
+		// Fill fields from object
+		function populateFields(data) {
+			var safe = function(id, v){ var el = document.getElementById(id); if(el) el.value = (v !== undefined && v !== null) ? v : ''; };
+			safe('modal_id_pagina', data.id_pagina || '');
+			safe('modal_url_relativa_ca', data.url_relativa_ca || '');
+			safe('modal_url_relativa_es', data.url_relativa_es || '');
+			safe('modal_titulo_pagina', data.titulo_pagina || '');
+			safe('modal_tipo_pagina', data.tipo_pagina || 'landing');
+			safe('modal_activa', data.activa ? '1' : '0');
+			safe('modal_fecha_publicacion', data.fecha_publicacion || '');
+			safe('modal_title_ca', data.title_ca || '');
+			safe('modal_meta_description_ca', data.meta_description_ca || '');
+			safe('modal_h1_ca', data.h1_ca || '');
+			safe('modal_contenido_principal_ca', data.contenido_principal_ca || '');
+			safe('modal_slug_ca', data.slug_ca || '');
+			safe('modal_focus_keyword_ca', data.focus_keyword_ca || '');
+			safe('modal_title_es', data.title_es || '');
+			safe('modal_meta_description_es', data.meta_description_es || '');
+			safe('modal_h1_es', data.h1_es || '');
+			safe('modal_contenido_principal_es', data.contenido_principal_es || '');
+			safe('modal_slug_es', data.slug_es || '');
+			safe('modal_focus_keyword_es', data.focus_keyword_es || '');
+			safe('modal_meta_robots', data.meta_robots || 'index, follow');
+			safe('modal_canonical_url', data.canonical_url || '');
+			safe('modal_priority', data.priority || '0.8');
+			safe('modal_changefreq', data.changefreq || 'monthly');
+			safe('modal_keywords_secundarias_ca', data.keywords_secundarias_ca || '');
+			safe('modal_keywords_secundarias_es', data.keywords_secundarias_es || '');
+			safe('modal_og_title_ca', data.og_title_ca || '');
+			safe('modal_og_title_es', data.og_title_es || '');
+			safe('modal_og_description_ca', data.og_description_ca || '');
+			safe('modal_og_description_es', data.og_description_es || '');
+			safe('modal_og_image', data.og_image || '');
+			safe('modal_twitter_title_ca', data.twitter_title_ca || '');
+			safe('modal_twitter_title_es', data.twitter_title_es || '');
+			safe('modal_twitter_description_ca', data.twitter_description_ca || '');
+			safe('modal_twitter_description_es', data.twitter_description_es || '');
+			safe('modal_twitter_image', data.twitter_image || '');
+			safe('modal_featured_image', data.featured_image || '');
+			safe('modal_alt_image_ca', data.alt_image_ca || '');
+			safe('modal_alt_image_es', data.alt_image_es || '');
+		}
+
+		// Close modal with Escape key
+		document.addEventListener('keydown', function(e) {
+			if (e.key === 'Escape') {
+				var overlay = document.getElementById('seoOnPageModal');
+				if (overlay && overlay.style.display === 'block') closeModal();
+			}
+		});
+
+		// Global error handler for easier debugging in the admin
+		window.addEventListener('error', function(e){
+			console.error('Global error:', e.message, 'at', e.filename + ':' + e.lineno);
+		});
 
 		</script>

@@ -1,22 +1,26 @@
 <?php 
-// Inicialitzar sessio si no esta iniciada
+// Inicialitzar sessió si no està iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Processar canvi d'idioma PRIMER (exactament igual que index.php)
-if (isset($_GET['lang'])) {
-    if (in_array($_GET['lang'], array('ca', 'es'))) {
-        $_SESSION['language'] = $_GET['lang'];
-    }
-    // Redirigir per evitar reenviar formulari
-    $redirect_url = strtok($_SERVER["REQUEST_URI"], '?');
-    header('Location: ' . $redirect_url);
-    exit;
-}
+// Debug ABANS del processament
+echo "<!-- DEBUG INDEX ABANS: GET lang: " . ($_GET['lang'] ?? 'no definit') . " -->";
+echo "<!-- DEBUG INDEX ABANS: Session lang abans: " . ($_SESSION['language'] ?? 'no definit') . " -->";
 
+// Forçar idioma català en aquesta pàgina
+$_SESSION['language'] = 'ca';
+// Processar canvi d'idioma PRIMER
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    if (in_array($lang, array('ca', 'es'))) {
+        $_SESSION['language'] = $lang;
+        header('Location: /' . $lang . '/home.php');
+        exit;
+    }
+}
 // Incluir sistema de traduccio
-include 'includes/lang.php';
+include '../includes/lang.php';
 
 // Processar el formulari si s'ha enviat
 $message_sent = false;
@@ -46,24 +50,22 @@ if ($_POST) {
     <title><?php echo getCurrentLanguage() == 'ca' ? 'Contacte - Yanina Parisi' : 'Contacto - Yanina Parisi'; ?></title>
     <meta name="description" content="<?php echo getCurrentLanguage() == 'ca' ? 'Contacta amb Yanina Parisi, psicologa a Girona.' : 'Contacta con Yanina Parisi, psicologa en Girona.'; ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/estils.css">
-    <link rel="stylesheet" href="css/contacte.css">
+    <link rel="stylesheet" href="../css/estils.css">
+    <link rel="stylesheet" href="../css/contacte.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <?php include 'includes/navigation.php'; ?>
+    <?php include '_includes/navigation.php'; ?>
 
     <!-- Hero Section -->
     <section class="contact-hero">
         <div class="container">
             <div class="contact-hero-content">
-                <h1><?php echo getCurrentLanguage() == 'ca' ? 'Contacta amb mi' : 'Contacta conmigo'; ?></h1>
+                <h1>Contacta amb mi</h1>
                 <p class="contact-hero-subtitle">
-                    <?php echo getCurrentLanguage() == 'ca' ? 
-                        'Estic aqui per ajudar-te. La primera consulta es completament gratuita i sense compromis.' : 
-                        'Estoy aqui para ayudarte. La primera consulta es completamente gratuita y sin compromiso.'; ?>
+                    Estic aqui per ajudar-te. La primera consulta es completament gratuita i sense compromis. 
                 </p>
             </div>
         </div>
@@ -75,22 +77,22 @@ if ($_POST) {
             <?php if ($message_sent): ?>
                 <div class="alert alert-success">
                     <i class="fas fa-check-circle"></i>
-                    <span><?php echo getCurrentLanguage() == 'ca' ? 'Gracies per contactar-me!' : 'Gracias por contactarme!'; ?></span>
+                    <span>Gràcies per contactar-me!</span>
                 </div>
             <?php endif; ?>
             
             <?php if ($message_error): ?>
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i>
-                    <span><?php echo getCurrentLanguage() == 'ca' ? 'Completa tots els camps obligatoris.' : 'Completa todos los campos obligatorios.'; ?></span>
+                    <span>Completa tots els camps obligatoris</span>
                 </div>
             <?php endif; ?>
 
             <div class="contact-grid">
                 <div class="contact-form-section" id="contact-form">
                     <div class="form-header">
-                        <h2><?php echo getCurrentLanguage() == 'ca' ? 'Demana la teva cita' : 'Pide tu cita'; ?></h2>
-                        <p><?php echo getCurrentLanguage() == 'ca' ? 'Completa el formulari per contactar.' : 'Completa el formulario para contactar.'; ?></p>
+                        <h2>Demana'm cita</h2>
+                        <p>Completa el formulari per contactar.</p>
                     </div>
                     
                     <form class="contact-form" method="POST" action="">
@@ -98,20 +100,20 @@ if ($_POST) {
                             <div class="form-group">
                                 <label for="name">
                                     <i class="fas fa-user"></i>
-                                    <?php echo getCurrentLanguage() == 'ca' ? 'Nom complet *' : 'Nombre completo *'; ?>
+                                    Nom complet *
                                 </label>
                                 <input type="text" id="name" name="name" required 
-                                       placeholder="<?php echo getCurrentLanguage() == 'ca' ? 'El teu nom i cognoms' : 'Tu nombre y apellidos'; ?>"
+                                       placeholder="El teu nom i cognoms"
                                        value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
                             </div>
                             
                             <div class="form-group">
                                 <label for="email">
                                     <i class="fas fa-envelope"></i>
-                                    <?php echo getCurrentLanguage() == 'ca' ? 'Correu electronic *' : 'Correo electronico *'; ?>
+                                    Correu electronic *
                                 </label>
                                 <input type="email" id="email" name="email" required 
-                                       placeholder="<?php echo getCurrentLanguage() == 'ca' ? 'exemple@correu.com' : 'ejemplo@correo.com'; ?>"
+                                       placeholder="exemple@correu.com"
                                        value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                             </div>
                         </div>
@@ -119,30 +121,30 @@ if ($_POST) {
                         <div class="form-group">
                             <label for="message">
                                 <i class="fas fa-comment"></i>
-                                <?php echo getCurrentLanguage() == 'ca' ? 'Missatge *' : 'Mensaje *'; ?>
+                                Missatge *
                             </label>
                             <textarea id="message" name="message" required 
-                                      placeholder="<?php echo getCurrentLanguage() == 'ca' ? 'El teu missatge...' : 'Tu mensaje...'; ?>"><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                                      placeholder="El teu missatge..."><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
                         </div>
                         
                         <div class="form-group form-checkbox">
                             <label for="privacy" class="checkbox-label">
                                 <input type="checkbox" id="privacy" name="privacy" required>
                                 <span class="checkmark"></span>
-                                <?php echo getCurrentLanguage() == 'ca' ? 'Accepto la politica de privacitat *' : 'Acepto la politica de privacidad *'; ?>
+                                Accepto la política de privacitat *
                             </label>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-submit">
                             <i class="fas fa-paper-plane"></i>
-                            <?php echo getCurrentLanguage() == 'ca' ? 'Enviar missatge' : 'Enviar mensaje'; ?>
+                            Enviar missatge
                         </button>
                     </form>
                 </div>
                 
                 <div class="contact-info-section">
                     <div class="contact-info-header">
-                        <h3><?php echo getCurrentLanguage() == 'ca' ? 'Informacio de contacte' : 'Informacion de contacto'; ?></h3>
+                        <h3>Informació de contacte</h3>
                     </div>
                     
                     <div class="contact-methods">
@@ -151,7 +153,7 @@ if ($_POST) {
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="contact-details">
-                                <h4><?php echo getCurrentLanguage() == 'ca' ? 'Correu electronic' : 'Correo electronico'; ?></h4>
+                                <h4>Correu electrònic</h4>
                                 <p>info@yaninaparisi.com</p>
                             </div>
                         </div>
@@ -161,7 +163,7 @@ if ($_POST) {
                                 <i class="fas fa-phone"></i>
                             </div>
                             <div class="contact-details">
-                                <h4><?php echo getCurrentLanguage() == 'ca' ? 'Telefon' : 'Telefono'; ?></h4>
+                                <h4>Telèfon</h4>
                                 <p>+34 XXX XXX XXX</p>
                             </div>
                         </div>
@@ -171,23 +173,38 @@ if ($_POST) {
         </div>
     </section>
 
-    <?php include 'includes/footer.php'; ?>
+    <?php include '_includes/footer.php'; ?>
 
     <script>
-        // Script per al selector d'idioma (exactament igual que index.php)
-        function changeLanguage(lang) {
-            console.log('Canviant idioma a:', lang);
-            window.location.href = window.location.pathname + '?lang=' + lang;
-        }
+        // Script per a la navegació suau
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Script per l'efecte scroll de la navegació
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Script per al selector d'idioma
+
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM carregat en contacta.php');
-            
-            // Selector d'idioma - exactament com index.php
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
+                    // Obtenir l'idioma del data attribute
                     const lang = this.getAttribute('data-lang');
-                    console.log('Boto clickat, idioma:', lang);
+                    console.log('Botó clickat, idioma:', lang);
                     
                     // Eliminar classe active de tots els botons (tant desktop com mòbil)
                     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
@@ -202,20 +219,8 @@ if ($_POST) {
                         navMenu.classList.remove('show');
                     }
                     
+                    // Canviar idioma
                     changeLanguage(lang);
-                });
-            });
-            
-            // Script per a la navegacio suau
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
                 });
             });
 
@@ -246,18 +251,7 @@ if ($_POST) {
                 });
             }
         });
-
-        // Script per l'efecte scroll de la navegacio
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (header) {
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            }
-        });
     </script>
+    <script src="../js/language.js"></script>
 </body>
 </html>

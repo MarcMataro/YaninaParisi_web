@@ -13,25 +13,6 @@ $translations = array(
         'meta_og_description' => 'Teràpia psicològica personalitzada. Ajudant-te a trobar el teu camí cap al benestar mental i emocional.',
         'meta_og_site_name' => 'Psicologia Yanina Parisi',
         
-        // Navegació
-        'nav_home' => 'Inici',
-        'nav_services' => 'Clínica',
-        'nav_about' => 'Sobre mi',
-        'nav_testimonials' => 'Testimonis',
-        'nav_blog' => 'Blog',
-        'nav_couple_search' => 'Dues ànimes',
-        'nav_contact' => 'Contacte',
-        'nav_appointment' => 'Demana una cita',
-        
-        // Hero
-        'hero_title' => 'Psicòloga',
-        'hero_name' => 'Yanina Parisi',
-        'hero_subtitle' => 'Teràpia professional online i presencial a Girona',
-        'hero_badge' => 'Psicòloga General Sanitària Col·legiada',
-        'hero_description' => 'Més de <strong>5 anys d\'experiència</strong> ajudant a persones de totes les edats. Atenc <strong>online a tota Espanya</strong> i <strong>presencial a Girona</strong>, adaptant cada teràpia a les teves necessitats individuals.',
-        'hero_btn_primary' => 'Sol·licita la teva primera consulta',
-        'hero_btn_secondary' => 'Coneix els meus serveis',
-        'hero_quote' => 'El primer pas cap al canvi és atrevir-se a demanar ajuda. T\'acompanyo en aquest camí.',
         
         // Especialitats
         'specialty_anxiety' => 'Ansietat',
@@ -44,94 +25,9 @@ $translations = array(
         'hero_services_btn' => 'Els meus serveis',
         'hero_contact_btn' => 'Contacta\'m',
         
-        // Frase inspiradora
-        'quote_text' => 'El primer pas cap al canvi és l\'acceptació. El segon és l\'acció. Aquí t\'acompanyaré en ambdós.',
-        'quote_author' => 'Yanina Parisi',
-        
         // Segona frase inspiradora
         'quote2_text' => 'Recorda: sempre tens l\'última llibertat, la de triar la teva actitud. Triar demanar consell i acompanyament és el primer pas per transformar el teu destí.',
         'quote2_author' => 'Yanina Parisi',
-        
-        // Serveis
-        'services_title' => 'Especialitats i Àrees d\'Intervenció',
-        'services_subtitle' => 'Tractament professional adaptat a les teves necessitats específiques',
-        
-        // Especialitat 1: Salut Mental Adults
-        'specialty1_item1' => 'Ansietat i atacs de pànic',
-        'specialty1_item2' => 'Depressió i tristesa persistent',
-        'specialty1_item3' => 'Trastorn Obsessiu Compulsiu (TOC)',
-        'specialty1_item4' => 'Crisis vitals i canvis personals',
-        'specialty1_item5' => 'Problemes d\'autoestima',
-        'specialty1_item6' => 'Gestió del dol',
-        'specialty1_title' => 'Salut Mental Adults',
-        'service_individual_inspire' => 'Tots mereixem ser escoltats. Si et sents perdut, ansiós o trist, aquí trobaràs un espai segur per expressar-te i començar a transformar el teu benestar. La psicologia pot ser el teu aliat per recuperar la confiança i la serenitat. Vols fer el primer pas? T\'acompanyo.',
-        'service_individual_cta' => 'Descobreix el teu camí',
-            
-            // Especialitat 2: Teràpia de Parella i Família
-        'specialty2_item1' => 'Mediació i resolució de conflictes',
-        'specialty2_item2' => 'Millora de la comunicació',
-        'specialty2_item3' => 'Fortaliment de vincles familiars',
-        'specialty2_item4' => 'Teràpia de parella',
-        'specialty2_item5' => 'Acompanyament en separacions',
-        'specialty2_title' => 'Teràpia de Parella i Família',
-        'service_couple_inspire' => 'La relació de parella és un viatge compartit. Si necessiteu suport, us ofereixo un espai per comunicar-vos, comprendre-us i créixer junts. Transformem els reptes en oportunitats per enfortir el vincle.',
-        'service_couple_cta' => 'Recupera la connexió',
-            
-            // Especialitat 3: Psicologia Judicial
-        'specialty3_item1' => 'Informes pericials psicològics',
-        'specialty3_item2' => 'Casos de família i custòdies',
-        'specialty3_item3' => 'Violència filio-parental',
-        'specialty3_item4' => 'Assessoria en processos legals',
-        'specialty3_title' => 'Psicologia Judicial',
-        'service_assessment_inspire' => 'A vegades, només cal un primer pas per començar a sentir-te millor. T’ofereixo una valoració professional i assessorament personalitzat perquè puguis prendre decisions informades sobre el teu benestar. El teu futur comença avui.',
-        'service_assessment_cta' => 'Demana valoració',
-        
-        // Serveis Especials
-        'special_services_title' => 'Serveis Especialitzats',
-        'special_services_subtitle' => 'Apart de la teràpia tradicional, ofereixo serveis únics adaptats a necessitats específiques',
-        
-        'special_service1_title' => 'Acompanyament en la Cerca de Parella',
-        'special_service1_desc' => 'Servei psicològic per a persones que busquen una relació significativa. Basat en <strong>criteris de compatibilitat psicològica</strong> per a vincles estables i de qualitat.',
-        'special_service1_item1' => 'Anàlisi de patrons relacionals',
-        'special_service1_item2' => 'Identificació de valors compatibles',
-        'special_service1_item3' => 'Acompanyament en el procés de cerca',
-        
-        'special_service2_title' => 'Psicologia Pericial Judicial',
-        'special_service2_desc' => '<strong>Psicòloga judicial</strong> amb formació específica en l\'àmbit jurídic. Elaboració d\'informes pericials psicològics per a processos legals.',
-        'special_service2_item1' => 'Informes per a casos de família',
-        'special_service2_item2' => 'Assessoria en custòdies',
-        'special_service2_item3' => 'Violència filio-parental',
-        'special_service2_item4' => 'Procediments legals diversos',
-        
-        // Serveis Especials
-        'special_services_title' => 'Serveis Especialitzats',
-        'special_services_subtitle' => 'Apart de la teràpia tradicional, ofereixo serveis únics adaptats a necessitats específiques',
-        
-        'special_service1_title' => 'Acompanyament en la Cerca de Parella',
-        'special_service1_desc' => 'Servei psicològic per a persones que busquen una relació significativa. Basat en <strong>criteris de compatibilitat psicològica</strong> per a vincles estables i de qualitat.',
-        'special_service1_item1' => 'Anàlisi de patrons relacionals',
-        'special_service1_item2' => 'Identificació de valors compatibles',
-        'special_service1_item3' => 'Acompanyament en el procés de cerca',
-        
-        'special_service2_title' => 'Psicologia Pericial Judicial',
-        'special_service2_desc' => '<strong>Psicòloga judicial</strong> amb formació específica en l\'àmbit jurídic. Elaboració d\'informes pericials psicològics per a processos legals.',
-        'special_service2_item1' => 'Informes para casos de familia',
-        'special_service2_item2' => 'Asesoría en custodias',
-        'special_service2_item3' => 'Violencia filioparental',
-        'special_service2_item4' => 'Procedimientos legales diversos',
-        
-        'service_individual_title' => 'Teràpia individual',
-        'service_individual_desc' => 'Sessions individuals centrades en les teves necessitats específiques i objectius personals.',
-        'service_couple_title' => 'Teràpia de parella',
-        'service_couple_desc' => 'Millora la comunicació i resoleu conflictes per enfortir la vostra relació.',
-        'service_child_title' => 'Teràpia infantil',
-        'service_child_desc' => 'Ajuda especialitzada per a nens i adolescents que afronten desafiaments emocionals.',
-        'service_assessment_title' => 'Assessament psicològic',
-        'service_assessment_desc' => 'Avaluació i diagnòstic per identificar i comprendre millor les teves necessitats.',
-        'service_family_title' => 'Teràpia familiar',
-        'service_family_desc' => 'Millora les dinàmiques familiars i la comunicació entre els membres de la família.',
-        'service_online_title' => 'Teràpia online',
-        'service_online_desc' => 'Sessions de teràpia per vídeo trucada des de la comoditat de casa teva.',
         
         // Testimonis
         'testimonials_title' => 'Testimonis',
@@ -311,7 +207,6 @@ $translations = array(
         'about_service2_desc' => 'Gestionem conflictes i millorem la comunicació per enfortir el vostre vincle.',
         'about_service3_title' => 'Cerca de parella conscient:',
         'about_service3_desc' => 'Un servei únic basat en criteris psicològics per a qui busca relacions estables i de qualitat, lluny del desgast de les apps convencionals.',
-        'about_location_text' => 'Atenció personalitzada online a tota Espanya i presencial a Girona.',
         'about_btn_primary' => 'Reserva la teva primera sessió',
         'about_btn_secondary' => 'Descobreix el meu mètode',
         

@@ -1234,7 +1234,7 @@ class SEO_OnPage {
         try {
             // Llista de camps permesos per actualitzar
             $allowed_fields = [
-                'url_relativa', 'titulo_pagina', 'tipo_pagina',
+                'url_relativa_ca', 'url_relativa_es', 'titulo_pagina', 'tipo_pagina',
                 'title_ca', 'meta_description_ca', 'h1_ca', 'contenido_principal_ca',
                 'title_es', 'meta_description_es', 'h1_es', 'contenido_principal_es',
                 'breadcrumb_json', 'slug_ca', 'slug_es', 'parent_id',
@@ -1309,7 +1309,7 @@ class SEO_OnPage {
     public static function crear($data) {
         try {
             // Validar camps obligatoris
-            $required = ['url_relativa', 'titulo_pagina', 'tipo_pagina', 'title_ca', 'meta_description_ca', 
+            $required = ['url_relativa_ca', 'titulo_pagina', 'tipo_pagina', 'title_ca', 'meta_description_ca', 
                         'h1_ca', 'title_es', 'meta_description_es', 'h1_es'];
             
             foreach ($required as $field) {
@@ -1484,7 +1484,8 @@ class SEO_OnPage {
     public function toArray() {
         return [
             'id_pagina' => $this->id_pagina,
-            'url_relativa' => $this->url_relativa,
+            'url_relativa_ca' => $this->url_relativa_ca,
+            'url_relativa_es' => $this->url_relativa_es,
             'titulo_pagina' => $this->titulo_pagina,
             'tipo_pagina' => $this->tipo_pagina,
             'seo_ca' => [

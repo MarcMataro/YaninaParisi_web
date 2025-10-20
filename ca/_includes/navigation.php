@@ -9,7 +9,7 @@
         
         <nav class="nav-menu">
             <ul>
-                <li><a href="index.php">Inici</a></li>
+                <li><a href="home.php">Inici</a></li>
                 <li><a href="clinica.php">Consulta</a></li>
                 <li><a href="#serveis-especials" class="love-link">Dues ànimes</a></li>
                 <li><a href="blog.php">Blog</a></li>

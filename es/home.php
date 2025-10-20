@@ -4,7 +4,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Forçar idioma espanyol en aquesta pàgina
+// Forzar idioma español en esta página
 $_SESSION['language'] = 'es';
 // Procesar cambio de idioma primero
 if (isset($_GET['lang'])) {
@@ -16,7 +16,7 @@ if (isset($_GET['lang'])) {
     }
 }
 // Incluir sistema de traducción
-include '../includes/lang.php';
+include '../includes/functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo getCurrentLanguage(); ?>">
@@ -94,41 +94,318 @@ include '../includes/lang.php';
 </head>
 <body>
     <?php include '_includes/navigation.php'; ?>
-    <section class="hero" id="inicio">
+    
+    <!-- Sección Hero -->
+    <section class="hero" id="inici">
         <div class="container hero-content">
-            <h1><span class="highlight">Yanina Parisi</span></h1>
-            <h2 class="hero-subtitle">Psicóloga en Girona especializada en terapia individual, de pareja e infantil.</h2>
+            <h1>Construye la <span class="highlight">vida</span> que deseas.<br>Tu cambio empieza aquí</h1>
+            <h2 class="hero-subtitle">Te acompaño para que ese cambio sea real</h2>
+
             <div class="hero-buttons">
                 <a href="#contacto" class="btn btn-primary">
                     <i class="fas fa-calendar-check"></i>
-                    Solicitar cita
-                </a>
-                <a href="#servicios" class="btn btn-secondary">
-                    Ver servicios
+                    ¡Primera consulta gratuita!
                 </a>
             </div>
         </div>
     </section>
+
+    <!-- Frase inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <blockquote>
+                    <p>"El primer paso hacia el cambio es la aceptación. El segundo es la acción. Y yo te acompañaré en ambos."</p>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- Especialidades -->
+    <section id="serveis" class="specialties-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Especialidades y áreas de intervención</h2>
+            </div>
+            <div class="specialties-grid">
+                <!-- Salut Mental Adults -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Bienestar en adultos</h3>
+                    <ul>
+                        <li>Ansiedad y ataques de pánico</li>
+                        <li>Depresión y tristeza persistente</li>
+                        <li>Trastorno obsesivo compulsivo (TOC)</li>
+                        <li>Crisis vitales y cambios personales</li>
+                        <li>Problemas de autoestima</li>
+                        <li>Gestión del duelo</li>
+                    </ul>
+                </div>
+                
+                <!-- Teràpia de Parella i Família -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Dinámica de pareja y familia</h3>
+                    <ul>
+                        <li>Mediación y resolución de conflictos</li>
+                        <li>Mejora de la comunicación</li>
+                        <li>Fortalecimiento de los vínculos familiares</li>
+                        <li>Terapia de pareja</li>
+                        <li>Acompañamiento en procesos de separación</li>
+                    </ul>
+                </div>
+
+                <!-- Coaching personalitzat -->
+                <div class="specialty-card">
+                    <div class="specialty-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Coaching personalizado</h3>
+                    <ul>
+                        <li>Hábitos y productividad</li>
+                        <li>Gestión de la autoexigencia</li>
+                        <li>Crecimiento personal</li>
+                        <li>Transiciones de la vida</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios Especiales -->
+    <section id="special-services" class="special-services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Servicios especializados</h2>
+            </div>
+            <div class="services-special-grid">
+                <div class="service-special-card">
+                    <div class="service-special-header">
+                        <i class="fas fa-heart-circle-check"></i>
+                        <h3>Acompañamiento en la búsqueda de pareja</h3>
+                    </div>
+                    <p>Servicio psicológico para personas que buscan una relación significativa. Basado en <strong>criterios de compatibilidad psicológica</strong> para vínculos estables y de calidad.</p>
+                    <ul>
+                        <li>Análisis psicológico del perfil emocional y relacional</li>
+                        <li>Identificación de valores compatibles</li>
+                        <li>Acompañamiento en el proceso de búsqueda</li>
+                    </ul>
+                </div>
+                
+                <div class="service-special-card">
+                    <div class="service-special-header">
+                        <i class="fas fa-scale-balanced"></i>
+                        <h3>Psicología pericial judicial</h3>
+                    </div>
+                        <p><strong>Psicóloga pericial</strong> con formación específica en el ámbito jurídico. Elaboración de informes periciales psicológicos para procesos legales.</p>
+                    <ul>
+                        <li>Informes para casos de familia</li>
+                        <li>Asesoría en custodias</li>
+                        <li>Violencia filioparental</li>
+                        <li>Procedimientos legales diversos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre mí -->
     <section id="sobre-mi" class="about-section">
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="../img/img_2282.jpeg" alt="Yanina Parisi - Psicóloga en Girona" width="300" height="350" loading="lazy">
+                    <img src="../img/img_2282.jpeg" 
+                         alt="Yanina Parisi - Psicòloga General Sanitària Col·legiada a Girona"
+                         width="300" 
+                         height="350"
+                         loading="lazy">
                 </div>
+                
                 <div class="about-text">
-                    <h2 class="about-title">Sobre mí</h2>
-                    <p>Especialista en terapia individual, de pareja e infantil. Atención presencial y online en Girona.</p>
-                    <div class="about-actions">
-                        <a href="../contacta.php" class="btn btn-primary">Contactar</a>
-                        <a href="../sobremi.php" class="btn btn-secondary">Saber más</a>
+                    <h2 class="about-title">
+                        Psicología práctica para tu bienestar
+                    </h2>
+                    
+                    <div class="about-intro">
+                        <p>Soy Yanina Parisi, psicóloga general sanitaria colegiada con más de cinco años de experiencia. Mi objectivo es ofrecerte un espacio seguro donde puedas superar el malestar y construir la vida que quieres, ya sea recuperando tu equilibrio emocional o encontrando una pareja realmente compatible.</p>
                     </div>
+                    
+                    <div class="about-services">
+                        <h3>¿Cómo trabajo?</h3>
+                        
+                        <div class="service-item">
+                            <h4>Terapia individual:</h4>
+                            <p>Especializada en ansiedad, depresión, TOC y crisis vitales. Juntos encontraremos las herramientas para que recuperes el control.</p>
+                        </div>
+                        
+                        <div class="service-item">
+                            <h4>Terapia de pareja:</h4>
+                            <p>Gestión de conflictos y mejora de la comunicación para fortalecer vuestro vínculo.</p>
+                        </div>
+                        
+                        <div class="service-item">
+                            <h4>Búsqueda de pareja consciente:</h4>
+                            <p>Un servicio único basado en criterios psicológicos para quien busca relaciones estables y de calidad, lejos del desgaste de las apps convencionales.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-location">
+                        <p>Atención personalizada online a toda España y presencial en Girona.</p>
+                    </div>
+                    
+                    <div class="about-actions">
+                        <a href="../contacta.php" class="btn btn-primary">
+                            ¡Reserva tu primera consulta gratuita!
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Segunda cita inspiradora -->
+    <section class="quote-section">
+        <div class="container">
+            <div class="quote-content">
+                <blockquote>
+                    <p>"Siempre tienes la última libertad: elegir tu actitud. Elegir pedir consejo y acompañamiento es el primer paso para transformar tu destino."</p>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section id="testimonios">
+        <div class="container">
+            <div class="section-title">
+                <h2>Testimonios</h2>
+                <p>Lo que dicen mis pacientes</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Yanina me ha ayudado a superar mi ansiedad como nunca imaginé. Sus técnicas y su apoyo me dieron las herramientas necesarias para afrontar mis miedos."</p>
+                    <div class="testimonial-author">
+                        <div class="author-image"><i class="fas fa-user"></i></div>
+                        <div>
+                            <h4>Laura G.</h4>
+                            <p>Paciente desde 2021</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Tras algo más de seis meses de terapia de pareja, nuestra relación ha mejorado drásticamente. Gracias a Yanina por enseñarnos a comunicarnos mejor."</p>
+                    <div class="testimonial-author">
+                        <div class="author-image"><i class="fas fa-users"></i></div>
+                        <div>
+                            <h4>Marc y Elena</h4>
+                            <p>Pacientes desde 2022</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarifas -->
+    <section id="tarifes">
+        <div class="container">
+            <div class="section-title">
+                <h2>Estas son mis tarifas</h2>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-gift pricing-icon"></i>
+                        <h3>Primera sesión</h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="original-price">60</span>
+                            <span class="amount">0</span>
+                            <span class="currency">€</span>
+                            <span class="period">/sesión</span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Primera sesión de valoración gratuita</li>
+                            <li><i class="fas fa-check"></i> Cuéntame lo que te preocupa</li>
+                            <li><i class="fas fa-check"></i> Valoramos juntos tus objetivos</li>
+                            <li><i class="fas fa-check"></i> Conoce mi método</li>
+                        </ul>
+                    </div>
+                    <a href="#contacto" class="btn pricing-btn">¡Quiero empezar ahora!</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-heart pricing-icon"></i>
+                        <h3>Sesión individual</h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">60</span>
+                            <span class="currency">€</span>
+                            <span class="period">/sesión</span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Sesión de 60 minutos</li>
+                            <li><i class="fas fa-check"></i> Atención totalmente personalizada</li>
+                            <li><i class="fas fa-check"></i> Flexibilidad horaria</li>
+                            <li><i class="fas fa-check"></i> Seguimiento continuo</li>
+                        </ul>
+                    </div>
+                    <a href="#contacto" class="btn pricing-btn">Programa una sesión</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-calendar-week pricing-icon"></i>
+                        <h3>Pack quincenal</h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">100</span>
+                            <span class="currency">€</span>
+                            <span class="period">/sesión</span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Dos sesiones al mes</li>
+                            <li><i class="fas fa-check"></i> Seguimiento regular</li>
+                            <li><i class="fas fa-check"></i> Cada sesión sale a 50€</li>
+                            <li><i class="fas fa-check"></i> Acompañamiento entre sesiones</li>
+                        </ul>
+                    </div>
+                    <a href="#contacte" class="btn pricing-btn">Programa una sesión</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <i class="fas fa-calendar-alt pricing-icon"></i>
+                        <h3>Pack mensual</h3>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="price">
+                            <span class="amount">180</span>
+                            <span class="currency">€</span>
+                            <span class="period">/sessió</span>
+                        </div>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Cuatro sesiones al mes</li>
+                            <li><i class="fas fa-check"></i> Sesiones por 45€. Ahorro del 25%</li>
+                            <li><i class="fas fa-check"></i> Proceso acelerado y constante</li>
+                            <li><i class="fas fa-check"></i> Resultados optimizados</li>
+                        </ul>
+                    </div>
+                    <a href="#contacto" class="btn pricing-btn">Programa una sesión</a>
                 </div>
             </div>
         </div>
     </section>
     <?php include '_includes/footer.php'; ?>
     <script>
-        // Script per a la navegació suau
+        // Script para la navegación suave
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -138,7 +415,7 @@ include '../includes/lang.php';
             });
         });
 
-        // Script per l'efecte scroll de la navegació
+        // Script para el efecto de scroll en la navegación
         window.addEventListener('scroll', function() {
             const header = document.querySelector('header');
             if (window.scrollY > 50) {
@@ -148,7 +425,7 @@ include '../includes/lang.php';
             }
         });
 
-        // Script per al selector d'idioma
+        // Script para el selector de idioma
 
         
         document.addEventListener('DOMContentLoaded', function() {
@@ -156,7 +433,7 @@ include '../includes/lang.php';
                 btn.addEventListener('click', function() {
                     // Obtenir l'idioma del data attribute
                     const lang = this.getAttribute('data-lang');
-                    console.log('Botó clickat, idioma:', lang);
+                    console.log('Botón pulsado, idioma:', lang);
                     
                     // Eliminar classe active de tots els botons (tant desktop com mòbil)
                     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));

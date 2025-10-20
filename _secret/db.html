@@ -612,7 +612,8 @@
                         id_pagina <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
                         
                         -- 1. IDENTIFICACIÓ I URL
-                        url_relativa <span class="keyword">VARCHAR</span>(255) <span class="keyword">UNIQUE NOT NULL</span> COMMENT 'URL sense domini ej: /terapia-ansietat',
+                        url_relativa_ca <span class="keyword">VARCHAR</span>(255) <span class="keyword">UNIQUE NOT NULL</span> COMMENT 'URL sense domini ej: /terapia-ansietat',
+                        url_relativa_es <span class="keyword">VARCHAR</span>(255) <span class="keyword">UNIQUE NOT NULL</span> COMMENT 'URL sense domini ej: /terapia-ansietat',
                         titulo_pagina <span class="keyword"></span>VARCHAR</span>(100) <span class="keyword">NOT NULL</span> COMMENT 'Títol visible de la pàgina',
                         tipo_pagina <span class="keyword">ENUM</span>('home', 'sobre-mi', 'servicios', 'blog', 'articulo', 'contacto', 'legal', 'landing') <span class="keyword">NOT NULL</span>,
                         
@@ -686,7 +687,8 @@
                         FOREIGN KEY (parent_id) <span class="keyword">REFERENCES</span> seo_onpage_paginas(id_pagina) <span class="keyword">ON DELETE SET NULL</span>,
                         
                         -- ÍNDEXS
-                        <span class="keyword">INDEX</span> idx_url_relativa (url_relativa),
+                        <span class="keyword">INDEX</span> idx_url_relativa_ca (url_relativa_ca),
+                        <span class="keyword">INDEX</span> idx_url_relativa_es (url_relativa_es),
                         <span class="keyword">INDEX</span> idx_tipo_pagina (tipo_pagina),
                         <span class="keyword">INDEX</span> idx_activa (activa),
                         <span class="keyword">INDEX</span> idx_slug_ca (slug_ca),

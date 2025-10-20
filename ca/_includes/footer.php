@@ -6,7 +6,7 @@
                     <p>Ajudant-te a trobar el teu camí cap al benestar mental i emocional.</p>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_quick_links'); ?></h3>
+                    <h3>Enllaços ràpids</h3>
                     <ul>
                         <li><a href="home.php">Inici</a></li>
                         <li><a href="clinica.php">Consulta</a></li>
@@ -17,17 +17,17 @@
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_services_title'); ?></h3>
+                    <h3>Serveis</h3>
                     <ul>
-                        <li><a href="#serveis"><?php echo t('footer_service1'); ?></a></li>
-                        <li><a href="#serveis"><?php echo t('footer_service2'); ?></a></li>
-                        <li><a href="#serveis"><?php echo t('footer_service3'); ?></a></li>
-                        <li><a href="#serveis-especials"><?php echo t('footer_service4'); ?></a></li>
-                        <li><a href="#serveis-especials"><?php echo t('footer_service5'); ?></a></li>
+                        <li><a href="#serveis">Salut mental per adults</a></li>
+                        <li><a href="#serveis">Teràpia de parella i família</a></li>
+                        <li><a href="#serveis-especials">Especialitat en TOC, ansietat i depressió</a></li>
+                        <li><a href="#serveis">Psicologia judicial</a></li>
+                        <li><a href="#serveis-especials">Cerca de parella conscient / Dues ànimes</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><?php echo t('footer_social_title'); ?></h3>
+                    <h3>Xarxes socials</h3>
                     <ul>
                         <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
                         <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
