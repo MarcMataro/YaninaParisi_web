@@ -842,54 +842,6 @@ $seoConfig = [
                     </div>
                     <p class="score-status"><?php echo $main_score !== null ? ($main_score >= 75 ? 'Excelente' : ($main_score >= 60 ? 'Buena optimización' : 'Necesita mejora')) : 'No disponible'; ?></p>
                 </div>
-                
-            </div>
-
-            <!-- Tabs -->
-            <div class="seo-tabs">
-                <a href="javascript:void(0)" class="tab-link <?php echo $activeTab === 'global' ? 'active' : ''; ?>" onclick="switchTab('global')">
-                    <i class="fas fa-globe-americas"></i> SEO Global
-                </a>
-                <a href="javascript:void(0)" class="tab-link <?php echo $activeTab === 'onpage' ? 'active' : ''; ?>" onclick="switchTab('onpage')">
-                    <i class="fas fa-file-code"></i> SEO On-Page
-                </a>
-                <a href="javascript:void(0)" class="tab-link <?php echo $activeTab === 'offpage' ? 'active' : ''; ?>" onclick="switchTab('offpage')">
-                    <i class="fas fa-globe"></i> SEO Off-Page
-                </a>
-                <!-- SEO Técnico tab button removed (functionality disabled) -->
-            </div>
-
-
-            <?php include 'includes/general_interface.php'; ?>
-            <?php include 'includes/onpage_interface.php'; ?>
-
-            <!-- Off-Page SEO Tab with Sub-tabs -->
-            <div id="offpage-tab" class="tab-content <?php echo $activeTab === 'offpage' ? 'active' : ''; ?>">
-                <?php 
-                $activeSubTab = $_GET['subtab'] ?? 'backlinks';
-                ?>
-                
-                <!-- Sub-tabs for Off-Page -->
-                <div class="offpage-subtabs">
-                    <button class="subtab-btn <?php echo $activeSubTab === 'backlinks' ? 'active' : ''; ?>" 
-                            onclick="switchOffPageSubTab('backlinks')">
-                        <i class="fas fa-link"></i> Backlinks
-                    </button>
-                    <button class="subtab-btn <?php echo $activeSubTab === 'directories' ? 'active' : ''; ?>" 
-                            onclick="switchOffPageSubTab('directories')">
-                        <i class="fas fa-list-ul"></i> Directorios
-                    </button>
-                </div>
-                
-                <!-- Backlinks Content -->
-                <div id="offpage-backlinks-content" class="offpage-subtab-content <?php echo $activeSubTab === 'backlinks' ? 'active' : ''; ?>">
-                    <?php include 'includes/offpage_links_interface.php'; ?>
-                </div>
-                
-                <!-- Directories Content -->
-                <div id="offpage-directories-content" class="offpage-subtab-content <?php echo $activeSubTab === 'directories' ? 'active' : ''; ?>">
-                    <?php include 'includes/offpage_directories_interface.php'; ?>
-                </div>
             </div>
         </div>
     </div>

@@ -404,8 +404,8 @@ class SEO_OnPage {
             
             if ($row) {
                 // 1. Identificació i URL
-                $this->url_relativa_ca = $row['url_relativa_ca'];
-                $this->url_relativa_es = $row['url_relativa_es'];
+                $this->url_relativa_ca = $row['url_relativa_ca'] ?? '';
+                $this->url_relativa_es = $row['url_relativa_es'] ?? '';
                 $this->titulo_pagina = $row['titulo_pagina'];
                 $this->tipo_pagina = $row['tipo_pagina'];
                 
@@ -822,7 +822,8 @@ class SEO_OnPage {
         $html .= '<meta property="og:type" content="' . ($this->tipo_pagina === 'articulo' ? 'article' : 'website') . '">' . "\n";
         $html .= '<meta property="og:title" content="' . htmlspecialchars($this->getOgTitle($lang)) . '">' . "\n";
         $html .= '<meta property="og:description" content="' . htmlspecialchars($this->getOgDescription($lang)) . '">' . "\n";
-        $html .= '<meta property="og:url" content="' . htmlspecialchars($base_url . $this->url_relativa) . '">' . "\n";
+    $url_relativa = ($lang === 'es') ? $this->url_relativa_es : $this->url_relativa_ca;
+    $html .= '<meta property="og:url" content="' . htmlspecialchars($base_url . $url_relativa) . '">' . "\n";
         
         if ($image = $this->getOgImage()) {
             $html .= '<meta property="og:image" content="' . htmlspecialchars($image) . '">' . "\n";

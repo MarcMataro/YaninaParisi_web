@@ -1,3 +1,90 @@
+/* === SOBRE MI - ESPECTACULAR MAIN === */
+/* === SOBRE MI - MAIN EN COHERÈNCIA HOME === */
+.about-main.spectacular {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(170, 158, 107, 0.10);
+    padding: 64px 0 48px 0;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+.about-main .container {
+    max-width: 900px;
+    background: rgba(255,255,255,0.98);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(204,204,167,0.08);
+    padding: 48px 32px;
+}
+.about-title {
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 18px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+.about-intro {
+    font-size: 1.18rem;
+    color: var(--color-dark);
+    margin-bottom: 18px;
+    text-align: center;
+}
+.about-section-title {
+    font-size: 1.35rem;
+    color: var(--color-accent);
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    text-align: left;
+}
+.about-list {
+    margin-bottom: 18px;
+    padding-left: 24px;
+    font-size: 1.05rem;
+    color: var(--color-text);
+}
+.about-list li {
+    margin-bottom: 10px;
+    line-height: 1.7;
+    position: relative;
+}
+.about-list li::before {
+    content: '\f058';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--color-accent);
+    margin-right: 10px;
+    font-size: 1rem;
+}
+.about-cta {
+    background: var(--color-accent);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(170,158,107,0.10);
+    padding: 32px 24px;
+    margin-top: 36px;
+    text-align: center;
+}
+.about-cta h3 {
+    font-size: 1.18rem;
+    color: #fff;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+.about-cta p {
+    color: #fff;
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+}
+.about-cta .btn {
+    /* Use global .btn styles for coherence */
+    margin: 8px 12px 0 12px;
+}
+.about-note {
+    font-size: 0.98rem;
+    color: #fff;
+    margin-top: 18px;
+    opacity: 0.85;
+}
 .score-config-btn-bar {
     display: flex;
     justify-content: center;

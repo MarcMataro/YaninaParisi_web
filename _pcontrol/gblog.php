@@ -209,110 +209,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'obtenir_etiquetes_entrada':
             $entradaId = $_POST['entrada_id'] ?? '';
             if ($entradaId) {
-                $etiquetes = $relEtiEntModel->obtenirEtiquetes($entradaId);
+                $etiquetes = $relEtiEntModel->obtenirEtiquetesEntrada((int)$entradaId, 'es', true);
                 echo json_encode(['success' => true, 'etiquetes' => $etiquetes]);
             } else {
                 echo json_encode(['success' => false, 'error' => 'ID d\'entrada requerit']);
             }
             exit;
-            
-        // Accions per entrades de blog
-        /* DUPLICAT - COMENTAT
-        case 'crear_entrada':
-            // Assignar dades bàsiques
-            $entradaModel->titol_ca = $_POST['titol_ca'] ?? '';
-            $entradaModel->titol_es = $_POST['titol_es'] ?? '';
-            $entradaModel->contingut_ca = $_POST['contingut_ca'] ?? '';
-            $entradaModel->contingut_es = $_POST['contingut_es'] ?? '';
-            $entradaModel->resum_ca = $_POST['resum_ca'] ?? null;
-            $entradaModel->resum_es = $_POST['resum_es'] ?? null;
-            $entradaModel->estat = $_POST['estat'] ?? 'esborrany';
-            $entradaModel->visible = isset($_POST['visible']) ? (bool)$_POST['visible'] : true;
-            $entradaModel->id_autor = $_SESSION['user_id'] ?? 1; // Assumint que tenim user_id a la sessió
-            
-            // Dades SEO opcionals
-            $entradaModel->meta_title_ca = $_POST['meta_title_ca'] ?? null;
-            $entradaModel->meta_title_es = $_POST['meta_title_es'] ?? null;
-            $entradaModel->meta_description_ca = $_POST['meta_description_ca'] ?? null;
-            $entradaModel->meta_description_es = $_POST['meta_description_es'] ?? null;
-            $entradaModel->meta_keywords_ca = $_POST['meta_keywords_ca'] ?? null;
-            $entradaModel->meta_keywords_es = $_POST['meta_keywords_es'] ?? null;
-            
-            // Imatges
-            $entradaModel->imatge_portada = $_POST['imatge_portada'] ?? null;
-            $entradaModel->alt_imatge_ca = $_POST['alt_imatge_ca'] ?? null;
-            $entradaModel->alt_imatge_es = $_POST['alt_imatge_es'] ?? null;
-            
-            // Altres configuracions
-            $entradaModel->comentaris_actius = isset($_POST['comentaris_actius']) ? (bool)$_POST['comentaris_actius'] : true;
-            $entradaModel->data_publicacio = $_POST['data_publicacio'] ?? null;
-            
-            $idEntrada = $entradaModel->crear();
-            if ($idEntrada) {
-                // Assignar categories si s'han especificat
-                $categories = json_decode($_POST['categories'] ?? '[]', true);
-                if (!empty($categories)) {
-                    $relCatEntModel->assignarCategories($idEntrada, $categories);
-                }
-                
-                // Gestionar etiquetes (inclou crear noves)
-                $etiquetes = json_decode($_POST['etiquetes'] ?? '[]', true);
-                if (!empty($etiquetes)) {
-                    $etiquetesIds = [];
-                    
-                    foreach ($etiquetes as $etiqueta) {
-                        if (is_array($etiqueta)) {
-                            if ($etiqueta['is_new'] ?? false) {
-                                // Crear nova etiqueta
-                                $novaEtiqueta = new Etiqueta($pdo);
-                                $novaEtiqueta->nom_ca = $etiqueta['nom_ca'] ?? $etiqueta['nom_es'];
-                                $novaEtiqueta->nom_es = $etiqueta['nom_es'];
-                                $novaEtiqueta->activa = 1;
-                                
-                                $etiquetaId = $novaEtiqueta->crear();
-                                if ($etiquetaId) {
-                                    $etiquetesIds[] = $etiquetaId;
-                                }
-                            } else {
-                                // Etiqueta existent
-                                if (isset($etiqueta['id']) && $etiqueta['id']) {
-                                    $etiquetesIds[] = $etiqueta['id'];
-                                }
-                            }
-                        } else {
-                            // Format antic (string) - cercar o crear
-                            $stmt = $pdo->prepare("SELECT id_etiqueta FROM etiquetes WHERE nom_es = ? OR nom_ca = ? LIMIT 1");
-                            $stmt->execute([$etiqueta, $etiqueta]);
-                            $existeix = $stmt->fetch();
-                            
-                            if ($existeix) {
-                                $etiquetesIds[] = $existeix['id_etiqueta'];
-                            } else {
-                                // Crear nova
-                                $novaEtiqueta = new Etiqueta($pdo);
-                                $novaEtiqueta->nom_ca = $etiqueta;
-                                $novaEtiqueta->nom_es = $etiqueta;
-                                $novaEtiqueta->activa = 1;
-                                
-                                $etiquetaId = $novaEtiqueta->crear();
-                                if ($etiquetaId) {
-                                    $etiquetesIds[] = $etiquetaId;
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (!empty($etiquetesIds)) {
-                        $relEtiEntModel->assignarEtiquetes($idEntrada, $etiquetesIds);
-                    }
-                }
-                
-                echo json_encode(['success' => true, 'id' => $idEntrada, 'message' => 'Entrada creada correctamente']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Error al crear la entrada']);
-            }
-            exit;
-        FI DUPLICAT COMENTAT */
             
         case 'actualitzar_entrada':
             $id = (int)($_POST['id'] ?? 0);
@@ -450,13 +352,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             exit;
 
-        case 'obtenir_categories':
-            $categories = $categoryModel->llegirTots(true, null, null, 'ordre', 'ASC')->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode([
-                'success' => true, 
-                'categories' => $categories
-            ]);
-            exit;
 
         case 'obtenir_etiquetes':
             $etiquetes = $etiquetaModel->llegirTots(true, null, null, 'nom_es', 'ASC')->fetchAll(PDO::FETCH_ASSOC);
@@ -537,62 +432,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             exit;
             
-        case 'actualitzar_entrada':
-            try {
-                $id = (int)($_POST['id'] ?? 0);
-                if ($entradaModel->llegirUn($id)) {
-                    $entradaModel->titol_ca = $_POST['titol_ca'] ?? $entradaModel->titol_ca;
-                    $entradaModel->titol_es = $_POST['titol_es'] ?? $entradaModel->titol_es;
-                    $entradaModel->slug_ca = !empty($_POST['slug_ca']) ? $_POST['slug_ca'] : $entradaModel->slug_ca;
-                    $entradaModel->slug_es = !empty($_POST['slug_es']) ? $_POST['slug_es'] : $entradaModel->slug_es;
-                    $entradaModel->contingut_ca = $_POST['contingut_ca'] ?? $entradaModel->contingut_ca;
-                    $entradaModel->contingut_es = $_POST['contingut_es'] ?? $entradaModel->contingut_es;
-                    $entradaModel->resum_ca = $_POST['resum_ca'] ?? $entradaModel->resum_ca;
-                    $entradaModel->resum_es = $_POST['resum_es'] ?? $entradaModel->resum_es;
-                    $entradaModel->estat = $_POST['estat'] ?? $entradaModel->estat;
-                    $entradaModel->data_publicacio = !empty($_POST['data_publicacio']) ? $_POST['data_publicacio'] : $entradaModel->data_publicacio;
-                    $entradaModel->visible = (int)($_POST['visible'] ?? $entradaModel->visible);
-                    $entradaModel->imatge_portada = $_POST['imatge_portada'] ?? $entradaModel->imatge_portada;
-                    $entradaModel->alt_imatge_ca = $_POST['alt_imatge_ca'] ?? $entradaModel->alt_imatge_ca;
-                    $entradaModel->alt_imatge_es = $_POST['alt_imatge_es'] ?? $entradaModel->alt_imatge_es;
-                    $entradaModel->meta_title_ca = $_POST['meta_title_ca'] ?? $entradaModel->meta_title_ca;
-                    $entradaModel->meta_title_es = $_POST['meta_title_es'] ?? $entradaModel->meta_title_es;
-                    $entradaModel->meta_description_ca = $_POST['meta_description_ca'] ?? $entradaModel->meta_description_ca;
-                    $entradaModel->meta_description_es = $_POST['meta_description_es'] ?? $entradaModel->meta_description_es;
-                    $entradaModel->meta_keywords_ca = $_POST['meta_keywords_ca'] ?? $entradaModel->meta_keywords_ca;
-                    $entradaModel->meta_keywords_es = $_POST['meta_keywords_es'] ?? $entradaModel->meta_keywords_es;
-                    $entradaModel->comentaris_actius = (int)($_POST['comentaris_actius'] ?? 0); // Per defecte: desactivats
-                    
-                    if ($entradaModel->actualitzar()) {
-                        // Eliminar relacions anteriors
-                        $relCatEntModel->eliminarRelacionsEntrada($id);
-                        $relEtiEntModel->eliminarRelacionsEntrada($id);
-                        
-                        // Afegir noves categories
-                        if (isset($_POST['categories']) && is_array($_POST['categories'])) {
-                            foreach ($_POST['categories'] as $idCategoria) {
-                                $relCatEntModel->crearRelacio($id, (int)$idCategoria);
-                            }
-                        }
-                        
-                        // Afegir noves etiquetes
-                        if (isset($_POST['etiquetes']) && is_array($_POST['etiquetes'])) {
-                            foreach ($_POST['etiquetes'] as $idEtiqueta) {
-                                $relEtiEntModel->crearRelacio($id, (int)$idEtiqueta);
-                            }
-                        }
-                        
-                        echo json_encode(['success' => true, 'message' => 'Entrada actualizada correctamente']);
-                    } else {
-                        echo json_encode(['success' => false, 'message' => 'Error al actualizar la entrada']);
-                    }
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Entrada no encontrada']);
-                }
-            } catch (Exception $e) {
-                echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
-            }
-            exit;
             
         case 'eliminar_entrada':
             header('Content-Type: application/json');
@@ -617,22 +456,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'obtenir_categories_entrada':
             try {
                 $idEntrada = (int)($_GET['id_entrada'] ?? $_POST['id_entrada'] ?? 0);
-                $categories = $relCatEntModel->categoriesPerEntrada($idEntrada)->fetchAll(PDO::FETCH_COLUMN);
+                $categories = $relCatEntModel->obtenirCategoriesEntrada($idEntrada, 'es', true);
                 echo json_encode(['success' => true, 'categories' => $categories]);
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
             }
             exit;
             
-        case 'obtenir_etiquetes_entrada':
-            try {
-                $idEntrada = (int)($_GET['id_entrada'] ?? $_POST['id_entrada'] ?? 0);
-                $etiquetes = $relEtiEntModel->etiquetesPerEntrada($idEntrada)->fetchAll(PDO::FETCH_COLUMN);
-                echo json_encode(['success' => true, 'etiquetes' => $etiquetes]);
-            } catch (Exception $e) {
-                echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
-            }
-            exit;
     }
 }
 

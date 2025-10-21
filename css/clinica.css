@@ -1,8 +1,401 @@
+/* --- Slider de reptes --- */
+@media (max-width: 700px) {
+    .clinica-slider {
+        height: 370px;
+        min-height: 370px;
+        box-sizing: border-box;
+    }
+    .clinica-slider-track, .clinica-slide {
+        height: 370px;
+        min-height: 370px;
+        box-sizing: border-box;
+    }
+    .clinica-slide {
+        max-width: 98vw;
+        padding: 18px 12px 38px 18px;
+        height: 370px;
+        min-height: 370px;
+        border-radius: 0;
+        box-sizing: border-box;
+    }
+    .clinica-slide.slide-in-right,
+    .clinica-slide.slide-in-left,
+    .clinica-slide.slide-out-left,
+    .clinica-slide.slide-out-right {
+        opacity: 1 !important;
+        height: 370px;
+        min-height: 370px;
+        display: flex;
+        border-radius: 0;
+        box-sizing: border-box;
+    }
+}
+.clinica-slide {
+    /* ...existing styles... */
+    transition: opacity 0.5s, transform 0.6s cubic-bezier(.25,.8,.25,1);
+}
+.clinica-slide.slide-in-right {
+    animation: clinicaSlideInRight 0.6s forwards;
+}
+.clinica-slide.slide-in-left {
+    animation: clinicaSlideInLeft 0.6s forwards;
+}
+.clinica-slide.slide-out-left {
+    animation: clinicaSlideOutLeft 0.6s forwards;
+}
+.clinica-slide.slide-out-right {
+    animation: clinicaSlideOutRight 0.6s forwards;
+}
+
+@keyframes clinicaSlideInRight {
+    from { opacity: 0; transform: translateX(100%); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes clinicaSlideInLeft {
+    from { opacity: 0; transform: translateX(-100%); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes clinicaSlideOutLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-100%); }
+}
+@keyframes clinicaSlideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(100%); }
+}
+/* --- Slider de reptes --- */
+.clinica-slider {
+    width: 100%;
+    position: relative;
+    margin: 0 0 32px 0;
+    min-height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+.clinica-slider-track {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.clinica-slide {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    background: linear-gradient(120deg, #f7f3e7 0%, #e7e3d1 100%);
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(168,153,104,0.06);
+    padding: 32px 32px 32px 40px;
+    min-height: 320px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.6s cubic-bezier(.25,.8,.25,1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    pointer-events: none;
+    text-align: left;
+}
+.clinica-slide.active {
+    display: flex;
+    opacity: 1;
+    position: relative;
+    z-index: 2;
+    transform: scale(1.03);
+    pointer-events: auto;
+}
+.clinica-slide.slide-in-right,
+.clinica-slide.slide-in-left,
+.clinica-slide.slide-out-left,
+.clinica-slide.slide-out-right {
+    display: flex;
+    opacity: 1;
+    position: absolute;
+    z-index: 3;
+}
+/* Elimina estils de fletxes */
+@media (max-width: 700px) {
+    .clinica-slider {
+           min-height: 320px;
+    }
+    .clinica-slider-track, .clinica-slide {
+           min-height: 320px;
+    }
+    .clinica-slide {
+        max-width: 98vw;
+        padding: 18px 12px 18px 18px;
+    }
+}
+/* --- Supera el que et fa patir --- */
+.clinica-supera {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(168,153,104,0.08);
+    padding: 40px 18px;
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    position: relative;
+}
+
+.clinica-supera-title {
+    font-size: 2.3em;
+    color: #a89968;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.clinica-supera-intro {
+    font-size: 1.15em;
+    color: #444;
+    margin-bottom: 32px;
+    text-align: left;
+    line-height: 1.7;
+}
+
+.clinica-reptes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+}
+
+.clinica-repte {
+    background: linear-gradient(120deg, #f7f3e7 0%, #e7e3d1 100%);
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(168,153,104,0.06);
+    padding: 28px 20px;
+    transition: box-shadow 0.2s, transform 0.3s cubic-bezier(.25,.8,.25,1);
+    position: relative;
+    flex: 1 1 320px;
+    min-width: 260px;
+    max-width: 370px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    opacity: 0.97;
+    will-change: transform, box-shadow;
+}
+.clinica-repte:hover {
+    box-shadow: 0 10px 32px rgba(168,153,104,0.18);
+    transform: translateY(-6px) scale(1.03);
+    opacity: 1;
+    z-index: 2;
+}
+@media (max-width: 900px) {
+    .clinica-reptes-list {
+        flex-direction: column;
+        gap: 18px;
+    }
+    .clinica-repte {
+        min-width: 0;
+        max-width: 100%;
+    }
+}
+.clinica-repte-title {
+    font-size: 1.35em;
+    color: #a89968;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.clinica-repte-sentiment {
+    font-size: 1.05em;
+    color: #7a6c3a;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+.clinica-repte-solucio {
+    font-size: 1.05em;
+    color: #444;
+    margin-bottom: 0;
+}
+
+.clinica-supera-cta {
+    text-align: left;
+    margin-top: 32px;
+}
+.clinica-supera-cta-text {
+    font-size: 2.2rem;
+    color: var(--color-dark);
+    font-style: italic;
+    font-family: 'Libre Baskerville', serif;
+    background: rgba(var(--color-light), 1);
+    padding: 32px 40px;
+    margin: 32px 0 18px 0;
+    border-radius: 18px;
+    position: relative;
+    box-shadow: 0 2px 16px rgba(168,153,104,0.07);
+    text-align: center;
+}
+.clinica-supera-cta-text::before {
+    content: '“';
+    font-size: 5rem;
+    color: var(--color-accent);
+    position: absolute;
+    top: -30px;
+    left: 18px;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    opacity: 0.18;
+    line-height: 1;
+}
+.clinica-supera-cta-text::after {
+    content: '”';
+    font-size: 5rem;
+    color: var(--color-accent);
+    position: absolute;
+    bottom: -30px;
+    right: 18px;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    opacity: 0.18;
+    line-height: 1;
+}
+.clinica-supera-anim {
+    font-size: 1em;
+    color: #444;
+    margin-bottom: 18px;
+}
+.clinica-supera-btn {
+    display: inline-block;
+    background: #a89968;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 18px 38px;
+    font-size: 1.15em;
+    font-weight: 700;
+    box-shadow: 0 2px 12px rgba(168,153,104,0.10);
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+    margin-top: 8px;
+    text-decoration: none;
+}
+.clinica-supera-btn:hover {
+    background: #8c7a4f;
+    transform: translateY(-2px) scale(1.04);
+}
+
+@media (max-width: 700px) {
+    .clinica-supera {
+        padding: 24px 4vw;
+        margin: 24px 0 0 0;
+    }
+    .clinica-supera-title {
+        font-size: 1.5em;
+    }
+    .clinica-repte {
+        padding: 18px 8px;
+    }
+    .clinica-reptes-list {
+        gap: 18px;
+    }
+    .clinica-supera-btn {
+        padding: 14px 18px;
+        font-size: 1em;
+    }
+}
 /* Estils per la pàgina de la clínica Yanina Parisi */
 .clinica-hero {
-    background: linear-gradient(120deg, #e7e3d1 0%, #f7f3e7 100%);
-    padding: 48px 0 32px 0;
+    background-image: url("../img/IMG_2284.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 160px 0 100px;
     text-align: center;
+    height: 100vh;
+    position: relative;
+}
+
+.clinica-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+}
+
+.clinica-hero-content {
+    max-width: 800px;
+    margin-top: 250px;
+    position: relative;
+    z-index: 2;
+}
+
+.clinica-hero-title {
+    font-size: 4rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.4);
+    margin-bottom: 20px;
+    line-height: 1.2;
+    font-weight: 400;
+}
+
+.clinica-hero-title .highlight {
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
+.clinica-hero-subtitle {
+    font-size: 1.6rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+.clinica-hero-badge {
+    display: inline-block;
+    background: #a89968;
+    color: #fff;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 1em;
+    margin-bottom: 18px;
+}
+
+.clinica-hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.clinica-hero-buttons .clinica-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    padding: 16px 32px;
+    font-weight: 500;
+    background: #a89968;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(168,153,104,0.08);
+    transition: background 0.2s;
+    margin-top: 18px;
+    cursor: pointer;
+}
+
+.clinica-hero-buttons .clinica-cta-btn:hover {
+    background: #8c7a4f;
 }
 .clinica-hero-title {
     font-size: 2.2em;

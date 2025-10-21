@@ -1,0 +1,35 @@
+/* Estils exclusius per la pàgina 'Sobre mi' */
+.sobremi-hero {
+    background-image: url("../img/IMG_2283.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 160px 0 100px;
+    text-align: center;
+    height: 100vh;
+    position: relative;
+}
+
+.sobremi-content {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 18px;
+    box-shadow: 0 2px 16px rgba(168,153,104,0.07);
+}
+
+.sobremi-title {
+    font-size: 2.5em;
+    color: #a89968;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.sobremi-subtitle {
+    font-size: 1.3em;
+    color: #444;
+    margin-bottom: 24px;
+}
+
+/* Afegir més estils exclusius aquí segons necessitats de la pàgina */
