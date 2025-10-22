@@ -34,7 +34,7 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- METAETIQUETES ESSENCIALS -->
-    <title><?php echo t('meta_title'); ?></title>
+    <title>Títol SEO per la pàgina home</title>
     <meta name="description" content="<?php echo t('meta_description'); ?>">
     <meta name="keywords" content="<?php echo t('meta_keywords'); ?>">
     <meta name="author" content="Yanina Parisi">

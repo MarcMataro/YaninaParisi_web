@@ -49,6 +49,7 @@ if (isset($_GET['lang'])) {
         </div>
     </section>    
     <main>
+        <!-- Secció supera els teus reptes -->
         <section class="clinica-supera clinica-section">
             <h2 class="clinica-supera-title">Supera el que et fa patir</h2>
             <p class="clinica-supera-intro">
@@ -101,46 +102,122 @@ if (isset($_GET['lang'])) {
             </div>
         </section>
         <!-- Fi frase motivadora -->
+
         <!-- Secció teràpia de parella i família -->
         <section>
 
         </section>
+        <!-- Fi secció teràpia de parella i família -->
+        <!-- Frase motivadora 2 per famílies/parelles -->
+        <section class="quote-section">
+            <div class="quote-content">
+                <blockquote>
+                    <p>La comunicació és la clau per a una relació sana. No tinguis por de compartir els teus sentiments i necessitats. </p>
+                </blockquote>
+            </div>
+        </section>
+        <!-- Fi frase motivadora -->
+
+        <!-- Secció psicologia judicial i peritatge psicològic -->
+        <section class="clinica-judicial clinica-section">
+            <div class="container">
+                <h2 class="clinica-supera-title">Psicologia judicial: La prova pericial que pot decidir el teu cas</h2>
+                <div class="clinica-judicial-intro">
+                    <h3 class="clinica-judicial-subtitle">Quan el conflicte legal demana un informe psicològic sòlid</h3>
+                    <p>En un procés judicial, les emocions i els fets sovint s'emboliquen. Un informe psicològic no és només un document; és l'eina que traduïx el teu estat mental, les teves capacitats i la realitat familiar en arguments sòlids i incontestables per al jutge.</p>
+                    <p>No es tracta només de qui té la raó, sinó de qui pot demostrar-ho amb rigor i credibilitat. La nostra experiència com a Peritos Psicólogos Col·legiats és el teu millor aliat per a aconseguir-ho.</p>
+                </div>
+                <div class="clinica-judicial-serveis">
+                    <ul class="clinica-judicial-serveis-list">
+                        <li>
+                            <h3>Informes per a Custòdia i Règim de Visites</h3>
+                            <p><strong>Si et trobes en...</strong> Un procés de separació o divorci conflictiu, on es discuteix amb qui han de viure els fills o com s'han de fer les visites.</p>
+                            <p><strong>El nostre informe demostra...</strong> L'idoneitat parental de cada progenitor. Avaluem el vincle afectiu, les habilitats parentals i les necessitats dels menors per proposar el millor règim de convivència per a ells, amb el seu benestar com a prioritat absoluta. Protegeix els teus fills amb un informe que parli per ells.</p>
+                        </li>
+                        <li>
+                            <h3>Avaluació en Casos de Violència Filio-parental (VFP)</h3>
+                            <p><strong>Si et trobes en...</strong> Una situació on els pares sou víctimes d'agressions, amenaces o mancances de respecte per part d'un fill, i sentiu que heu perdut el control i l'autoritat.</p>
+                            <p><strong>El nostre informe identifica i avalua...</strong> Les causes psicològiques que alimenten la violència. No només documentem els fets, sinó que tracem un pla d'intervenció per a aturar el cicle i reconstruir la relació familiar des de una nova base, sempre que sigui possible.</p>
+                        </li>
+                        <li>
+                            <h3>Avaluació del Dany Psicològic</h3>
+                            <p><strong>Si et trobes en...</strong> Un procés per a reclamar una indemnització després de patir un accident, mobbing laboral (assetjament) o qualsevol situació traumàtica que t'hagi provocat un patiment psicològic verificable.</p>
+                            <p><strong>El nostre informe quantifica...</strong> L'impacte real del que has viscut. Connectem el fet causant amb els teus símptomes (ansietat, insomni, estrès postraumàtic) per a determinar el grau d'incapacitat o dany i sustentar la teva reclamació econòmica. Que et compensin també pel teu dolor emocional.</p>
+                        </li>
+                        <li>
+                            <h3>Avaluació de la Capacitat Cognitiva i Volitiva</h3>
+                            <p><strong>Si et trobes en...</strong> Un procés on es qüestiona la capacitat d'una persona per a prendre decisions (testar, administrar els seus béns, consentir...).</p>
+                            <p><strong>El nostre informe determina...</strong> El grau de discerniment de la persona. Avaluem de forma rigorosa si existeix algun trastorn que li impedeixi entendre les consequències dels seus actes, oferint al jutge una fotografia clara de la seva capacitat mental.</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clinica-judicial-metode">
+                    <h2 class="clinica-judicial-metode-title">El Nostre Mètode: Rigor Científic, Claritat Legal</h2>
+                    <ul>
+                        <li>Entrevista en profunditat i avaluació psicològica amb les proves estandarditzades més reconegudes.</li>
+                        <li>Anàlisi de tota la documentació del cas (atgets mèdics, informes socials, etc.).</li>
+                        <li>Redacció clara, concisa i contundent, entenedora per als operadors jurídics.</li>
+                        <li>Assistència opcional a la Vista Oral per a defensar i explicar les nostres conclusions amb convicció i solvència davant el tribunal.</li>
+                    </ul>
+                    <p class="clinica-judicial-objetiu">El nostre objectiu és un: que el jutge comprengui la realitat psicològica del cas sense cap mena de dubte.</p>
+                </div>
+                <div class="clinica-judicial-cta">
+                    <blockquote class="clinica-judicial-quote">En un judici, les paraules sense un fonament sòlid es les duu el vent. El nostre informe és el fonament que la teva causa necessita.</blockquote>
+                    <div class="clinica-judicial-assessorament">
+                        <span class="clinica-judicial-icon" style="font-size:2rem;">⚖️</span> Assessorament Previ Sense Compromís<br>
+                        <span class="clinica-judicial-desc">Entenem la delicadesa de la teva situació. Abans de res, et brindem una avaluació inicial per analitzar el teu cas i explicar-te com podem ajudar-te específicament.</span>
+                    </div>
+                    <a href="#" class="clinica-supera-btn clinica-judicial-btn">Defensa la Teva Posició amb un Informe Psicològic Sòlid</a>
+                    <div class="clinica-judicial-btns">
+                        <a href="#" class="btn btn-secondary">Sol·licita una Avaluació del Teu Cas</a>
+                        <a href="#" class="btn btn-secondary">Parlem Sense Compromís</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Fi secció psicologia judicial i peritatge psicològic -->
     </main>
 <script>
-// Slider logic for clinica-reptes
+// Slider logic per a clinica-reptes
 document.addEventListener('DOMContentLoaded', function() {
     const slides = document.querySelectorAll('.clinica-slide');
     let current = 0;
     let prev = 0;
-
+    function updateSuperaVisibility() {
+        slides.forEach((slide, i) => {
+            if (i === current) {
+                slide.style.display = 'flex';
+                slide.classList.add('active');
+            } else {
+                slide.style.display = 'none';
+                slide.classList.remove('active', 'slide-in-right', 'slide-in-left', 'slide-out-left', 'slide-out-right');
+            }
+        });
+    }
     function animateSlide(next, direction) {
         slides.forEach((slide, i) => {
             slide.classList.remove('active', 'slide-in-right', 'slide-in-left', 'slide-out-left', 'slide-out-right');
+            slide.style.display = 'none';
         });
         slides[prev].classList.add(direction === 'right' ? 'slide-out-left' : 'slide-out-right');
         slides[next].classList.add(direction === 'right' ? 'slide-in-right' : 'slide-in-left', 'active');
-
-        // Hide outgoing slide after animation
+        slides[next].style.display = 'flex';
         setTimeout(() => {
             slides[prev].classList.remove('slide-out-left', 'slide-out-right');
+            slides[prev].style.display = 'none';
         }, 600);
     }
-
     function nextSlide() {
         prev = current;
         current = (current + 1) % slides.length;
         animateSlide(current, 'right');
     }
-
-    function showFirst() {
-        slides.forEach((slide, i) => {
-            slide.classList.remove('active', 'slide-in-right', 'slide-in-left', 'slide-out-left', 'slide-out-right');
-        });
-        slides[0].classList.add('active');
+    function showFirstSupera() {
+        current = 0;
+        updateSuperaVisibility();
     }
-
-    showFirst();
-    setInterval(nextSlide, 7000);
+    showFirstSupera();
+    setInterval(nextSlide, 6000);
 });
 </script>
     <?php include '_includes/footer.php'; ?>
