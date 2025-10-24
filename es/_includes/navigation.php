@@ -10,7 +10,7 @@
             <ul>
                 <li><a href="home.php">Inicio</a></li>
                 <li><a href="clinica.php">Clínica</a></li>
-                <li><a href="#servicios-especiales" class="love-link">Dos almas</a></li>
+                <li><a href="love-match.php" class="love-link">Dos almas</a></li>
                 <li><a href="blog.php">Blog</a></li>
                 <li><a href="sobremi.php">Sobre mí</a></li>
                 <li><a href="contacta.php">Contacto</a></li>

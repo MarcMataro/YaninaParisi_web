@@ -121,8 +121,8 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <!-- Secció Hero -->
     <section class="hero" id="inici">
         <div class="container hero-content">
-            <h1>Construeix la <span class="highlight">vida</span> que desitges.<br>El teu canvi comença aquí</h1>
-            <h2 class="hero-subtitle">T'acompanyo perquè aquest canvi sigui real</h2>
+            <h1 class="hero-title">Construeix la <span class="highlight">vida</span> que desitges.<br>El teu canvi comença aquí</h1>
+            <p class="hero-subtitle">T'acompanyo perquè aquest canvi sigui real</p>
 
             <div class="hero-buttons">
                 <a href="#contacte" class="btn btn-primary">

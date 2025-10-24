@@ -1,0 +1,35 @@
+/* parallax-clinica.css - Placeholder
+   Created to avoid 404 for pages including ca/clinica.php
+   This file provides minimal fallback styles for any parallax elements used
+   in the clinica page. Replace or expand with project-specific parallax rules
+   when you have the final assets and behavior.
+*/
+
+/* Basic container for parallax background sections */
+.parallax-clinica{
+  position:relative;
+  background-attachment:scroll; /* fallback for older browsers */
+  background-size:cover;
+  background-position:center center;
+}
+
+/* If you want a simple parallax effect using transform on scroll, add JS to
+   translateY a child .parallax-bg element. This file intentionally keeps
+   only safe, non-invasive fallback CSS. */
+
+/* Visual tidy */
+.parallax-clinica .parallax-content{
+  position:relative;
+  z-index:2;
+  padding:22px 18px;
+}
+
+/* small helper for reduced-contrast overlays */
+.parallax-clinica::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.04);
+  pointer-events:none;
+  z-index:1;
+}

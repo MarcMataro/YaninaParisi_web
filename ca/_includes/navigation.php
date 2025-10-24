@@ -11,7 +11,7 @@
             <ul>
                 <li><a href="home.php">Inici</a></li>
                 <li><a href="clinica.php">Clínica</a></li>
-                <li><a href="#serveis-especials" class="love-link">Dues ànimes</a></li>
+                <li><a href="love-match.php" class="love-link">Dues ànimes</a></li>
                 <li><a href="blog.php">Blog</a></li>
                 <li><a href="sobremi.php">Sobre mi</a></li>
                 <li><a href="contacta.php">Contacta</a></li>

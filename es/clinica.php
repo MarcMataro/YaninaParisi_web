@@ -9,7 +9,7 @@ echo "<!-- DEBUG INDEX ABANS: GET lang: " . ($_GET['lang'] ?? 'no definit') . " 
 echo "<!-- DEBUG INDEX ABANS: Session lang abans: " . ($_SESSION['language'] ?? 'no definit') . " -->";
 
 // Forçar idioma català en aquesta pàgina
-$_SESSION['language'] = 'ca';
+$_SESSION['language'] = 'es';
 // Processar canvi d'idioma PRIMER
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
@@ -65,50 +65,50 @@ if (isset($_GET['lang'])) {
     <section class="hero clinica-hero" id="clinica-hero">
         <div class="container hero-content">
             <h1>
-                Transforma el teu benestar emocional
+                Transforma tu bienestar emocional
             </h1>
-            <h2 class="hero-subtitle">Teràpia i acompanyament psicològic d'alt impacte.</h2>
+            <h2 class="hero-subtitle">Terapia y acompañamiento psicológico de alto impacto.</h2>
         </div>
     </section>    
     <main>
-        <!-- Secció supera els teus reptes -->
+        <!-- Sección supera tus retos -->
         <section class="clinica-supera clinica-section">
-            <h2 class="clinica-supera-title">Supera el que et fa patir</h2>
+            <h2 class="clinica-supera-title">Supera lo que te hace sufrir</h2>
             <p class="clinica-supera-intro">
-                Hi ha moments en què la vida pesa més del normal. Les preocupacions s'apilen, el malestar emocional et paralitza i sents que has perdut les regnes de la teva pròpia vida. No és un signe de feblesa, és un senyal que alguna cosa necessita atenció.<br><br>
-                A la nostra clínica, no et posarem una etiqueta. T’ajudarem a comprendre el que et passa i et donarem les eines per superar-ho. Deixa de sobreviure i comença a viure de nou.
+                Hay momentos en que la vida pesa más de lo normal. Las preocupaciones se apilan, el malestar emocional te paraliza y sientes que has perdido las riendas de tu propia vida. No es un signo de debilidad, es una señal de que algo necesita atención.<br><br>
+                En nuestra clínica, no te pondremos una etiqueta. Te ayudaremos a comprender lo que te pasa y te daremos las herramientas para superarlo. Deja de sobrevivir y comienza a vivir de nuevo.
             </p>
             <div class="clinica-slider">
                 <div class="clinica-slider-track">
                     <div class="clinica-slide active">
-                        <h3 class="clinica-repte-title">L'Ansietat que t'ofega</h3>
-                        <p class="clinica-repte-sentiment">Si et sents... com si una alerta constant et seguís a tot arreu, amb pensaments negatius incontrolables, atacs de pànic, insomni o inquietud.</p>
-                        <p class="clinica-repte-solucio">Et podem ajudar a... desconnectar l'alarma interna. T'ensenyarem tècniques pràctiques per gestionar els teus nervis, recuperar la calma i deixar que la por no dirigeixi les teves decisions. Tornaràs a sentir-te segur.</p>
+                        <h3 class="clinica-repte-title">La ansiedad que te ahoga</h3>
+                        <p class="clinica-repte-sentiment">Si te sientes... como si una alerta constante te siguiera a todas partes, con pensamientos negativos incontrolables, ataques de pánico, insomnio o inquietud.</p>
+                        <p class="clinica-repte-solucio">Te podemos ayudar a... desconectar la alarma interna. Te enseñaremos técnicas prácticas para gestionar tus nervios, recuperar la calma y dejar que el miedo no dirija tus decisiones. Volverás a sentirte seguro.</p>
                     </div>
                     <div class="clinica-slide">
-                        <h3 class="clinica-repte-title">El pes de la tristesa profunda (depressió)</h3>
-                        <p class="clinica-repte-sentiment">Si et sents... atrapat en un forat sense energia, sense interès per les coses que abans t'agradaven, amb un pes a l'ànim que no es va amb el son.</p>
-                        <p class="clinica-repte-solucio">Et podem ajudar a... tornar a encendre la teva espurna. Treballarem per treure't d'aquest buit, recuperar la teva motivació i trobar un nou sentit de propòsit i alegria en el teu dia a dia.</p>
+                        <h3 class="clinica-repte-title">El peso de la tristeza profunda (depresión)</h3>
+                        <p class="clinica-repte-sentiment">Si te sientes... atrapado en un agujero sin energía, sin interés por las cosas que antes te gustaban, con un peso en el ánimo que no se va con el sueño.</p>
+                        <p class="clinica-repte-solucio">Te podemos ayudar a... volver a encender tu chispa. Trabajaremos para sacarte de este vacío, recuperar tu motivación y encontrar un nuevo sentido de propósito y alegría en tu día a día.</p>
                     </div>
                     <div class="clinica-slide">
-                        <h3 class="clinica-repte-title">Els pensaments intrusius que no callen (TOC)</h3>
-                        <p class="clinica-repte-sentiment">Si et sents... presoner de rituals mentals o conductuals que creus que has de fer per evitar que passi alguna cosa dolenta, però que consumeixen el teu temps i la teva pau.</p>
-                        <p class="clinica-repte-solucio">Et podem ajudar a... trencar el cicle del TOC. Aprendràs a desafiar els teus pensaments obsessius, a reduir les compulsions i a recuperar el control de la teva ment.</p>
+                        <h3 class="clinica-repte-title">Los pensamientos intrusivos que no callan (TOC)</h3>
+                        <p class="clinica-repte-sentiment">Si te sientes... prisionero de rituales mentales o conductuales que crees que debes hacer para evitar que pase algo malo, pero que consumen tu tiempo y tu paz.</p>
+                        <p class="clinica-repte-solucio">Te podemos ayudar a... romper el ciclo del TOC. Aprenderás a desafiar tus pensamientos obsesivos, a reducir las compulsiones y a recuperar el control de tu mente.</p>
                     </div>
                     <div class="clinica-slide">
-                        <h3 class="clinica-repte-title">El dol que et deixa ancorat</h3>
-                        <p class="clinica-repte-sentiment">Si et sents... desconnectat després d'una pèrdua (d'un ésser estimat, una relació, una feina...). Un dolor que no sembla marxar i que et dificulta seguir endavant.</p>
-                        <p class="clinica-repte-solucio">Et podem ajudar a... honrar el que vas perdre sense que et detingui. T’acompanyarem en el procés de dolor per poder elaborar el dol, trobar un nou significat i reinvertir en la teva vida.</p>
+                        <h3 class="clinica-repte-title">El dolor que te deja anclado</h3>
+                        <p class="clinica-repte-sentiment">Si te sientes... desconectado después de una pérdida (de un ser querido, una relación, un trabajo...). Un dolor que no parece marchar y que te dificulta seguir adelante.</p>
+                        <p class="clinica-repte-solucio">Te podemos ayudar a... honrar lo que perdiste sin que te detenga. Te acompañaremos en el proceso de duelo para poder elaborar el duelo, encontrar un nuevo significado y reinvertir en tu vida.</p>
                     </div>
                     <div class="clinica-slide">
-                        <h3 class="clinica-repte-title">La manca de confiança en un mateix (baixa autoestima)</h3>
-                        <p class="clinica-repte-sentiment">Si et sents... el teu pitjor crític, sempre dient-te que no n'hi ha prou, que no ho faràs bé, evitant reptes per por a fracassar.</p>
-                        <p class="clinica-repte-solucio">Et podem ajudar a... silenciar el teu crític intern i convertir-te en el teu major aliat. Reconstruirem la teva autoimatge, descobrirem els teus punts forts i aprendrem a tractar-te amb la mateixa amabilitat que tractaries a un bon amic.</p>
+                        <h3 class="clinica-repte-title">La falta de confianza en uno mismo (baja autoestima)</h3>
+                        <p class="clinica-repte-sentiment">Si te sientes... tu peor crítico, siempre diciéndote que no es suficiente, que no lo harás bien, evitando retos por miedo a fracasar.</p>
+                        <p class="clinica-repte-solucio">Te podemos ayudar a... silenciar tu crítico interno y convertirte en tu mayor aliado. Reconstruiremos tu autoimagen, descubriremos tus puntos fuertes y aprenderemos a tratarte con la misma amabilidad que tratarías a un buen amigo.</p>
                     </div>
                     <div class="clinica-slide">
-                        <h3 class="clinica-repte-title">Les crisis que et fan qüestionar-ho tot (crisis vitals)</h3>
-                        <p class="clinica-repte-sentiment">Si et sents... perdut, sense rumb, qüestionant les teves decisions, la teva carrera o les teves relacions. És com un terratrèmol que ho sacseja tot.</p>
-                        <p class="clinica-repte-solucio">Et podem ajudar a... transformar la crisi en una oportunitat. Aquest no és el final, és un renaixement. T’ajudarem a trobar un nou sentit, a redefinir les teves metes i a sortir d'aquesta fase més fort i amb més claredat que mai.</p>
+                        <h3 class="clinica-repte-title">Las crisis que te hacen cuestionarlo todo (crisis vitales)</h3>
+                        <p class="clinica-repte-sentiment">Si te sientes... perdido, sin rumbo, cuestionando tus decisiones, tu carrera o tus relaciones. Es como un terremoto que lo sacude todo.</p>
+                        <p class="clinica-repte-solucio">Te podemos ayudar a... transformar la crisis en una oportunidad. Este no es el final, es un renacimiento. Te ayudaremos a encontrar un nuevo sentido, a redefinir tus metas y a salir de esta fase más fuerte y con más claridad que nunca.</p>
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@ if (isset($_GET['lang'])) {
         <section class="quote-section">
             <div class="quote-content">
                 <blockquote>
-                    <p>No hi ha cap premi per aguantar més que ningú. La veritable força rau en reconèixer que necessites ajuda i donar el pas per demanar-la.</p>
+                    <p>No hay ningún premio por aguantar más que nadie. La verdadera fuerza radica en reconocer que necesitas ayuda y dar el paso para pedirla.</p>
                 </blockquote>
             </div>
         </section>
@@ -129,68 +129,68 @@ if (isset($_GET['lang'])) {
             <div class="container pf-inner">
                 <!-- HERO (main emotional headline + CTA) -->
                 <div class="pf-hero" role="region" aria-labelledby="pf-title">
-                    <h2 id="pf-title" class="clinica-supera-title">Torna a connectar: reconstrueix la teva parella o la teva família amb eines reals</h2>
-                    <p class="pf-hero-lead">Sigui que vulgueu salvar el que teniu o construir alguna cosa nova i més sòlida, t'ofereixo un espai segur i un mètode pràctic per a recuperar la connexió, el respecte i l'amor.</p>
+                    <h2 id="pf-title" class="clinica-supera-title">Vuelve a conectar: reconstruye tu pareja o tu familia con herramientas reales</h2>
+                    <p class="pf-hero-lead">Sea que quieran salvar lo que tienen o construir algo nuevo y más sólido, te ofrezco un espacio seguro y un método práctico para recuperar la conexión, el respeto y el amor.</p>
                 </div>
 
                 <!-- Tiles (4 summaries). Full texts kept as hidden details for SEO/accessibility -->
                 <div class="pf-tiles" role="list">
                     <!-- Tile A: Acompanyament / Noves Parelles -->
                     <article class="pf-tile" role="listitem" aria-labelledby="pf-a-title">
-                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-seedling" aria-hidden="true"></i></span><h3 id="pf-a-title">Acompanyament per a noves parelles</h3></div>
-                        <p class="pf-tile-lead"><strong>Construeix fonaments sòlids des del principi.</strong></p>
-                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-a-detail">Llegir més</button>
+                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-seedling" aria-hidden="true"></i></span><h3 id="pf-a-title">Acompañamiento para nuevas parejas</h3></div>
+                        <p class="pf-tile-lead"><strong>Construye fundamentos sólidos desde el principio.</strong></p>
+                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-a-detail">Leer más</button>
                         <div id="pf-a-detail" class="pf-detail" hidden>
-                            <p><strong>Si us trobeu...</strong> començant una relació i voleu fer-ho bé des del principi, o bé esteu reconstruint la vostra vida després d'una separació i voleu evitar els errors del passat.</p>
-                            <p><strong>Us ajudaré a...</strong> aprendre les eines de comunicació i gestió emocional que us permetran crear una relació resilient, honesta i profundament satisfactòria des del dia zero.</p>
+                            <p><strong>Si os encontráis...</strong> comenzando una relación y queréis hacerlo bien desde el principio, o bien estáis reconstruyendo vuestra vida después de una separación y queréis evitar los errores del pasado.</p>
+                            <p><strong>Os ayudaré a...</strong> aprender las herramientas de comunicación y gestión emocional que os permitirán crear una relación resiliente, honesta y profundamente satisfactoria desde el día cero.</p>
                         </div>
                     </article>
 
                     <!-- Tile B: Crisi de Parella (re-focus) -->
                     <article class="pf-tile" role="listitem" aria-labelledby="pf-b-title">
-                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-heart-broken" aria-hidden="true"></i></span><h3 id="pf-b-title">Crisis de parella</h3></div>
-                        <p class="pf-tile-lead"><strong>Quan la relació toca un punt crític.</strong></p>
-                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-b-detail">Llegir més</button>
+                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-heart-broken" aria-hidden="true"></i></span><h3 id="pf-b-title">Crisis de pareja</h3></div>
+                        <p class="pf-tile-lead"><strong>Cuando la relación toca un punto crítico.</strong></p>
+                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-b-detail">Leer más</button>
                         <div id="pf-b-detail" class="pf-detail" hidden>
-                            <p><strong>Si us trobeu...</strong> en un moment on les discussions són freqüents, la desconnexió s'intensifica o apareixen decisions que divideixen el futur de la relació.</p>
-                            <p><strong>Us ajudaré a...</strong> identificar els punts de ruptura, restaurar la comunicació i fer un pla clar (decidir si recuperar o transformar la relació) amb eines terapèutiques pràctiques i suport emocional.</p>
+                            <p><strong>Si os encontráis...</strong> en un momento donde las discusiones son frecuentes, la desconexión se intensifica o aparecen decisiones que dividen el futuro de la relación.</p>
+                            <p><strong>Os ayudaré a...</strong> identificar los puntos de ruptura, restaurar la comunicación y hacer un plan claro (decidir si recuperar o transformar la relación) con herramientas terapéuticas prácticas y apoyo emocional.</p>
                         </div>
                     </article>
 
                     <!-- Tile C: Mediació Familiar -->
                     <article class="pf-tile" role="listitem" aria-labelledby="pf-c-title">
-                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-handshake" aria-hidden="true"></i></span><h3 id="pf-c-title">Mediació familiar</h3></div>
-                        <p class="pf-tile-lead"><strong>Solucions justes sense judici.</strong></p>
-                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-c-detail">Llegir més</button>
+                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-handshake" aria-hidden="true"></i></span><h3 id="pf-c-title">Mediación familiar</h3></div>
+                        <p class="pf-tile-lead"><strong>Soluciones justas sin juicio.</strong></p>
+                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-c-detail">Leer más</button>
                         <div id="pf-c-detail" class="pf-detail" hidden>
-                            <p><strong>Si sentiu...</strong> que els conflictes familiars han creat una fractura i la comunicació està trencada.</p>
-                            <p><strong>Us ajudaré a...</strong> trobar acords justos i voluntaris en un marc de respecte i diàleg, protegint relacions i estalviant desgast econòmic i emocional.</p>
+                            <p><strong>Si sentís...</strong> que los conflictos familiares han creado una fractura y la comunicación está rota.</p>
+                            <p><strong>Os ayudaré a...</strong> encontrar acuerdos justos y voluntarios en un marco de respeto y diálogo, protegiendo relaciones y ahorrando desgaste económico y emocional.</p>
                         </div>
                     </article>
 
                     <!-- Tile D: Suport en Crisi Familiars -->
                     <article class="pf-tile" role="listitem" aria-labelledby="pf-d-title">
-                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-hands-helping" aria-hidden="true"></i></span><h3 id="pf-d-title">Suport en crisis familiars</h3></div>
-                        <p class="pf-tile-lead"><strong>Navegar dins la tempesta i sortir més units.</strong></p>
-                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-d-detail">Llegir més</button>
+                        <div class="pf-tile-head"><span class="pf-icon"><i class="fas fa-hands-helping" aria-hidden="true"></i></span><h3 id="pf-d-title">Soporte en crisis familiares</h3></div>
+                        <p class="pf-tile-lead"><strong>Navegar dentro de la tormenta y salir más unidos.</strong></p>
+                        <button class="pf-toggle" aria-expanded="false" aria-controls="pf-d-detail">Leer más</button>
                         <div id="pf-d-detail" class="pf-detail" hidden>
-                            <p><strong>Si a la vostra família...</strong> està patint una crisi per comportament d'un adolescent, una pèrdua o un esdeveniment que sacseja els vostres fonaments.</p>
-                            <p><strong>Us ajudaré a...</strong> comprendre, reforçar vincles i convertir la crisi en una oportunitat per créixer.</p>
+                            <p><strong>Si vuestra família...</strong> está sufriendo una crisis por comportamiento de un adolescente, una pérdida o un evento que sacude vuestros cimientos.</p>
+                            <p><strong>Os ayudaré a...</strong> comprender, reforzar vínculos y convertir la crisis en una oportunidad para crecer.</p>
                         </div>
                     </article>
                 </div>
 
                 <!-- Full Method text kept visible below hero for SEO and clarity -->
                 <section class="pf-method" aria-labelledby="pf-method-title">
-                    <h3 id="pf-method-title">El meu mètode: Més enllà de "parlar dels problemes"</h3>
-                    <p>No em limitaré a escoltar-te. El meu enfocament és pràctic i proactiu:</p>
+                    <h3 id="pf-method-title">Mi método: Más allá de "hablar de los problemas"</h3>
+                    <p>No me limitaré a escucharte. Mi enfoque es práctico y proactivo:</p>
                     <ul class="pf-method-list">
-                        <li><strong>Anàlisi del cicle del conflicte:</strong> Identifiquem junts el patró que et manté atrapat.</li>
-                        <li><strong>Eines de comunicació efectiva:</strong> T'ensenyo a expressar necessitats i a escoltar amb empatia.</li>
-                        <li><strong>Gestió emocional intel·ligent:</strong> Aprendràs a regular les emocions per a evitar que controlin la relació.</li>
-                        <li><strong>Pla d'acció concret:</strong> Treballarem amb objectius clars i passes assolibles per a veure resultats reals.</li>
+                        <li><strong>Análisis del ciclo del conflicto:</strong> Identificamos juntos el patrón que te mantiene atrapado.</li>
+                        <li><strong>Herramientas de comunicación efectiva:</strong> Te enseño a expresar necesidades y a escuchar con empatía.</li>
+                        <li><strong>Gestión emocional inteligente:</strong> Aprenderás a regular las emociones para evitar que controlen la relación.</li>
+                        <li><strong>Plan de acción concreto:</strong> Trabajaremos con objetivos claros y pasos alcanzables para ver resultados reales.</li>
                     </ul>
-                    <p class="pf-method-goal"><strong>El meu objectiu és un:</strong> dotar-vos de les habilitats per a ser l'equip que sempre heu volgut ser.</p>
+                    <p class="pf-method-goal"><strong>Mi objetivo es uno:</strong> dotaros de las habilidades para ser el equipo que siempre habéis querido ser.</p>
                 </section>
             </div>
         </section>
@@ -199,7 +199,7 @@ if (isset($_GET['lang'])) {
         <section class="quote-section">
             <div class="quote-content">
                 <blockquote>
-                    <p>La comunicació és la clau per a una relació sana. No tinguis por de compartir els teus sentiments i necessitats. </p>
+                    <p>La comunicación es la clave para una relación sana. No tengas miedo de compartir tus sentimientos y necesidades. </p>
                 </blockquote>
             </div>
         </section>
@@ -208,64 +208,64 @@ if (isset($_GET['lang'])) {
         <!-- Secció psicologia judicial i peritatge psicològic (redissenyada v2) -->
         <section class="clinica-judicial v2">
             <div class="cj-inner">
-                <h2 id="cj-title" class="clinica-supera-title">Psicologia judicial: La prova pericial que pot decidir el teu cas</h2>
+                <h2 id="cj-title" class="clinica-supera-title">Psicología judicial: La prueba pericial que puede decidir tu caso</h2>
                 <div class="cj-intro">
-                    <h3 class="cj-subtitle">Quan el conflicte legal demana un informe psicològic sòlid</h3>
-                    <p>En un procés judicial, les emocions i els fets sovint s'emboliquen. Un informe psicològic no és només un document; és l'eina que traduïx el teu estat mental, les teves capacitats i la realitat familiar en arguments sòlids i incontestables per al jutge.</p>
-                    <p>No es tracta només de qui té la raó, sinó de qui pot demostrar-ho amb rigor i credibilitat. La meva experiència com a pèrit psicòloga col·legiada és el teu millor aliat per a aconseguir-ho.</p>
+                    <h3 class="cj-subtitle">Cuando el conflicto legal demanda un informe psicológico sólido</h3>
+                    <p>En un proceso judicial, las emociones y los hechos a menudo se entrelazan. Un informe psicológico no es solo un documento; es la herramienta que traduce tu estado mental, tus capacidades y la realidad familiar en argumentos sólidos e incontestables para el juez.</p>
+                    <p>No se trata solo de quién tiene la razón, sino de quién puede demostrarlo con rigor y credibilidad. Mi experiencia como perito psicóloga colegiada es tu mejor aliada para lograrlo.</p>
                 </div>
                 <div class="cj-cards">
                     <article class="cj-card" data-anim>
-                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-users" aria-hidden="true"></i></span><h3>Informes per a custòdia i règim de visites</h3></div>
+                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-users" aria-hidden="true"></i></span><h3>Informes para custodia y régimen de visitas</h3></div>
                         <div class="cj-card-body">
-                            <p class="cj-summary"><strong>Si et trobes en...</strong> un procés de separació o divorci conflictiu, on es discuteix amb qui han de viure els fills o com s'han de fer les visites.</p>
+                            <p class="cj-summary"><strong>Si te encuentras en...</strong> un proceso de separación o divorcio conflictivo, donde se discute con quién deben vivir los hijos o cómo se deben hacer las visitas.</p>
                             <div class="cj-details" id="detail-1" hidden>
-                                <p><strong>El meu informe demostrarà</strong> l'idoneitat parental de cada progenitor. Avaluaré el vincle afectiu, les habilitats parentals i les necessitats dels menors per proposar el millor règim de convivència per a ells, amb el seu benestar com a prioritat absoluta. Protegeix els teus fills amb un informe que parli per ells.</p>
+                                <p><strong>Mi informe demostrará</strong> la idoneidad parental de cada progenitor. Evaluaré el vínculo afectivo, las habilidades parentales y las necesidades de los menores para proponer el mejor régimen de convivencia para ellos, con su bienestar como prioridad absoluta. Protege a tus hijos con un informe que hable por ellos.</p>
                             </div>
-                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-1">Llegir més</button>
+                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-1">Leer más</button>
                         </div>
                     </article>
                     <article class="cj-card" data-anim>
-                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i></span><h3>Avaluació en casos de violència filio-parental (VFP)</h3></div>
+                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i></span><h3>Evaluación en casos de violencia filio-parental (VFP)</h3></div>
                         <div class="cj-card-body">
-                            <p class="cj-summary"><strong>Si et trobes en...</strong> una situació on els pares sou víctimes d'agressions, amenaces o mancances de respecte per part d'un fill, i sentiu que heu perdut el control i l'autoritat.</p>
+                            <p class="cj-summary"><strong>Si te encuentras en...</strong> una situación donde los padres son víctimas de agresiones, amenazas o faltas de respeto por parte de un hijo, y sienten que han perdido el control y la autoridad.</p>
                             <div class="cj-details" id="detail-2" hidden>
-                                <p><strong>El meu informe identifica i avalua</strong> Les causes psicològiques que alimenten la violència. No només documento els fets, sinó que traço un pla d'intervenció per a aturar el cicle i reconstruir la relació familiar des d'una nova base, sempre que sigui possible.</p>
+                                <p><strong>Mi informe identifica y evalúa</strong> las causas psicológicas que alimentan la violencia. No solo documento los hechos, sino que trazo un plan de intervención para detener el ciclo y reconstruir la relación familiar desde una nueva base, siempre que sea posible.</p>
                             </div>
-                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-2">Llegir més</button>
+                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-2">Leer más</button>
                         </div>
                     </article>
                     <article class="cj-card" data-anim>
-                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-heartbeat" aria-hidden="true"></i></span><h3>Avaluació del dany psicològic</h3></div>
+                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-heartbeat" aria-hidden="true"></i></span><h3>Evaluación del daño psicológico</h3></div>
                         <div class="cj-card-body">
-                            <p class="cj-summary"><strong>Si et trobes en...</strong> un procés per a reclamar una indemnització després de patir un accident, mobbing laboral (assetjament) o qualsevol situació traumàtica que t'hagi provocat un patiment psicològic verificable.</p>
+                            <p class="cj-summary"><strong>Si te encuentras en...</strong> un proceso para reclamar una indemnización después de sufrir un accidente, mobbing laboral (acoso) o cualquier situación traumática que te haya provocado un sufrimiento psicológico verificable.</p>
                             <div class="cj-details" id="detail-3" hidden>
-                                <p><strong>El meu informe quantifica</strong> l'impacte real del que has viscut. Connecto el fet causant amb els teus símptomes (ansietat, insomni, estrès postraumàtic) per a determinar el grau d'incapacitat o dany i sustentar la teva reclamació econòmica. Que et compensin també pel teu dolor emocional.</p>
+                                <p><strong>Mi informe cuantifica</strong> el impacto real de lo que has vivido. Conecto el hecho causante con tus síntomas (ansiedad, insomnio, estrés postraumático) para determinar el grado de incapacidad o daño y sustentar tu reclamación económica. Que te compensen también por tu dolor emocional.</p>
                             </div>
-                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-3">Llegir més</button>
+                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-3">Leer más</button>
                         </div>
                     </article>
                     <article class="cj-card" data-anim>
-                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-brain" aria-hidden="true"></i></span><h3>Avaluació de la capacitat cognitiva i volitiva</h3></div>
+                        <div class="cj-card-head"><span class="cj-icon" aria-hidden="true"><i class="fas fa-brain" aria-hidden="true"></i></span><h3>Evaluación de la capacidad cognitiva y volitiva</h3></div>
                         <div class="cj-card-body">
-                            <p class="cj-summary"><strong>Si et trobes en...</strong> un procés on es qüestiona la capacitat d'una persona per a prendre decisions (testar, administrar els seus béns, consentir...).</p>
+                            <p class="cj-summary"><strong>Si te encuentras en...</strong> un proceso donde se cuestiona la capacidad de una persona para tomar decisiones (testar, administrar sus bienes, consentir...).</p>
                             <div class="cj-details" id="detail-4" hidden>
-                                <p><strong>El meu informe determina</strong> el grau de discerniment de la persona. Avaluo de forma rigorosa si existeix algun trastorn que li impedeixi entendre les consequències dels seus actes, oferint al jutge una fotografia clara de la seva capacitat mental.</p>
+                                <p><strong>Mi informe determina</strong> el grado de discernimiento de la persona. Evalúo de forma rigurosa si existe algún trastorno que le impida entender las consecuencias de sus actos, ofreciendo al juez una fotografía clara de su capacidad mental.</p>
                             </div>
-                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-4">Llegir més</button>
+                            <button class="cj-toggle" aria-expanded="false" aria-controls="detail-4">Leer más</button>
                         </div>
                     </article>
                 </div>
                 <div class="cj-method-cta">
-                    <h2 class="cj-method-title">El meu mètode: rigor científic i claredat legal</h2>
+                    <h2 class="cj-method-title">Mi método: rigor científico y claridad legal</h2>
                     <ul class="cj-method-list">
-                        <li>Entrevista en profunditat i avaluació psicològica amb les proves estandarditzades més reconegudes.</li>
-                        <li>Anàlisi de tota la documentació del cas (informes mèdics, informes socials, etc.).</li>
-                        <li>Redacció clara, concisa i contundent, entenedora per als operadors jurídics.</li>
-                        <li>Assistència opcional a la Vista Oral per a defensar i explicar les meves conclusions amb convicció i solvència davant el tribunal.</li>
+                        <li>Entrevista en profundidad y evaluación psicológica con las pruebas estandarizadas más reconocidas.</li>
+                        <li>Análisis de toda la documentación del caso (informes médicos, informes sociales, etc.).</li>
+                        <li>Redacción clara, concisa y contundente, entendible para los operadores jurídicos.</li>
+                        <li>Asistencia opcional a la Vista Oral para defender y explicar mis conclusiones con convicción y solvencia ante el tribunal.</li>
                     </ul>
-                    <p class="cj-objectiu">El meu objectiu és un: que el jutge comprengui la realitat psicològica del cas sense cap mena de dubte.</p>
-                    <blockquote class="cj-quote">En un judici, les paraules sense un fonament sòlid es les duu el vent. El meu informe és el fonament que la teva causa necessita.</blockquote>
+                    <p class="cj-objectiu">Mi objetivo es un: que el juez comprenda la realidad psicológica del caso sin ninguna duda.</p>
+                    <blockquote class="cj-quote">En un juicio, las palabras sin un fundamento sólido se las lleva el viento. Mi informe es el fundamento que tu causa necesita.</blockquote>
                 </div>
             </div>
         </section>
@@ -274,11 +274,11 @@ if (isset($_GET['lang'])) {
         <section class="clinica-cta-final">
             <div class="clinica-cta-content spectacular">
                 <div class="clinica-cta-copy">
-                    <h2 class="clinica-cta-title">Estàs llest per transformar la teva vida?</h2>
-                    <p class="clinica-cta-text">No deixis que el malestar emocional et limiti més temps. Contacta amb mi i definim un pla pràctic i sensible per a la vostra família o parella.</p>
+                    <h2 class="clinica-cta-title">¿Estás listo para transformar tu vida?</h2>
+                    <p class="clinica-cta-text">No dejes que el malestar emocional te limite más tiempo. Contacta conmigo y definamos un plan práctico y sensible para tu familia o pareja.</p>
                 </div>
                 <div class="clinica-cta-actions">
-                    <a href="/<?php echo getCurrentLanguage(); ?>/contacte.php" class="clinica-cta-button">Contacta ara <span class="chev" aria-hidden="true">›</span></a>
+                    <a href="/<?php echo getCurrentLanguage(); ?>/contacte.php" class="clinica-cta-button">Contacta ahora <span class="chev" aria-hidden="true">›</span></a>
                 </div>
             </div>
         </section>

@@ -8,7 +8,6 @@ Sitemap: https://yaninaparisi.com/sitemap.xml
 Disallow: /_pcontrol/
 Disallow: /_secret/
 Disallow: /classes/
-Disallow: /vendor/
 
 # Allow specific files
 Allow: /css/

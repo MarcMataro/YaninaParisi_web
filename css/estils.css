@@ -398,6 +398,54 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 
+/* Make .love-hero identical to .sobremi-hero for hero consistency */
+.love-hero {
+    /* use the same hero image as 'sobremi' for visual coherence */
+    background-image: url("../img/manos.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    padding: 160px 0 100px;
+    text-align: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+.love-content {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 18px;
+    box-shadow: 0 2px 16px rgba(168,153,104,0.07);
+}
+
+.love-title {
+    font-size: 2.5em;
+    color: #a89968;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.love-subtitle {
+    font-size: 1.3em;
+    color: #444;
+    margin-bottom: 24px;
+}
+
+/* Responsive tweaks: reduce hero padding & height on small screens */
+@media (max-width: 720px) {
+    .love-hero { padding: 100px 0 60px; min-height: 60vh; background-position: center top; }
+    .love-title { font-size: 1.8rem; }
+    .love-subtitle { font-size: 1rem; }
+}
+
+@media (max-width: 420px) {
+    .love-hero { padding: 80px 0 48px; min-height: 50vh; }
+    .love-title { font-size: 1.5rem; }
+}
+
 .lang-btn.active {
     background: var(--color-accent);
     color: white;
@@ -490,6 +538,15 @@ header.scrolled .lang-btn.active {
     font-weight: 400;
 }
 
+/* Specific override for the love hero to win over the generic .hero rules */
+.hero.love-hero {
+    background-image: url("../img/manos.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    min-height: 100vh;
+}
+
 .hero h1 .highlight {
     color: var(--color-accent);
     font-weight: 700;
@@ -571,6 +628,40 @@ section {
     font-size: 2.5rem;
     color: var(--color-accent);
     margin-bottom: 15px;
+}
+
+/* Service intro: Love Match intro block styles (mobile-first) */
+.service-intro{ padding: 36px 0; }
+.service-intro .container{ max-width: 920px; margin: 0 auto; }
+.service-intro h2{
+    font-size: 1.35rem;
+    color: var(--color-dark);
+    margin-bottom: 0.5rem;
+    line-height: 1.15;
+    font-weight: 700;
+}
+.service-intro p{
+    color: var(--color-text);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 0.9rem;
+}
+.service-intro p strong{ color: var(--color-accent); }
+.service-intro ul{ margin: 0.5rem 0 0 1.15rem; padding: 0; list-style: disc; color: var(--color-text); }
+.service-intro ul li{ margin-bottom: 0.6rem; }
+.service-intro .service-cta{ margin-top: 18px; text-align: left; }
+.service-intro .service-cta .btn{ padding: 12px 20px; font-weight:700; }
+
+/* Slight visual lift on larger screens */
+@media(min-width:720px){
+    .service-intro{ padding: 48px 0; }
+    .service-intro h2{ font-size: 1.6rem; }
+    .service-intro .service-cta{ text-align: left; }
+}
+
+@media(min-width:1024px){
+    .service-intro h2{ font-size: 1.9rem; }
+    .service-intro p{ font-size: 1.05rem; }
 }
 
 /* Secció frase inspiradora */
