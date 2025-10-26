@@ -42,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				'slug_ca' => $_POST['slug_ca'] ?? null,
 				'slug_es' => $_POST['slug_es'] ?? null,
 				'meta_robots' => $_POST['meta_robots'] ?? 'index, follow',
-				'canonical_url' => $_POST['canonical_url'] ?? null,
+				'canonical_url_ca' => $_POST['canonical_url_ca'] ?? null,
+				'canonical_url_es' => $_POST['canonical_url_es'] ?? null,
 				'priority' => $_POST['priority'] ?? '0.8',
 				'changefreq' => $_POST['changefreq'] ?? 'monthly',
 				'focus_keyword_ca' => $_POST['focus_keyword_ca'] ?? null,
@@ -216,7 +217,8 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 														'slug_ca' => $pagina->getSlug('ca'),
 														'slug_es' => $pagina->getSlug('es'),
 														'meta_robots' => $pagina->getMetaRobots(),
-														'canonical_url' => $pagina->getCanonicalUrl(),
+														'canonical_url_ca' => $pagina->getCanonicalUrl('ca'),
+														'canonical_url_es' => $pagina->getCanonicalUrl('es'),
 														'priority' => $pagina->getPriority(),
 														'changefreq' => $pagina->getChangefreq(),
 														'focus_keyword_ca' => $pagina->getFocusKeyword('ca'),
@@ -295,9 +297,14 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 								<div class="form-group" style="flex:1;">
 									<label for="modal_tipo_pagina" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Tipus de pàgina</label>
 									<select name="tipo_pagina" id="modal_tipo_pagina" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
-										<option value="landing">Landing</option>
+										<option value="home">Home</option>
+										<option value="sobre-mi">Sobre Mí</option>
+										<option value="servicios">Servicios</option>
 										<option value="blog">Blog</option>
-										<option value="servei">Servei</option>
+										<option value="articulo">Artículo</option>
+										<option value="contacto">Contacto</option>
+										<option value="legal">Legal</option>
+										<option value="landing">Landing</option>
 									</select>
 								</div>
 								<div class="form-group" style="flex:1;">
@@ -382,8 +389,12 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 									<input type="text" name="meta_robots" id="modal_meta_robots" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;" value="index, follow">
 								</div>
 								<div class="form-group" style="flex:1;">
-									<label for="modal_canonical_url" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Canonical URL</label>
-									<input type="text" name="canonical_url" id="modal_canonical_url" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+									<label for="modal_canonical_url_ca" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Canonical URL (CA)</label>
+									<input type="text" name="canonical_url_ca" id="modal_canonical_url_ca" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
+								</div>
+								<div class="form-group" style="flex:1;">
+									<label for="modal_canonical_url_es" style="display:block; margin-bottom:5px; font-weight:500; color:#333;">Canonical URL (ES)</label>
+									<input type="text" name="canonical_url_es" id="modal_canonical_url_es" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px; font-size:1rem;">
 								</div>
 							</div>
 							<div class="form-row" style="display:flex; gap:20px; margin-bottom:15px;">
@@ -663,7 +674,8 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 			safe('modal_slug_es','');
 			safe('modal_focus_keyword_es','');
 			safe('modal_meta_robots','index, follow');
-			safe('modal_canonical_url','');
+			safe('modal_canonical_url_ca','');
+			safe('modal_canonical_url_es','');
 			safe('modal_priority','0.8');
 			safe('modal_changefreq','monthly');
 			safe('modal_keywords_secundarias_ca','');
@@ -706,7 +718,8 @@ $error = isset($_GET['error']) && $_GET['error'] == '1';
 			safe('modal_slug_es', data.slug_es || '');
 			safe('modal_focus_keyword_es', data.focus_keyword_es || '');
 			safe('modal_meta_robots', data.meta_robots || 'index, follow');
-			safe('modal_canonical_url', data.canonical_url || '');
+			safe('modal_canonical_url_ca', data.canonical_url_ca || '');
+			safe('modal_canonical_url_es', data.canonical_url_es || '');
 			safe('modal_priority', data.priority || '0.8');
 			safe('modal_changefreq', data.changefreq || 'monthly');
 			safe('modal_keywords_secundarias_ca', data.keywords_secundarias_ca || '');

@@ -112,7 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'slug_ca' => $_POST['slug_ca'] ?? null,
                 'slug_es' => $_POST['slug_es'] ?? null,
                 'meta_robots' => $_POST['meta_robots'] ?? 'index, follow',
-                'canonical_url' => $_POST['canonical_url'] ?? null,
+                'canonical_url_ca' => $_POST['canonical_url_ca'] ?? null,
+                'canonical_url_es' => $_POST['canonical_url_es'] ?? null,
                 'priority' => $_POST['priority'] ?? '0.8',
                 'changefreq' => $_POST['changefreq'] ?? 'monthly',
                 'focus_keyword_ca' => $_POST['focus_keyword_ca'] ?? null,
@@ -182,6 +183,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: gseo.php?error=1&tab=onpage');
             exit;
         }
+    } elseif ($action === 'run_audit') {
+        // Executar auditories ràpides sobre la pàgina onpage i retornar JSON
+        try {
+            $id_pagina = $_POST['id_pagina'] ?? null;
+            if (!$id_pagina) {
+                throw new Exception('ID de pàgina no proporcionat');
+            }
+
+            $pagina = new SEO_OnPage($id_pagina);
+
+            $result = [];
+            // Readability
+            $result['readability'] = [
+                'ca' => $pagina->computeReadability('ca'),
+                'es' => $pagina->computeReadability('es')
+            ];
+
+            // Images
+            $result['images'] = [
+                'ca' => $pagina->auditImages('ca'),
+                'es' => $pagina->auditImages('es')
+            ];
+
+            // Schema
+            $result['schema'] = $pagina->validateSchemaJSONLD();
+
+            // Indexability
+            $result['indexability'] = $pagina->checkIndexability();
+
+            // Canonical & hreflang
+            $result['canonical'] = [
+                'ca' => $pagina->checkCanonicalConsistency('ca'),
+                'es' => $pagina->checkCanonicalConsistency('es')
+            ];
+            $result['hreflang'] = $pagina->checkHreflang();
+
+            // Headings & links
+            $result['headings'] = [
+                'ca' => $pagina->auditHeadings('ca'),
+                'es' => $pagina->auditHeadings('es')
+            ];
+            $result['links'] = [
+                'ca' => $pagina->countInternalExternalLinks('ca'),
+                'es' => $pagina->countInternalExternalLinks('es')
+            ];
+
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($result);
+            exit;
+
+        } catch (Exception $e) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['error' => $e->getMessage()]);
+            exit;
+        }
+
     } elseif ($action === 'create_backlink') {
         // Crear nou backlink
         try {
@@ -455,38 +512,7 @@ try {
     error_log("Error carregant estadístiques Off-Page Directoris: " . $e->getMessage());
 }
 
-// (SEO Técnico integrado desactivado)
 
-// Dades estàtiques per les altres pestanyes (Technical, Content, Analytics)
-$seoConfig = [
-    'meta_title_ca' => 'Yanina Parisi - Psicòloga col·legiada a Girona',
-    'meta_title_es' => 'Yanina Parisi - Psicóloga colegiada en Girona',
-    'meta_description_ca' => 'Psicòloga col·legiada especialitzada en teràpia de parella, adults i psicologia judicial a Girona. Primera sessió gratuïta.',
-    'meta_description_es' => 'Psicóloga colegiada especializada en terapia de pareja, adultos y psicología judicial en Girona. Primera sesión gratuita.',
-    'meta_keywords_ca' => 'psicòloga girona, teràpia parella, psicologia judicial, salut mental adults',
-    'meta_keywords_es' => 'psicóloga girona, terapia pareja, psicología judicial, salud mental adultos',
-    'og_title_ca' => 'Yanina Parisi - Psicòloga col·legiada a Girona',
-    'og_title_es' => 'Yanina Parisi - Psicóloga colegiada en Girona',
-    'og_description_ca' => 'Psicòloga especialitzada en teràpia de parella, adults i psicologia judicial.',
-    'og_description_es' => 'Psicóloga especializada en terapia de pareja, adultos y psicología judicial.',
-    'og_image' => 'https://www.psicologiayanina.com/img/og-image.jpg',
-    'twitter_title_ca' => 'Yanina Parisi - Psicòloga a Girona',
-    'twitter_title_es' => 'Yanina Parisi - Psicóloga en Girona',
-    'twitter_description_ca' => 'Teràpia psicològica professional a Girona',
-    'twitter_description_es' => 'Terapia psicológica profesional en Girona',
-    'twitter_image' => 'https://www.psicologiayanina.com/img/twitter-card.jpg',
-    'google_analytics' => 'G-XXXXXXXXXX',
-    'google_search_console' => 'google-site-verification=xxxxxxxxxxxxxxxxx',
-    'facebook_pixel' => '1234567890123456',
-    'canonical_url' => 'https://www.psicologiayanina.com',
-    'robots_txt' => "User-agent: *\nDisallow: /_pcontrol/\nAllow: /\nSitemap: https://www.psicologiayanina.com/sitemap.xml",
-    'sitemap_url' => 'https://www.psicologiayanina.com/sitemap.xml',
-    'structured_data' => '{"@context":"https://schema.org","@type":"ProfessionalService"}',
-    'alt_tags' => 'yes',
-    'h1_optimization' => 'yes',
-    'internal_linking' => '15',
-    'page_speed' => '92'
-];
 ?>
 <!DOCTYPE html>
 <html lang="es">

@@ -23,27 +23,88 @@ include '../includes/functions.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo t('meta_title'); ?></title>
-    <meta name="description" content="<?php echo t('meta_description'); ?>">
+    <?php
+    $lang = getCurrentLanguage();
+    $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+    require_once __DIR__ . '/../classes/seo_onpage.php';
+
+    // Determine SEO page for 'home'
+    $seoTitle = null;
+    $homePages = SEO_OnPage::llistarPaginesActives('home');
+    if (!empty($homePages) && isset($homePages[0]) && $homePages[0] instanceof SEO_OnPage) {
+        $pagina_seo = $homePages[0];
+        $seoTitle = $pagina_seo->getTitle($lang) ?: null;
+    }
+    if (!$seoTitle) {
+        $pagina_seo = SEO_OnPage::carregarPerUrl($lang === 'es' ? '/' : '/', $lang);
+        if ($pagina_seo) {
+            $seoTitle = $pagina_seo->getTitle($lang) ?: null;
+        }
+    }
+    if (!$seoTitle) {
+        $seoTitle = ($lang === 'es') ? 'Yanina Parisi - Psicóloga' : 'Yanina Parisi - Psicòloga';
+    }
+
+    // Description
+    $seoDescription = null;
+    if (isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage) {
+        $seoDescription = $pagina_seo->getMetaDescription($lang) ?: null;
+    }
+    if (!$seoDescription) {
+        $seoDescription = t('meta_description');
+    }
+
+    // Canonical
+    $canonical = null;
+    if (isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage) {
+        $canonical = $pagina_seo->getCanonicalUrl($lang);
+    }
+    if (!$canonical) {
+        $canonical = $base_url . '/es/home.php';
+    }
+    ?>
+    <title><?php echo htmlspecialchars($seoTitle); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($seoDescription); ?>">
     <meta name="keywords" content="<?php echo t('meta_keywords'); ?>">
     <meta name="author" content="<?php echo t('meta_author'); ?>">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#aa9e6b">
-    <link rel="canonical" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/es/home.php">
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonical); ?>">
     <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="../img/apple-touch-icon.png">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
-    <meta property="og:title" content="<?php echo t('meta_og_title'); ?>">
-    <meta property="og:description" content="<?php echo t('meta_og_description'); ?>">
-    <meta property="og:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
-    <meta property="og:site_name" content="<?php echo t('meta_og_site_name'); ?>">
+
+    <!-- Open Graph / Facebook -->
+    <?php
+    $og_title = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getOgTitle($lang) : $seoTitle;
+    $og_description = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getOgDescription($lang) : $seoDescription;
+    $og_image = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getOgImage() : null;
+    if (!$og_image) { $og_image = '/img/Logo.png'; }
+    if (!preg_match('#^https?://#i', $og_image)) { $og_image = $base_url . '/' . ltrim($og_image, '/'); }
+    $og_url = htmlspecialchars($canonical ?: ($base_url . $_SERVER['REQUEST_URI']));
+    ?>
+    <meta property="og:type" content="<?php echo (isset($pagina_seo) ? $pagina_seo->getTipoPagina() === 'articulo' ? 'article' : 'website' : 'website'); ?>">
+    <meta property="og:url" content="<?php echo $og_url; ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($og_title); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($og_description); ?>">
+    <meta property="og:image" content="<?php echo htmlspecialchars($og_image); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="<?php echo htmlspecialchars(t('meta_og_site_name')); ?>">
     <meta property="og:locale" content="<?php echo getCurrentLanguage() === 'ca' ? 'ca_ES' : 'es_ES'; ?>">
+
+    <!-- Twitter -->
+    <?php
+    $tw_title = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getTwitterTitle($lang) : $seoTitle;
+    $tw_description = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getTwitterDescription($lang) : $seoDescription;
+    $tw_image = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getTwitterImage() : null;
+    if (!$tw_image) { $tw_image = '/img/Logo.png'; }
+    if (!preg_match('#^https?://#i', $tw_image)) { $tw_image = $base_url . '/' . ltrim($tw_image, '/'); }
+    ?>
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?php echo t('meta_og_title'); ?>">
-    <meta name="twitter:description" content="<?php echo t('meta_og_description'); ?>">
-    <meta name="twitter:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($tw_title); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($tw_description); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($tw_image); ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
     <link rel="stylesheet" href="../css/estils.css">
     <link rel="stylesheet" href="../css/brands.css">
@@ -55,11 +116,11 @@ include '../includes/functions.php';
         "@context": "https://schema.org",
         "@type": "Psychologist",
         "name": "Yanina Parisi",
-        "description": "<?php echo t('meta_description'); ?>",
-        "url": "<?php echo 'https://' . $_SERVER['HTTP_HOST']; ?>",
+        "description": "<?php echo htmlspecialchars($seoDescription); ?>",
+            "url": "<?php echo $base_url; ?>",
         "telephone": "+34-XXX-XXX-XXX",
         "email": "info@yaninaparisi.com",
-        "image": "<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/img_2282.jpeg",
+    "image": "<?php echo $base_url; ?>/img/img_2282.jpeg",
         "priceRange": "€€",
         "address": {
             "@type": "PostalAddress",

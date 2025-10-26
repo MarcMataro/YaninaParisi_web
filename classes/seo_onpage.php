@@ -154,9 +154,14 @@ class SEO_OnPage {
     private $meta_robots;
     
     /**
-     * @var string|null URL canònica (si és diferent de la URL relativa)
+     * @var string|null URL canònica específica en català (si és diferent de la URL relativa)
      */
-    private $canonical_url;
+    private $canonical_url_ca;
+
+    /**
+     * @var string|null URL canònica específica en espanyol (si és diferent de la URL relativa)
+     */
+    private $canonical_url_es;
     
     /**
      * @var string Prioritat en sitemap.xml (1.0, 0.8, 0.6, 0.4, 0.2)
@@ -429,7 +434,9 @@ class SEO_OnPage {
                 
                 // 5. SEO Tècnic Específic
                 $this->meta_robots = $row['meta_robots'];
-                $this->canonical_url = $row['canonical_url'];
+                // La base de dades ara guarda canonicals per idioma
+                $this->canonical_url_ca = $row['canonical_url_ca'] ?? null;
+                $this->canonical_url_es = $row['canonical_url_es'] ?? null;
                 $this->priority = $row['priority'];
                 $this->changefreq = $row['changefreq'];
                 
@@ -694,12 +701,13 @@ class SEO_OnPage {
     }
     
     /**
-     * Obté la URL canònica
-     * 
+     * Obté la URL canònica segons l'idioma
+     *
+     * @param string $lang Idioma (ca|es). Per defecte: 'ca'
      * @return string|null URL canònica o null
      */
-    public function getCanonicalUrl() {
-        return $this->canonical_url;
+    public function getCanonicalUrl($lang = 'ca') {
+        return ($lang === 'es') ? $this->canonical_url_es : $this->canonical_url_ca;
     }
     
     /**
@@ -1239,7 +1247,7 @@ class SEO_OnPage {
                 'title_ca', 'meta_description_ca', 'h1_ca', 'contenido_principal_ca',
                 'title_es', 'meta_description_es', 'h1_es', 'contenido_principal_es',
                 'breadcrumb_json', 'slug_ca', 'slug_es', 'parent_id',
-                'meta_robots', 'canonical_url', 'priority', 'changefreq',
+                'meta_robots', 'canonical_url_ca', 'canonical_url_es', 'priority', 'changefreq',
                 'focus_keyword_ca', 'focus_keyword_es', 'keywords_secundarias_ca', 'keywords_secundarias_es',
                 'schema_json',
                 'og_title_ca', 'og_title_es', 'og_description_ca', 'og_description_es', 'og_image',
@@ -1281,14 +1289,14 @@ class SEO_OnPage {
     public function actualitzarMultiplesCamps($data) {
         try {
             $this->pdo->beginTransaction();
-            
+
             foreach ($data as $field => $value) {
                 $this->actualitzarCamp($field, $value);
             }
-            
+
             $this->pdo->commit();
             return true;
-            
+
         } catch (Exception $e) {
             $this->pdo->rollBack();
             throw new Exception("Error al actualitzar múltiples camps: " . $e->getMessage());
@@ -1458,7 +1466,8 @@ class SEO_OnPage {
         
     $lang = isset($_SESSION['language']) ? $_SESSION['language'] : 'ca';
     $url_relativa = ($lang === 'es') ? $this->url_relativa_es : $this->url_relativa_ca;
-    $canonical = $this->canonical_url ?: ($base_url . $url_relativa);
+    $canonical_candidate = $this->getCanonicalUrl($lang);
+    $canonical = $canonical_candidate ?: ($base_url . $url_relativa);
         $html .= '<link rel="canonical" href="' . htmlspecialchars($canonical) . '">' . "\n";
         
         if ($keyword = $this->getFocusKeyword($lang)) {
@@ -1517,7 +1526,8 @@ class SEO_OnPage {
             ],
             'tecnico' => [
                 'meta_robots' => $this->meta_robots,
-                'canonical_url' => $this->canonical_url,
+                'canonical_url_ca' => $this->canonical_url_ca,
+                'canonical_url_es' => $this->canonical_url_es,
                 'priority' => $this->priority,
                 'changefreq' => $this->changefreq
             ],
@@ -1703,5 +1713,529 @@ class SEO_OnPage {
             error_log("Error en calcularEstadistiquesGlobals: " . $e->getMessage());
             return null;
         }
+    }
+
+
+    // ============================================
+    // NOUS MÈTODES D'AUDITORIA/VALIDACIÓ
+    // ============================================
+
+    /**
+     * Comprova la coherència del camp canonical per a l'idioma indicat.
+     * S'assegura que la URL canònica (si existeix) és absoluta i que no hi ha duplicats a la BD.
+     * Retorna un array amb 'ok' i 'issues' (llista d'advertències) i 'duplicates' amb altres pàgines que comparteixen la mateixa canonical.
+     *
+     * @param string $lang Idioma (ca|es)
+     * @return array
+     */
+    public function checkCanonicalConsistency($lang = 'ca') {
+        $issues = [];
+        $duplicates = [];
+
+        $field = ($lang === 'es') ? 'canonical_url_es' : 'canonical_url_ca';
+        $url_rel_field = ($lang === 'es') ? 'url_relativa_es' : 'url_relativa_ca';
+
+        $canonical = $this->$field ?? null;
+        $url_rel = $this->$url_rel_field ?? null;
+
+        if (!$canonical) {
+            $issues[] = "Canonical buit per a l'idioma $lang";
+        } else {
+            // Absoluta?
+            if (!preg_match('#^https?://#i', $canonical)) {
+                $issues[] = "Canonical no és una URL absoluta: $canonical";
+            }
+
+            // Coherència amb url_relativa: si la url_relativa existeix, comprovar que s'hi contingui
+            if ($url_rel && strpos($canonical, $url_rel) === false) {
+                $issues[] = "Canonical ('$canonical') sembla no correspondre a la url_relativa ('$url_rel')";
+            }
+
+            // Buscar duplicats a la BD: altres pàgines amb la mateixa canonical
+            try {
+                $conn = Connexio::getInstance();
+                $pdo = $conn->getConnexio();
+
+                $sql = "SELECT id_pagina, url_relativa_ca, url_relativa_es, titulo_pagina FROM seo_onpage_paginas WHERE $field = :canonical AND id_pagina != :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':canonical', $canonical);
+                $stmt->bindParam(':id', $this->id_pagina, PDO::PARAM_INT);
+                $stmt->execute();
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (!empty($rows)) {
+                    foreach ($rows as $r) {
+                        $duplicates[] = $r;
+                    }
+                    $issues[] = 'Existeixen altres pàgines amb la mateixa canonical';
+                }
+            } catch (Exception $e) {
+                $issues[] = 'Error consultant duplicats de canonical: ' . $e->getMessage();
+            }
+        }
+
+        return ['ok' => empty($issues), 'issues' => $issues, 'duplicates' => $duplicates];
+    }
+
+
+    /**
+     * Comprova la presència de versions en ambdós idiomes i possibils conflictes entre canonical i hreflang.
+     * Retorna un array amb 'ok', 'issues' i les URLs relatives trobades per cada idioma.
+     *
+     * @return array
+     */
+    public function checkHreflang() {
+        $issues = [];
+
+        $url_ca = $this->url_relativa_ca ?? null;
+        $url_es = $this->url_relativa_es ?? null;
+
+        if (!$url_ca) {
+            $issues[] = 'Falta url_relativa_ca';
+        }
+        if (!$url_es) {
+            $issues[] = 'Falta url_relativa_es';
+        }
+
+        // Comprovar que les canonical no entren en conflicte (p. ex. canonical_ca apunta a /es/)
+        $can_ca = $this->canonical_url_ca ?? null;
+        $can_es = $this->canonical_url_es ?? null;
+
+        if ($can_ca && $can_es && $can_ca === $can_es) {
+            // Pot estar bé (canonical compartida) però afegim advertència per a revisió
+            $issues[] = 'Canonical ca i es són idèntiques; comprovar si això és intencional';
+        }
+
+        // Si existeix una canonical d'un idioma que apunta clarament a la versió de l'altre idioma, marcar-ho
+        if ($can_ca && stripos($can_ca, '/es/') !== false) {
+            $issues[] = "Canonical CA sembla apuntar a una ruta ES: $can_ca";
+        }
+        if ($can_es && stripos($can_es, '/ca/') !== false) {
+            $issues[] = "Canonical ES sembla apuntar a una ruta CA: $can_es";
+        }
+
+        return ['ok' => empty($issues), 'issues' => $issues, 'urls' => ['ca' => $url_ca, 'es' => $url_es]];
+    }
+
+
+    /**
+     * Cerca títols duplicats a la BD per ambdós idiomes i retorna llistats on count>1.
+     *
+     * @return array
+     */
+    public static function detectarTitolsDuplicats() {
+        $result = ['ca' => [], 'es' => []];
+        try {
+            $conn = Connexio::getInstance();
+            $pdo = $conn->getConnexio();
+
+            // Català
+            $sql_ca = "SELECT title_ca AS title, GROUP_CONCAT(id_pagina) AS ids, COUNT(*) AS cnt FROM seo_onpage_paginas WHERE title_ca IS NOT NULL AND title_ca <> '' GROUP BY title_ca HAVING cnt > 1";
+            $stmt = $pdo->query($sql_ca);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($rows as $r) {
+                $r['ids'] = array_map('intval', explode(',', $r['ids']));
+                $result['ca'][] = $r;
+            }
+
+            // Espanyol
+            $sql_es = "SELECT title_es AS title, GROUP_CONCAT(id_pagina) AS ids, COUNT(*) AS cnt FROM seo_onpage_paginas WHERE title_es IS NOT NULL AND title_es <> '' GROUP BY title_es HAVING cnt > 1";
+            $stmt = $pdo->query($sql_es);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($rows as $r) {
+                $r['ids'] = array_map('intval', explode(',', $r['ids']));
+                $result['es'][] = $r;
+            }
+
+        } catch (Exception $e) {
+            error_log('Error detectant títols duplicats: ' . $e->getMessage());
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * Audita les capçaleres dins del contingut principal (html) per a un idioma determinat.
+     * Retorna comptatges H1..H6 i una llista d'issues (més d'un H1, salts d'ordre de capçaleres...)
+     *
+     * @param string $lang ca|es
+     * @return array
+     */
+    public function auditHeadings($lang = 'ca') {
+        $html = ($lang === 'es') ? $this->contenido_principal_es : $this->contenido_principal_ca;
+        $issues = [];
+        $counts = ['h1' => 0, 'h2' => 0, 'h3' => 0, 'h4' => 0, 'h5' => 0, 'h6' => 0];
+        $sequence = [];
+
+        if (!$html) {
+            $issues[] = 'Contingut buit';
+            return ['counts' => $counts, 'issues' => $issues, 'sequence' => $sequence];
+        }
+
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        // Forçar encoding
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+        for ($i = 1; $i <= 6; $i++) {
+            $tag = 'h' . $i;
+            $nodes = $dom->getElementsByTagName($tag);
+            $counts[$tag] = $nodes->length;
+            foreach ($nodes as $n) {
+                $sequence[] = $i;
+            }
+        }
+
+        // Issues: més d'un H1
+        if ($counts['h1'] > 1) {
+            $issues[] = 'Més d\'un H1 present (' . $counts['h1'] . ')';
+        }
+
+        // Detectar salts d'ordre (p.ex. H1 -> H3)
+        $prev = null;
+        foreach ($sequence as $lvl) {
+            if ($prev !== null && ($lvl - $prev) > 1) {
+                $issues[] = "Salt d'ordre de capçalera detectat: H$prev → H$lvl";
+            }
+            $prev = $lvl;
+        }
+
+        return ['counts' => $counts, 'issues' => $issues, 'sequence' => $sequence];
+    }
+
+
+    /**
+     * Comptabilitza enllaços interns i externs present al contingut principal d'un idioma.
+     * No fa peticions HTTP per verificar trencats (opcional). Retorna totals i listats.
+     *
+     * @param string $lang ca|es
+     * @return array
+     */
+    public function countInternalExternalLinks($lang = 'ca') {
+        $html = ($lang === 'es') ? $this->contenido_principal_es : $this->contenido_principal_ca;
+        $internal = 0;
+        $external = 0;
+        $anchors = [];
+
+        if (!$html) {
+            return ['internal' => 0, 'external' => 0, 'anchors' => []];
+        }
+
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+        $links = $dom->getElementsByTagName('a');
+
+        $host = $_SERVER['HTTP_HOST'] ?? null;
+
+        foreach ($links as $a) {
+            $href = trim($a->getAttribute('href'));
+            if (!$href) continue;
+            // Ignore anchors/mailto/tel
+            if (strpos($href, '#') === 0 || stripos($href, 'mailto:') === 0 || stripos($href, 'tel:') === 0) {
+                $internal++;
+                $anchors[] = ['href' => $href, 'type' => 'internal-aux'];
+                continue;
+            }
+
+            // Absolute URL
+            if (preg_match('#^https?://#i', $href)) {
+                $p = parse_url($href);
+                $link_host = $p['host'] ?? null;
+                if ($link_host && $host && strcasecmp($link_host, $host) === 0) {
+                    $internal++;
+                    $anchors[] = ['href' => $href, 'type' => 'internal'];
+                } else {
+                    $external++;
+                    $anchors[] = ['href' => $href, 'type' => 'external'];
+                }
+            } else {
+                // Relative URL -> internal
+                $internal++;
+                $anchors[] = ['href' => $href, 'type' => 'internal'];
+            }
+        }
+
+        return ['internal' => $internal, 'external' => $external, 'anchors' => $anchors];
+    }
+
+    /**
+     * Calcula la llegibilitat i temps estimat de lectura del contingut
+     * Utilitza una aproximació simple per a la puntuació Flesch (adaptada) basada
+     * en comptatge d'oracions, paraules i síl·labes estimades.
+     *
+     * @param string $lang ca|es
+     * @return array ['words'=>int, 'reading_time_min'=>float, 'flesch_score'=>float]
+     */
+    public function computeReadability($lang = 'ca') {
+        $html = ($lang === 'es') ? $this->contenido_principal_es : $this->contenido_principal_ca;
+
+        if (!$html) {
+            return ['words' => 0, 'reading_time_min' => 0, 'flesch_score' => 0.0];
+        }
+
+        // Netejar HTML
+        $text = trim(strip_tags($html));
+        if ($text === '') {
+            return ['words' => 0, 'reading_time_min' => 0, 'flesch_score' => 0.0];
+        }
+
+        // Paraules
+        $words = $this->calcularWordCount($text);
+
+        // Oracions: comptar punts, interrogants i exclamacions
+        $sentences = preg_split('/[\.\!\?]+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+        $sentences_count = max(1, count($sentences));
+
+        // Síl·labes estimades: grups de vocals com a aproximació
+        $syllables = $this->estimateSyllables($text);
+
+        // Temps de lectura: 200 wpm com a valor per defecte
+        $reading_time_min = $words > 0 ? round($words / 200, 2) : 0;
+
+        // Flesch Reading Ease (aprox) adaptat: 206.835 - 62.3*(syllables/words) - 0.8*(words/sentences)
+        // Aquesta fórmula està pensada per idiomes romànics amb ajust conservador.
+        $flesch = 0.0;
+        if ($words > 0 && $sentences_count > 0) {
+            $flesch = 206.835 - 62.3 * ($syllables / $words) - 0.8 * ($words / $sentences_count);
+            $flesch = round($flesch, 2);
+        }
+
+        return [
+            'words' => $words,
+            'reading_time_min' => $reading_time_min,
+            'flesch_score' => $flesch,
+            'sentences' => $sentences_count,
+            'syllables_est' => $syllables
+        ];
+    }
+
+    /**
+     * Estima el nombre de síl·labes d'un text utilitzant una heurística simple
+     * Comptarà grups de vocals (a,e,i,o,u,àèéíòóúü) com a síl·labes aproximades.
+     *
+     * @param string $text
+     * @return int
+     */
+    private function estimateSyllables($text) {
+        $text = mb_strtolower($text, 'UTF-8');
+        // Reemplaçar caràcters no vocals per espais
+        // Incloure vocals accentuades i ï/ü
+        $text = preg_replace('/[^a-zàáâäãåèéêëìíîïòóôöõùúûüyçñÀÁÂÄÃÅÈÉÊËÌÍÎÏÒÓÔÖÕÙÚÛÜÝÇÑ]/u', ' ', $text);
+        // Comptar grups de vocals
+        preg_match_all('/[aeiouyàáâäãåèéêëìíîïòóôöõùúûü]+/u', $text, $matches);
+        $count = isset($matches[0]) ? count($matches[0]) : 0;
+
+        // Assegurar mínim 1 síl·laba si hi ha paraules
+        $words = $this->calcularWordCount($text);
+        if ($words > 0 && $count < 1) $count = $words;
+
+        return (int) $count;
+    }
+
+    /**
+     * Audita les imatges presents al contingut principal i la imatge destacada.
+     * Comprova: alt, caption (si hi ha), src absolut/relatiu, presence de srcset, i existencia al FS si és local.
+     *
+     * @param string $lang ca|es
+     * @return array ['total'=>int,'missing_alt'=>int,'images'=>[...]]
+     */
+    public function auditImages($lang = 'ca') {
+        $html = ($lang === 'es') ? $this->contenido_principal_es : $this->contenido_principal_ca;
+        $results = ['total' => 0, 'missing_alt' => 0, 'without_srcset' => 0, 'images' => []];
+
+        // Analitzar <img> dins del contingut
+        if ($html) {
+            libxml_use_internal_errors(true);
+            $dom = new DOMDocument();
+            $dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+            $imgs = $dom->getElementsByTagName('img');
+
+            foreach ($imgs as $img) {
+                $src = trim($img->getAttribute('src'));
+                $alt = trim($img->getAttribute('alt')) ?: null;
+                $srcset = trim($img->getAttribute('srcset')) ?: null;
+
+                $info = ['src' => $src, 'alt' => $alt, 'has_srcset' => (bool)$srcset, 'exists_on_fs' => null, 'caption' => null];
+
+                if (!$alt) {
+                    $results['missing_alt']++;
+                }
+                if (!$srcset) {
+                    $results['without_srcset']++;
+                }
+
+                // Buscar caption: si l'img està dins d'un <figure> amb <figcaption>
+                $parent = $img->parentNode;
+                if ($parent && $parent->nodeName === 'figure') {
+                    foreach ($parent->childNodes as $child) {
+                        if ($child->nodeName === 'figcaption') {
+                            $cap = trim($child->textContent);
+                            if ($cap) $info['caption'] = $cap;
+                        }
+                    }
+                }
+
+                // Comprovar existencia al FS per a rutes locals
+                $exists = null;
+                if ($src) {
+                    if (preg_match('#^https?://#i', $src)) {
+                        // No intentem fer request extern per defecte
+                        $exists = null;
+                    } else {
+                        // Mapear ruta relativa al projecte
+                        $basePath = realpath(__DIR__ . '/../');
+                        $candidate = $basePath . '/' . ltrim($src, '/');
+                        $exists = file_exists($candidate);
+                    }
+                }
+                $info['exists_on_fs'] = $exists;
+
+                $results['images'][] = $info;
+                $results['total']++;
+            }
+        }
+
+        // Incloure la imatge destacada si existeix i no està en el HTML
+        if ($this->featured_image) {
+            $found = false;
+            foreach ($results['images'] as $i) {
+                if ($i['src'] === $this->featured_image) { $found = true; break; }
+            }
+            if (!$found) {
+                $src = $this->featured_image;
+                $alt = $this->getAltImage($lang);
+                $exists = null;
+                if (!preg_match('#^https?://#i', $src)) {
+                    $basePath = realpath(__DIR__ . '/../');
+                    $candidate = $basePath . '/' . ltrim($src, '/');
+                    $exists = file_exists($candidate);
+                }
+                $results['images'][] = ['src' => $src, 'alt' => $alt, 'has_srcset' => false, 'exists_on_fs' => $exists, 'caption' => $this->getImageCaption($lang)];
+                $results['total']++;
+                if (!$alt) $results['missing_alt']++;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Valida mínimament el Schema JSON-LD emmagatzemat a la pàgina.
+     * Retorna 'ok' i 'issues' amb misses/advertències; comprova tipus comuns (Article, LocalBusiness, Person/Psychologist).
+     *
+     * @return array ['ok'=>bool,'issues'=>array,'schema'=>array|null]
+     */
+    public function validateSchemaJSONLD() {
+        $schema = $this->getSchema();
+        $issues = [];
+
+        if (!$schema) {
+            $issues[] = 'No hi ha schema JSON-LD definits';
+            return ['ok' => false, 'issues' => $issues, 'schema' => null];
+        }
+
+        $checkSingle = function($obj) use (&$issues) {
+            if (!isset($obj['@type']) && !isset($obj['type'])) {
+                $issues[] = 'Schema sense @type';
+                return false;
+            }
+            $type = $obj['@type'] ?? $obj['type'];
+
+            switch (strtolower($type)) {
+                case 'article':
+                    if (empty($obj['headline'])) $issues[] = 'Article sense headline';
+                    if (empty($obj['author']) && empty($obj['creator'])) $issues[] = 'Article sense author';
+                    if (empty($obj['datePublished'])) $issues[] = 'Article sense datePublished';
+                    break;
+                case 'localbusiness':
+                case 'local business':
+                    if (empty($obj['name'])) $issues[] = 'LocalBusiness sense name';
+                    if (empty($obj['address'])) $issues[] = 'LocalBusiness sense address';
+                    break;
+                case 'person':
+                case 'psychologist':
+                    if (empty($obj['name'])) $issues[] = ucfirst($type) . ' sense name';
+                    break;
+                default:
+                    // No forçar errors per altres tipus, només recomanacions
+                    break;
+            }
+
+            return true;
+        };
+
+        // Schema pot ser array o objecte
+        if (is_array($schema)) {
+            // Si és un array associatiu amb @context, tractar com a objecte
+            $assocKeys = array_keys($schema);
+            $isAssoc = array_keys($assocKeys) !== $assocKeys;
+            // Si els primers elements són numèrics, tractar com a llista
+            if (array_keys($schema) === range(0, count($schema) - 1)) {
+                foreach ($schema as $s) { $checkSingle($s); }
+            } else {
+                $checkSingle($schema);
+            }
+        } else {
+            $issues[] = 'Schema JSON no té format array/object correcte';
+            return ['ok' => false, 'issues' => $issues, 'schema' => $schema];
+        }
+
+        return ['ok' => empty($issues), 'issues' => $issues, 'schema' => $schema];
+    }
+
+    /**
+     * Comprova indexabilitat: meta_robots, presencia al sitemap.xml i regles de robots.txt.
+     * Retorna avisos si hi ha conflictes (p.ex. noindex a la pàgina però està al sitemap o robots bloqueja la ruta).
+     *
+     * @return array ['ok'=>bool,'issues'=>array,'robots_txt'=>string|null,'sitemap_contains'=>bool|null]
+     */
+    public function checkIndexability() {
+        $issues = [];
+
+        $meta = $this->getMetaRobots();
+        if ($meta) {
+            if (stripos($meta, 'noindex') !== false) {
+                $issues[] = 'Meta robots conté noindex';
+            }
+        }
+
+        // Comprovar sitemap.xml (arrel del projecte)
+        $basePath = realpath(__DIR__ . '/../');
+        $sitemapPath = $basePath . '/sitemap.xml';
+        $sitemap_contains = null;
+        if (file_exists($sitemapPath)) {
+            $sitemap = file_get_contents($sitemapPath);
+            $canonical = $this->getCanonicalUrl() ?: $this->getUrlRelativa();
+            // buscar la ruta (pot ser relativa o absoluta). Fem strcmp simplista
+            if ($canonical && strpos($sitemap, $canonical) !== false) {
+                $sitemap_contains = true;
+                if (stripos($meta, 'noindex') !== false) {
+                    $issues[] = 'Pàgina marcada com noindex però figura al sitemap.xml';
+                }
+            } else {
+                $sitemap_contains = false;
+            }
+        }
+
+        // Comprovar robots.txt
+        $robotsPath = $basePath . '/robots.txt';
+        $robots_txt = null;
+        if (file_exists($robotsPath)) {
+            $robots_txt = file_get_contents($robotsPath);
+            $urlRel = $this->getUrlRelativa();
+            if ($urlRel && preg_match_all('/Disallow:\s*(.+)/i', $robots_txt, $m)) {
+                foreach ($m[1] as $dis) {
+                    $dis = trim($dis);
+                    if ($dis === '' || $dis === '/') continue;
+                    // Simple check: si la ruta de la pàgina comença pel patró disallow
+                    if (strpos($urlRel, $dis) === 0) {
+                        $issues[] = "robots.txt conté Disallow que afecta a la pàgina: $dis";
+                    }
+                }
+            }
+        }
+
+        return ['ok' => empty($issues), 'issues' => $issues, 'robots_txt' => $robots_txt, 'sitemap_contains' => $sitemap_contains];
     }
 }

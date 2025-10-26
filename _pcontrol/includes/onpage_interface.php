@@ -362,11 +362,18 @@ $modo_vista = isset($_GET['edit']) || isset($_GET['new']) ? 'edit' : 'list';
                     <small>Directiva para robots de búsqueda</small>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-link"></i> URL Canónica</label>
-                    <input type="text" name="canonical_url"
-                           value="<?php echo $pagina_edit ? htmlspecialchars($pagina_edit->getCanonicalUrl() ?? '') : ''; ?>"
-                           placeholder="https://www.psicologiayanina.com/terapia">
-                    <small>Solo si es diferente a la URL relativa</small>
+                    <label><i class="fas fa-link"></i> URL Canónica (Català)</label>
+                    <input type="text" name="canonical_url_ca"
+                           value="<?php echo $pagina_edit ? htmlspecialchars($pagina_edit->getCanonicalUrl('ca') ?? '') : ''; ?>"
+                           placeholder="https://www.psicologiayanina.com/terapia-ca">
+                    <small>Només si és diferent de la URL relativa (CA)</small>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-link"></i> URL Canónica (Español)</label>
+                    <input type="text" name="canonical_url_es"
+                           value="<?php echo $pagina_edit ? htmlspecialchars($pagina_edit->getCanonicalUrl('es') ?? '') : ''; ?>"
+                           placeholder="https://www.psicologiayanina.com/terapia-es">
+                    <small>Sólo si es diferente a la URL relativa (ES)</small>
                 </div>
             </div>
 
@@ -554,11 +561,94 @@ $modo_vista = isset($_GET['edit']) || isset($_GET['new']) ? 'edit' : 'list';
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> <?php echo isset($_GET['new']) ? 'Crear Página' : 'Guardar Cambios'; ?>
             </button>
+            <?php if ($pagina_edit): ?>
+            <button type="button" id="btn-auditar" class="btn btn-warning" title="Auditar esta página">
+                <i class="fas fa-search"></i> Auditar
+            </button>
+            <?php endif; ?>
             <a href="gseo.php?tab=onpage" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>
     </form>
+
+    <!-- Resultats de l'auditoria -->
+    <?php if ($pagina_edit): ?>
+    <div id="audit-results" style="display:none; margin-top:1rem;">
+        <h3><i class="fas fa-clipboard-list"></i> Resultados de la Auditoría</h3>
+        <div id="audit-output" style="white-space:pre-wrap; background:#f9f9f9; padding:1rem; border:1px solid #eee; border-radius:6px; max-height:400px; overflow:auto;"></div>
+    </div>
+    <script>
+    (function(){
+        var btn = document.getElementById('btn-auditar');
+        if (!btn) return;
+        btn.addEventListener('click', function(){
+            var idInput = document.querySelector('input[name="id_pagina"]');
+            if (!idInput) { alert('ID de página no disponible'); return; }
+            var id = idInput.value;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Auditando...';
+
+            fetch('gseo.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'action=run_audit&id_pagina=' + encodeURIComponent(id)
+            }).then(function(res){
+                return res.json();
+            }).then(function(data){
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-search"></i> Auditar';
+                var out = document.getElementById('audit-output');
+                var container = document.getElementById('audit-results');
+                container.style.display = 'block';
+                if (!data) { out.textContent = 'No s\'ha rebut resposta del servidor.'; return; }
+                // Format results nicely
+                var html = '';
+                if (data.issues && data.issues.length) {
+                    html += 'Issues generales:\n- ' + data.issues.join('\n- ') + '\n\n';
+                }
+                if (data.readability) {
+                    html += 'Readability (CA): words=' + (data.readability.ca.words||0) + ', time(min)=' + (data.readability.ca.reading_time_min||0) + ', flesch=' + (data.readability.ca.flesch_score||0) + '\n';
+                    html += 'Readability (ES): words=' + (data.readability.es.words||0) + ', time(min)=' + (data.readability.es.reading_time_min||0) + ', flesch=' + (data.readability.es.flesch_score||0) + '\n\n';
+                }
+                if (data.images) {
+                    html += 'Imatges trobades: ' + (data.images.total||0) + ' (missing alt: ' + (data.images.missing_alt||0) + ', no srcset: ' + (data.images.without_srcset||0) + ')\n';
+                    data.images.images && data.images.images.forEach(function(img){ html += '- ' + img.src + ' | alt=' + (img.alt||'') + ' | exists_on_fs=' + (img.exists_on_fs===null? 'unknown' : img.exists_on_fs) + '\n'; });
+                    html += '\n';
+                }
+                if (data.schema) {
+                    html += 'Schema: ok=' + (data.schema.ok? 'sí' : 'no') + '\n';
+                    if (data.schema.issues && data.schema.issues.length) html += '- ' + data.schema.issues.join('\n- ') + '\n\n';
+                }
+                if (data.indexability) {
+                    html += 'Indexability: ok=' + (data.indexability.ok? 'sí' : 'no') + '\n';
+                    if (data.indexability.issues && data.indexability.issues.length) html += '- ' + data.indexability.issues.join('\n- ') + '\n\n';
+                }
+                // Add canonical/hreflang/canonical duplicates if present
+                if (data.canonical) {
+                    html += 'Canonical check: ok=' + (data.canonical.ok? 'sí' : 'no') + '\n';
+                    data.canonical.issues && data.canonical.issues.forEach(function(i){ html += '- ' + i + '\n'; });
+                    if (data.canonical.duplicates && data.canonical.duplicates.length) {
+                        html += 'Duplicates:\n';
+                        data.canonical.duplicates.forEach(function(d){ html += '- id:' + d.id_pagina + ' title:' + (d.titulo_pagina||'') + ' ca:' + (d.url_relativa_ca||'') + ' es:' + (d.url_relativa_es||'') + '\n'; });
+                    }
+                    html += '\n';
+                }
+                if (data.headings) {
+                    html += 'Headings CA: ' + JSON.stringify(data.headings.ca.counts) + ' issues: ' + (data.headings.ca.issues.join('; ')||'-') + '\n';
+                }
+                out.textContent = html || JSON.stringify(data, null, 2);
+            }).catch(function(err){
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-search"></i> Auditar';
+                var out = document.getElementById('audit-output');
+                document.getElementById('audit-results').style.display = 'block';
+                out.textContent = 'Error ejecutando la auditoría: ' + (err.message || err);
+            });
+        });
+    })();
+    </script>
+    <?php endif; ?>
 
     <?php endif; ?>
 </div>

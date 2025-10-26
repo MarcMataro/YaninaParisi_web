@@ -4,10 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Debug ABANS del processament
-echo "<!-- DEBUG INDEX ABANS: GET lang: " . ($_GET['lang'] ?? 'no definit') . " -->";
-echo "<!-- DEBUG INDEX ABANS: Session lang abans: " . ($_SESSION['language'] ?? 'no definit') . " -->";
-
 // Forçar idioma català en aquesta pàgina
 $_SESSION['language'] = 'ca';
 // Processar canvi d'idioma PRIMER
@@ -23,26 +19,76 @@ if (isset($_GET['lang'])) {
 // Incluir sistema de traducció
 include '../includes/functions.php';
 
-// Debug DESPRÉS
-echo "<!-- DEBUG INDEX DESPRÉS: Session lang després: " . ($_SESSION['language'] ?? 'no definit') . " -->";
-echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() . " -->";
+$lang = getCurrentLanguage();
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo getCurrentLanguage(); ?>">
+<html lang="<?php echo $lang; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- METAETIQUETES ESSENCIALS -->
-    <title>Títol SEO per la pàgina home</title>
-    <meta name="description" content="<?php echo t('meta_description'); ?>">
+        <?php
+        $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+        ?>
+    <?php
+    // Carregar la classe SEO_OnPage i intentar obtenir el title configurat per a la pàgina "home"
+    require_once __DIR__ . '/../classes/seo_onpage.php';
+
+    
+    $seoTitle = null;
+
+    // 1) Comprovem si hi ha una pàgina activa de tipus 'home' al llistat
+    $homePages = SEO_OnPage::llistarPaginesActives('home');
+    if (!empty($homePages) && isset($homePages[0]) && $homePages[0] instanceof SEO_OnPage) {
+        $pagina_seo = $homePages[0];
+        $seoTitle = $pagina_seo->getTitle($lang) ?: null;
+    }
+
+    // 2) Si no hi ha resultat, intentem carregar per URL relativa (fallback)
+    if (!$seoTitle) {
+        $rel = ($lang === 'es') ? '/' : '/';
+        $pagina_seo = SEO_OnPage::carregarPerUrl($rel, $lang);
+        if ($pagina_seo) {
+            $seoTitle = $pagina_seo->getTitle($lang) ?: null;
+        }
+    }
+
+    // 3) Si encara no tenim títol, posem un fallback sensible
+    if (!$seoTitle) {
+        $seoTitle = ($lang === 'es') ? 'Yanina Parisi - Psicóloga' : 'Yanina Parisi - Psicòloga';
+    }
+    
+    // Obtenir la meta description des de la configuració SEO (mateixa pàgina que hem trobat)
+    $seoDescription = null;
+    if (isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage) {
+        $seoDescription = $pagina_seo->getMetaDescription($lang) ?: null;
+    }
+    // Fallback a la traducció per defecte si no hi ha cap descripció SEO configurada
+    if (!$seoDescription) {
+        $seoDescription = t('meta_description');
+    }
+    ?>
+    <title><?php echo htmlspecialchars($seoTitle); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($seoDescription); ?>">
     <meta name="keywords" content="<?php echo t('meta_keywords'); ?>">
     <meta name="author" content="Yanina Parisi">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#aa9e6b">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://<?php echo $_SERVER['HTTP_HOST']; ?>/ca/home.php">
+        <?php
+        // Preferir la URL canònica configurada per la pàgina SEO
+        $canonical = null;
+        if (isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage) {
+            $canonical = $pagina_seo->getCanonicalUrl($lang);
+        }
+        if (!$canonical) {
+            // Fallback per a home segons l'idioma
+            $canonical = $base_url . (($lang === 'es') ? '/es/home.php' : '/ca/home.php');
+        }
+        ?>
+        <link rel="canonical" href="<?php echo htmlspecialchars($canonical); ?>">
     
     <!-- Icons -->
     <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
@@ -50,19 +96,54 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
     <link rel="apple-touch-icon" sizes="180x180" href="../img/apple-touch-icon.png">
     
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
-    <meta property="og:title" content="<?php echo t('meta_og_title'); ?>">
-    <meta property="og:description" content="<?php echo t('meta_og_description'); ?>">
-    <meta property="og:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
-    <meta property="og:site_name" content="<?php echo t('meta_og_site_name'); ?>">
+    <?php
+    // Build OG tags ensuring absolute HTTPS URLs for images
+    $og_title = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getOgTitle($lang) : $seoTitle;
+    $og_description = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getOgDescription($lang) : $seoDescription;
+    $og_image = null;
+    if (isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage) {
+        $og_image = $pagina_seo->getOgImage();
+    }
+    if (!$og_image) {
+        $og_image = '/img/Logo.png';
+    }
+    // make absolute https URL if needed
+    if (!preg_match('#^https?://#i', $og_image)) {
+        $og_image = (strpos($base_url, 'http') === 0 ? $base_url : 'https://' . $_SERVER['HTTP_HOST']) . '/' . ltrim($og_image, '/');
+    }
+
+    $og_url = htmlspecialchars($canonical ?: ($base_url . $_SERVER['REQUEST_URI']));
+    ?>
+    <meta property="og:type" content="<?php echo (isset($pagina_seo) ? ($pagina_seo->getTipoPagina() === 'articulo' ? 'article' : 'website') : 'website'); ?>">
+    <meta property="og:url" content="<?php echo $og_url; ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($og_title); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($og_description); ?>">
+    <meta property="og:image" content="<?php echo htmlspecialchars($og_image); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="<?php echo htmlspecialchars(t('meta_og_site_name')); ?>">
     <meta property="og:locale" content="<?php echo getCurrentLanguage() === 'ca' ? 'ca_ES' : 'es_ES'; ?>">
     
     <!-- Twitter -->
+    <?php
+    // Build Twitter tags and ensure absolute HTTPS image URL
+    $tw_title = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getTwitterTitle($lang) : $seoTitle;
+    $tw_description = isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getTwitterDescription($lang) : $seoDescription;
+    $tw_image = null;
+    if (isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage) {
+        $tw_image = $pagina_seo->getTwitterImage();
+    }
+    if (!$tw_image) {
+        $tw_image = '/img/Logo.png';
+    }
+    if (!preg_match('#^https?://#i', $tw_image)) {
+        $tw_image = (strpos($base_url, 'http') === 0 ? $base_url : 'https://' . $_SERVER['HTTP_HOST']) . '/' . ltrim($tw_image, '/');
+    }
+    ?>
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?php echo t('meta_og_title'); ?>">
-    <meta name="twitter:description" content="<?php echo t('meta_og_description'); ?>">
-    <meta name="twitter:image" content="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/Logo.png">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($tw_title); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($tw_description); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($tw_image); ?>">
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
@@ -78,7 +159,7 @@ echo "<!-- DEBUG INDEX DESPRÉS: getCurrentLanguage(): " . getCurrentLanguage() 
         "@context": "https://schema.org",
         "@type": "Psychologist",
         "name": "Yanina Parisi",
-        "description": "<?php echo t('meta_description'); ?>",
+    "description": "<?php echo htmlspecialchars($seoDescription); ?>",
         "url": "<?php echo 'https://' . $_SERVER['HTTP_HOST']; ?>",
         "telephone": "+34-XXX-XXX-XXX",
         "email": "info@yaninaparisi.com",

@@ -860,7 +860,7 @@ class SEO_OffPage_Directories {
     public function setCosto($costo) { return $this->actualitzarCamp('costo', $costo); }
     public function setIdioma($idioma) { return $this->actualitzarCamp('idioma', $idioma); }
     public function setNofollow($nofollow) { return $this->actualitzarCamp('nofollow', $nofollow ? 1 : 0); }
-    public function setPermiteAnchorPersonalizado($permite) { return $this->actualitzarCamp('permite_anchor_personalizado', $permet ? 1 : 0); }
+    public function setPermiteAnchorPersonalizado($permite) { return $this->actualitzarCamp('permite_anchor_personalizado', $permite ? 1 : 0); }
     public function setEstado($estado) { return $this->actualitzarCamp('estado', $estado); }
     public function setFechaEnvio($fecha) { return $this->actualitzarCamp('fecha_envio', $fecha); }
     public function setFechaAprobacion($fecha) { return $this->actualitzarCamp('fecha_aprobacion', $fecha); }
