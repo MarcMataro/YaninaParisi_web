@@ -57,7 +57,7 @@
             </h2>
         </div>
     </section>
-    <main class="container" style="max-width:900px;margin:0 auto 60px auto;background:#fff;border-radius:12px;padding:32px;">
+    <main id="blog-main" class="container" style="max-width:900px;margin:0 auto 60px auto;background:#fff;border-radius:12px;padding:32px;">
         <h2 style="font-size:1.5em;color:#a89968;margin-bottom:28px;">
             Últimas publicaciones
         </h2>
@@ -154,7 +154,9 @@
             if (!empty($resum)) {
                 echo '<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
             }
-            echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="entrada.php?id=' . $entrada['id_entrada'] . '">Leer más</a>';
+            $slug = $lang === 'ca' ? ($entrada['slug_ca'] ?? $entrada['slug_es'] ?? '') : ($entrada['slug_es'] ?? $entrada['slug_ca'] ?? '');
+            $href = $slug ? 'entrada.php?slug=' . rawurlencode($slug) : 'entrada.php?id=' . $entrada['id_entrada'];
+            echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="' . $href . '">Leer más</a>';
             echo '</div>';
             // Columna lateral (20%)
             echo '<aside style="flex:0 0 20%;background:#f7f7f7;border-radius:8px;padding:18px;min-height:220px;">';
@@ -221,7 +223,9 @@
                     if (!empty($resum)) {
                         echo '<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
                     }
-                    echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="entrada.php?id=' . $entrada['id_entrada'] . '">Leer más</a>';
+                    $slug = $lang === 'ca' ? ($entrada['slug_ca'] ?? $entrada['slug_es'] ?? '') : ($entrada['slug_es'] ?? $entrada['slug_ca'] ?? '');
+                    $href = $slug ? 'entrada.php?slug=' . rawurlencode($slug) : 'entrada.php?id=' . $entrada['id_entrada'];
+                    echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="' . $href . '">Leer más</a>';
                     echo '</div>';
                 }
                 // Si solo hay una entrada, añadir un div vacío para ocupar el otro 50%
@@ -310,6 +314,75 @@
                 });
             }
         });
+    </script>
+    <script>
+    // SPA-ish navigation for Spanish blog list: intercept entrada links, fetch the entry and push a clean URL
+    (function(){
+        function extractMainFromHtml(htmlText){
+            try{
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlText, 'text/html');
+                var main = doc.querySelector('main');
+                return main ? main.innerHTML : null;
+            }catch(e){
+                return null;
+            }
+        }
+        function handleLinkClick(e){
+            var a = e.target.closest('a.entrada-link');
+            if(!a) return;
+            var href = a.getAttribute('href');
+            if(!href) return;
+            if(href.indexOf('entrada.php') === -1) return;
+            e.preventDefault();
+            fetch(href, {credentials: 'same-origin'})
+                .then(function(resp){ if(!resp.ok) throw new Error('bad'); return resp.text(); })
+                .then(function(html){
+                    var mainHtml = extractMainFromHtml(html);
+                    if(mainHtml !== null){
+                        var container = document.getElementById('blog-main');
+                        if(container){
+                            container.innerHTML = mainHtml;
+                            var m = href.match(/[?&]slug=([^&]+)/);
+                            var slug = m ? decodeURIComponent(m[1]) : null;
+                            if(slug){
+                                // Preserve application base (project folder) for servers without vhosts (WAMP)
+                                var needle = '/es/blog';
+                                var idx = window.location.pathname.indexOf(needle);
+                                var prefix = '';
+                                if(idx !== -1){
+                                    prefix = window.location.pathname.substring(0, idx);
+                                }
+                                var pretty = prefix + needle + '/' + encodeURIComponent(slug);
+                                history.pushState({slug:slug, href:href}, '', pretty);
+                            } else {
+                                history.pushState({href:href}, '', href);
+                            }
+                        }
+                    } else {
+                        window.location.href = href;
+                    }
+                })
+                .catch(function(){ window.location.href = href; });
+        }
+        document.addEventListener('click', handleLinkClick);
+        window.addEventListener('popstate', function(ev){
+            var state = ev.state || {};
+            if(state && state.href){
+                fetch(state.href, {credentials:'same-origin'})
+                    .then(function(r){ if(!r.ok) throw new Error('bad'); return r.text(); })
+                    .then(function(html){
+                        var mainHtml = extractMainFromHtml(html);
+                        if(mainHtml !== null){
+                            var container = document.getElementById('blog-main');
+                            if(container) container.innerHTML = mainHtml;
+                        } else { location.reload(); }
+                    })
+                    .catch(function(){ location.reload(); });
+            } else { location.reload(); }
+        });
+        history.replaceState({href: window.location.pathname + window.location.search}, '', window.location.pathname + window.location.search);
+    })();
     </script>
     <script src="../js/language.js"></script>
 </body>
