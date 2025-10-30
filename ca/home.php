@@ -201,6 +201,8 @@ $lang = getCurrentLanguage();
 
     <!-- Secció Hero -->
     <section class="hero" id="inici">
+        <?php /* hero image as an <img> element so path resolves correctly across subfolders */ ?>
+        <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
         <div class="container hero-content">
             <h1 class="hero-title">Construeix la <span class="highlight">vida</span> que desitges.<br>El teu canvi comença aquí</h1>
             <p class="hero-subtitle">T'acompanyo perquè aquest canvi sigui real</p>

@@ -40,6 +40,40 @@
         return $key;
     }
 
+    /**
+     * Resolve a stored media path into an absolute URL that will work from any page.
+     * Accepts:
+     *  - absolute URLs (http:// or https://) -> returned as-is
+     *  - protocol-relative URLs (//host/...) -> returned as-is
+     *  - root-relative paths (/yaninaparisi/img/...) -> converted to absolute with origin
+     *  - relative paths (img/media/..., media/...) -> converted to absolute using the app base
+     */
+    function resolve_media_url($path) {
+        if (empty($path)) return '';
+        $path = trim($path);
+        // absolute URL
+        if (preg_match('#^https?://#i', $path) || strpos($path, '//') === 0) return $path;
+
+        // origin
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $origin = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+
+        // app base: two levels up from script (e.g. /yaninaparisi/ca/script.php -> /yaninaparisi)
+        $appBase = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/\\');
+        if ($appBase === '/' || $appBase === '.') $appBase = '';
+
+        // root-relative path
+        if (strpos($path, '/') === 0) {
+            return rtrim($origin, '/') . $path;
+        }
+
+        // already relative with ../ - let browser resolve relative paths
+        if (strpos($path, '../') === 0) return $path;
+
+        // otherwise build absolute using appBase
+        return rtrim($origin, '/') . $appBase . '/' . ltrim($path, '/');
+    }
+
     // Inicializar sesión si no está iniciada
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -47,4 +81,140 @@
 
     // El processament del canvi d'idioma ara es fa a cada pàgina individual
     // per evitar conflictes amb altres processaments
+    
+    /**
+     * Render breadcrumbs (HTML) and emit JSON-LD BreadcrumbList for rich snippets.
+     *
+     * Usage: provide an array of items where each item is [ 'label' => 'Home', 'url' => '/ca/home.php' ]
+     * The last item may omit 'url' or set it to null (current page).
+     *
+     * Example:
+     *   render_breadcrumbs([
+     *     ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+     *     ['label' => t('nav_blog'), 'url' => '/ca/blog.php'],
+     *     ['label' => htmlspecialchars($post_title)],
+     *   ]);
+     *
+     * This will print a <nav aria-label="Breadcrumb"> with an ordered list and
+     * a <script type="application/ld+json"> with the BreadcrumbList structure.
+     */
+    function render_breadcrumbs(array $items, array $opts = []) {
+        // Build origin (scheme + host)
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $origin = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+
+        // Compute script base (project prefix) so root-relative paths can be adjusted when site is in a subfolder
+        $scriptBase = dirname($_SERVER['SCRIPT_NAME']);
+        if ($scriptBase === '/' || $scriptBase === '.') $scriptBase = '';
+
+        // Normalize a path to absolute URL, taking into account project subfolder
+        $normalize = function($path) use ($origin, $scriptBase) {
+            if (!$path) return null;
+            if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) return $path;
+            // If starts with slash, it's root-relative -> prepend script base
+            if (strpos($path, '/') === 0) {
+                return rtrim($origin, '/') . rtrim($scriptBase, '/') . $path;
+            }
+            // Otherwise treat as relative to script folder
+            $p = '/' . trim($scriptBase, '/') . '/' . ltrim($path, '/');
+            return rtrim($origin, '/') . $p;
+        };
+
+        // HTML output
+        echo '<nav class="breadcrumbs" aria-label="Breadcrumb">';
+        echo '<ol itemscope itemtype="http://schema.org/BreadcrumbList" style="list-style:none;padding:0;margin:0;display:flex;gap:.5rem;flex-wrap:wrap;">';
+
+        $position = 1;
+        $jsonItems = [];
+        $total = count($items);
+
+        foreach ($items as $i => $it) {
+            $label = isset($it['label']) ? $it['label'] : '';
+            $url = isset($it['url']) ? $it['url'] : null;
+            $isLast = ($i === $total - 1);
+
+            // If the label looks like a translation key (e.g., 'nav_home') try to translate it here.
+            if (is_string($label) && preg_match('/^nav_/', $label)) {
+                // Attempt to translate via t(); if translation missing, fall back to sane defaults per language
+                $translated = function_exists('t') ? t($label) : $label;
+                if ($translated === $label) {
+                    // provide fallback defaults
+                    $lang = function_exists('getCurrentLanguage') ? getCurrentLanguage() : 'es';
+                    $defaults = [
+                        'ca' => [
+                            'nav_home' => 'Inici',
+                            'nav_blog' => 'Blog',
+                            'nav_contact' => 'Contacte'
+                        ],
+                        'es' => [
+                            'nav_home' => 'Inicio',
+                            'nav_blog' => 'Blog',
+                            'nav_contact' => 'Contacto'
+                        ]
+                    ];
+                    if (isset($defaults[$lang][$label])) {
+                        $label = $defaults[$lang][$label];
+                    } else {
+                        $label = $label; // leave as-is if no default
+                    }
+                } else {
+                    $label = $translated;
+                }
+            }
+
+            echo '<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" style="margin:0;">';
+            if ($url && !$isLast) {
+                $abs = $normalize($url);
+                // Build href that respects project base for root-relative paths
+                if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+                    $hrefOut = $url;
+                } elseif (strpos($url, '/') === 0) {
+                    $hrefOut = rtrim($scriptBase, '/') . $url;
+                    if ($hrefOut === '') $hrefOut = $url; // fallback
+                } else {
+                    $hrefOut = rtrim($scriptBase, '/') . '/' . ltrim($url, '/');
+                }
+
+                echo '<a href="' . htmlspecialchars($hrefOut) . '" itemprop="item" style="color:inherit;text-decoration:none;">';
+                echo '<span itemprop="name">' . $label . '</span>';
+                echo '</a>';
+                echo '<meta itemprop="position" content="' . $position . '" />';
+                // Add to JSON-LD with absolute URL
+                $jsonItems[] = [
+                    '@type' => 'ListItem',
+                    'position' => $position,
+                    'name' => $label,
+                    'item' => $abs
+                ];
+            } else {
+                // Current item or no URL provided
+                echo '<span aria-current="page" itemprop="item">';
+                echo '<span itemprop="name">' . $label . '</span>';
+                echo '</span>';
+                echo '<meta itemprop="position" content="' . $position . '" />';
+                $abs = $url ? $normalize($url) : null;
+                $jsonItems[] = [
+                    '@type' => 'ListItem',
+                    'position' => $position,
+                    'name' => $label,
+                    'item' => $abs ?: ($origin . ($_SERVER['REQUEST_URI'] ?? '/'))
+                ];
+            }
+            // Separator (visual)
+            if (!$isLast) echo '<span aria-hidden="true" style="margin:0 0.5rem;">›</span>';
+            echo '</li>';
+
+            $position++;
+        }
+
+        echo '</ol></nav>';
+
+        // JSON-LD output
+        $ld = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $jsonItems
+        ];
+        echo '<script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
+    }
 ?>

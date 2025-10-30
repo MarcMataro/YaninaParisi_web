@@ -787,7 +787,7 @@ try {
                         ?>
                     </p>
                     <div class="score-config-btn-bar">
-                        <a href="gseo.php?tab=offpage" class="btn btn-secondary score-config-btn-bar">
+                        <a href="gseooffpage.php" class="btn btn-secondary score-config-btn-bar">
                             <i class="fas fa-cog"></i> Configurar
                         </a>
                     </div>

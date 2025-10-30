@@ -158,6 +158,8 @@ include '../includes/functions.php';
     
     <!-- Sección Hero -->
     <section class="hero" id="inici">
+        <?php /* hero image as an <img> element so path resolves correctly across subfolders */ ?>
+        <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
         <div class="container hero-content">
             <h1>Construye la <span class="highlight">vida</span> que deseas.<br>Tu cambio empieza aquí</h1>
             <h2 class="hero-subtitle">Te acompaño para que ese cambio sea real</h2>

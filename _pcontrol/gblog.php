@@ -525,6 +525,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/gblog.css?v=2.2">
+    <script src="https://cdn.tiny.cloud/1/ds0tgp458zh4vbyxcyhq2bgbf9wnk8sj1k8874ohwvqpmn39/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
     <?php include 'includes/sidebar.php'; ?>
@@ -738,6 +739,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                                     <span class="flag">🔵</span> Descripción en Catalán
                                 </label>
                                 <textarea id="categoria_desc_ca" name="descripcio_ca" rows="3"
+                                          class="form-control tinymce-editor"
                                           placeholder="Descripció opcional en català"></textarea>
                             </div>
                             
@@ -746,6 +748,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                                     <span class="flag">🟡</span> Descripción en Español
                                 </label>
                                 <textarea id="categoria_desc_es" name="descripcion_es" rows="3"
+                                          class="form-control tinymce-editor"
                                           placeholder="Descripción opcional en español"></textarea>
                             </div>
                         </div>
@@ -823,6 +826,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                                     <span class="flag">🔵</span> Descripción en Catalán
                                 </label>
                                 <textarea id="etiqueta_desc_ca" name="descripcio_ca" rows="3"
+                                          class="form-control tinymce-editor"
                                           placeholder="Descripció opcional en català"></textarea>
                             </div>
                             
@@ -831,6 +835,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                                     <span class="flag">🟡</span> Descripción en Español
                                 </label>
                                 <textarea id="etiqueta_desc_es" name="descripcion_es" rows="3"
+                                          class="form-control tinymce-editor"
                                           placeholder="Descripción opcional en español"></textarea>
                             </div>
                         </div>
@@ -922,7 +927,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                                     </label>
                                     <textarea id="entrada_contingut_ca" 
                                               name="contingut_ca" 
-                                              class="form-control" 
+                                              class="form-control tinymce-editor" 
                                               rows="8"
                                               required
                                               placeholder="Contingut complet de l'entrada..."></textarea>
@@ -1002,7 +1007,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                                     </label>
                                     <textarea id="entrada_contingut_es" 
                                               name="contingut_es" 
-                                              class="form-control" 
+                                              class="form-control tinymce-editor" 
                                               rows="8"
                                               required
                                               placeholder="Contenido completo de la entrada..."></textarea>
@@ -1095,14 +1100,16 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                         
                         <div class="form-grid-2cols">
                             <div class="form-group">
-                                <label for="entrada_imatge">
-                                    URL Imagen
-                                </label>
-                                <input type="text" 
-                                       id="entrada_imatge" 
-                                       name="imatge_portada" 
-                                       class="form-control" 
-                                       placeholder="https://ejemplo.com/imagen.jpg">
+                                <label for="entrada_imatge">Imagen de Portada</label>
+                                <input type="hidden" id="entrada_imatge" name="imatge_portada">
+                                <div style="display:flex;gap:12px;align-items:center;">
+                                    <img id="entrada_imatge_preview" src="" alt="Preview" style="width:160px;height:90px;object-fit:cover;border:1px solid #ddd;border-radius:6px;display:none;">
+                                    <div style="display:flex;flex-direction:column;gap:8px;">
+                                        <button type="button" id="btnPickCover" class="btn btn-primary">Seleccionar imagen</button>
+                                        <button type="button" id="btnClearCover" class="btn btn-light">Quitar imagen</button>
+                                    </div>
+                                </div>
+                                <div id="entrada_imatge_url_text" style="font-size:0.85rem;color:#666;margin-top:6px;word-break:break-all;"></div>
                             </div>
                             
                             <div class="form-group">
@@ -1171,5 +1178,145 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
     <script src="js/gblog-etiquetes.js"></script>
     <script src="js/gblog-entrades-simple.js"></script>
     <script src="js/gblog-tabs.js"></script>
+    <script>
+        (function(){
+            // Defensive: build a safe JS image_list from PHP to avoid syntax errors
+            <?php
+            $image_list = [];
+            if (!empty($images) && is_array($images)) {
+                foreach ($images as $image) {
+                    $image_list[] = [
+                        'title' => basename($image),
+                        'value' => '/img/blog/' . $image
+                    ];
+                }
+            }
+            $image_list_json = json_encode($image_list, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+            ?>
+            // image list generation removed - we use the media picker instead of the legacy selector
+            console.log('TinyMCE available:', typeof tinymce !== 'undefined');
+            var editorEls = document.querySelectorAll('.tinymce-editor');
+            console.log('Found .tinymce-editor elements:', editorEls.length);
+            if (typeof tinymce === 'undefined') {
+                console.error('TinyMCE script is not loaded. Check network or CDN key.');
+                return;
+            }
+            try {
+                tinymce.init({
+                    selector: '.tinymce-editor',
+                    plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                    toolbar_mode: 'floating',
+                    // image_list removed to avoid the built-in selector; media picker will be used instead
+                    file_picker_types: 'image',
+                    file_picker_callback: function(callback, value, meta) {
+                        if (meta.filetype === 'image') {
+                            console.log('[gblog] opening media picker...');
+                            var picker = window.open('gmedia.php?picker=1', 'MediaPicker', 'width=900,height=600');
+                            function receive(e) {
+                                console.log('[gblog] message received from picker:', e);
+                                // Basic origin check - allow same origin or any for debugging (adjust to specific origin in production)
+                                try {
+                                    if (e.origin && e.origin !== window.location.origin) {
+                                        console.warn('[gblog] message origin mismatch:', e.origin);
+                                        return;
+                                    }
+                                } catch (err) {
+                                    // ignore origin checks if any error
+                                }
+                                if (e.data && e.data.mediaUrl) {
+                                    callback(e.data.mediaUrl, { alt: e.data.alt || '' });
+                                    window.removeEventListener('message', receive);
+                                }
+                            }
+                            window.addEventListener('message', receive);
+                            // safety: remove listener after 30s to avoid leaking if picker is closed without selecting
+                            setTimeout(function(){ try { window.removeEventListener('message', receive); } catch(e) {} }, 30000);
+                        }
+                    },
+                    image_class_list: [
+                        {title: 'Responsive', value: 'img-fluid'}
+                    ],
+                    height: 300,
+                    relative_urls: false,
+                    remove_script_host: false,
+                    convert_urls: true,
+                    // document_base_url computed in JS (origin + first path segment) so it works regardless of install subfolder
+                    document_base_url: (function(){
+                        try {
+                            var parts = window.location.pathname.split('/');
+                            var app = (parts.length > 1 && parts[1]) ? '/' + parts[1] : '';
+                            return window.location.origin + app;
+                        } catch(e) { return window.location.origin; }
+                    })()
+                });
+            } catch (e) {
+                console.error('tinymce.init error', e);
+            }
+
+            // --- Media picker helper for cover image selection (non-TinyMCE) ---
+            function openMediaPickerFor(callback) {
+                try {
+                    var picker = window.open('gmedia.php?picker=1', 'MediaPicker', 'width=900,height=600');
+                } catch (err) {
+                    console.error('open popup failed', err);
+                    return;
+                }
+                function receive(e) {
+                    try {
+                        if (e.origin && e.origin !== window.location.origin) {
+                            console.warn('message origin mismatch', e.origin);
+                            return;
+                        }
+                    } catch (err) { /* ignore */ }
+                    if (e.data && e.data.mediaUrl) {
+                        try { callback(e.data); } catch (err) { console.error('picker callback error', err); }
+                        window.removeEventListener('message', receive);
+                    }
+                }
+                window.addEventListener('message', receive);
+                // safety cleanup
+                setTimeout(function(){ try { window.removeEventListener('message', receive); } catch(e){} }, 30000);
+            }
+
+            // Wire up cover image buttons
+            document.addEventListener('DOMContentLoaded', function(){
+                var btnPick = document.getElementById('btnPickCover');
+                var btnClear = document.getElementById('btnClearCover');
+                var input = document.getElementById('entrada_imatge');
+                var preview = document.getElementById('entrada_imatge_preview');
+                var urlText = document.getElementById('entrada_imatge_url_text');
+
+                function setCover(url, alt){
+                    input.value = url || '';
+                    if (url) {
+                        preview.src = url;
+                        preview.style.display = 'block';
+                        urlText.textContent = url;
+                    } else {
+                        preview.src = '';
+                        preview.style.display = 'none';
+                        urlText.textContent = '';
+                    }
+                    if (alt) {
+                        var altCa = document.getElementById('entrada_alt_ca');
+                        var altEs = document.getElementById('entrada_alt_es');
+                        if (altCa && !altCa.value) altCa.value = alt;
+                        if (altEs && !altEs.value) altEs.value = alt;
+                    }
+                }
+
+                if (btnPick) btnPick.addEventListener('click', function(){
+                    openMediaPickerFor(function(data){
+                        // data.mediaUrl is absolute URL from picker
+                        setCover(data.mediaUrl, data.alt || '');
+                    });
+                });
+                if (btnClear) btnClear.addEventListener('click', function(){ setCover('', ''); });
+
+                // if a value already exists (editing an entry), show preview
+                if (input && input.value) setCover(input.value, '');
+            });
+        })();
+    </script>
 </body>
 </html>

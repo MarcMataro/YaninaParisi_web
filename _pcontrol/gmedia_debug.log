@@ -1,0 +1,400 @@
+[2025-10-29 15:53:30] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:53:56] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:54:34] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:54:38] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:54:44] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:54:51] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:54:56] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:55:00] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:55:09] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:55:12] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:58:28] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:58:35] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:58:41] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:58:56] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:59:00] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:59:16] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:59:27] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 15:59:32] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 16:06:45] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 16:09:37] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 16:37:00] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 16:37:09] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 16:37:17] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 17:19:26] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 17:19:26] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => Zelda.mp4
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-10-29 17:19:26] Array
+(
+    [event] => processing_file
+    [orig] => Zelda.mp4
+    [tmp] => C:\wamp64\tmp\php7030.tmp
+    [php_type] => video/mp4
+    [size] => 55220198
+)
+
+[2025-10-29 17:33:23] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 17:33:23] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => Zelda.mp4
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-10-29 17:33:23] Array
+(
+    [event] => processing_file
+    [orig] => Zelda.mp4
+    [tmp] => C:\wamp64\tmp\php3656.tmp
+    [php_type] => video/mp4
+    [size] => 55220198
+)
+
+[2025-10-29 19:13:16] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 19:13:16] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => pajaros.jpg
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-10-29 19:13:16] Array
+(
+    [event] => processing_file
+    [orig] => pajaros.jpg
+    [tmp] => C:\wamp64\tmp\phpAA63.tmp
+    [php_type] => image/jpeg
+    [size] => 156763
+)
+
+[2025-10-29 19:19:24] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 19:19:24] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => Captura de pantalla 2025-07-21 181857.png
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-10-29 19:19:24] Array
+(
+    [event] => processing_file
+    [orig] => Captura de pantalla 2025-07-21 181857.png
+    [tmp] => C:\wamp64\tmp\php44D7.tmp
+    [php_type] => image/png
+    [size] => 133613
+)
+
+[2025-10-29 20:05:32] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-10-29 20:05:32] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => Captura de pantalla 2025-07-21 181929.png
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-10-29 20:05:32] Array
+(
+    [event] => processing_file
+    [orig] => Captura de pantalla 2025-07-21 181929.png
+    [tmp] => C:\wamp64\tmp\php83B9.tmp
+    [php_type] => image/png
+    [size] => 146541
+)
+

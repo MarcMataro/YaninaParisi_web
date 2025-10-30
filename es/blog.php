@@ -1,37 +1,38 @@
 <?php
-    // Inicializar sesión si no está iniciada
+// Inicialitzar sessió si no està iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+// Forçar idioma espanyol en aquesta pàgina
+$_SESSION['language'] = 'es';
+// Processar canvi d'idioma PRIMER
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    if (in_array($lang, array('ca', 'es'))) {
+        $_SESSION['language'] = $lang;
+        header('Location: /' . $lang . '/home.php');
+        exit;
     }
-    // Forzar idioma español en esta página
-    $_SESSION['language'] = 'es';
-    // Procesar cambio de idioma primero
-    if (isset($_GET['lang'])) {
-        $lang = $_GET['lang'];
-        if (in_array($lang, array('ca', 'es'))) {
-            $_SESSION['language'] = $lang;
-            header('Location: /' . $lang . '/home.php');
-            exit;
-        }
-    }
-    include '../includes/functions.php';
-    require_once '../classes/connexio.php';
-    require_once '../classes/entrades.php';
-    require_once '../classes/categories.php';
-    require_once '../classes/etiquetes.php';
-    require_once '../classes/rel_cat_ent.php';
-    require_once '../classes/rel_eti_ent.php';
-    $connexio = Connexio::getInstance();
-    $pdo = $connexio->getConnexio();
-    $entradaModel = new Entrada($pdo);
-    $categoryModel = new Category($pdo);
-    $etiquetaModel = new Etiqueta($pdo);
-    $relCatEntModel = new RelacioEntradesCategories($pdo);
-    $relEtiEntModel = new RelacioEntradesEtiquetes($pdo);
-    // Preparar llistats de categories i etiquetes per als filtres
-    $catsSelect = $categoryModel->getForSelect(getCurrentLanguage(), true);
-    $etisSelect = $etiquetaModel->getForSelect(getCurrentLanguage(), true);
+}
+include '../includes/functions.php';
+require_once '../classes/connexio.php';
+require_once '../classes/entrades.php';
+require_once '../classes/categories.php';
+require_once '../classes/etiquetes.php';
+require_once '../classes/rel_cat_ent.php';
+require_once '../classes/rel_eti_ent.php';
+require_once '../classes/usuaris_panell.php';
+$connexio = Connexio::getInstance();
+$pdo = $connexio->getConnexio();
+$entradaModel = new Entrada($pdo);
+$categoryModel = new Category($pdo);
+$etiquetaModel = new Etiqueta($pdo);
+$relCatEntModel = new RelacioEntradesCategories($pdo);
+$relEtiEntModel = new RelacioEntradesEtiquetes($pdo);
+// Preparar llistats de categories i etiquetes per als filtres
+$catsSelect = $categoryModel->getForSelect(getCurrentLanguage(), true);
+$etisSelect = $etiquetaModel->getForSelect(getCurrentLanguage(), true);
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo getCurrentLanguage(); ?>">
@@ -39,7 +40,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo t('nav_blog'); ?> | Yanina Parisi</title>
-    <meta name="description" content="Consulta les últimes entrades del blog de Yanina Parisi.">
+    <meta name="description" content="Consulta las últimas entradas del blog de Yanina Parisi.">
     <link rel="stylesheet" href="../css/estils.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,6 +59,15 @@
         </div>
     </section>
     <main id="blog-main" class="container" style="max-width:900px;margin:0 auto 60px auto;background:#fff;border-radius:12px;padding:32px;">
+        <?php
+            // Breadcrumbs: Home > Blog (ES)
+            if (function_exists('render_breadcrumbs')) {
+                render_breadcrumbs([
+                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                    ['label' => t('nav_blog')]
+                ]);
+            }
+        ?>
         <h2 style="font-size:1.5em;color:#a89968;margin-bottom:28px;">
             Últimas publicaciones
         </h2>
@@ -120,24 +130,40 @@
                 $etis[] = $eti['nom'];
             }
             $entrada['etiquetes_noms'] = $etis;
+            // Autor: cargar nombre completo desde la tabla usuarios_panel (UsuarisPanell)
+            $autorNom = '';
+            if (!empty($entrada['id_autor'])) {
+                try {
+                    $u = new UsuarisPanell($pdo);
+                    $u->id_usuario = (int)$entrada['id_autor'];
+                    if ($u->llegirPerId()) {
+                        $autorNom = trim(($u->nombre ?? '') . ' ' . ($u->apellidos ?? ''));
+                    }
+                } catch (Exception $e) {
+                    $autorNom = '';
+                }
+            }
+            $entrada['autor_nom_complet'] = $autorNom;
         }
         unset($entrada);
         if (empty($latest)) {
             echo '<div style="text-align:center;padding:60px 0;color:#999;font-size:1.2em;">No hay ninguna entrada de blog para mostrar</div>';
         } else {
-            // Primera entrada destacada + columna lateral
+            $total = count($entradas);
+            $lang = getCurrentLanguage();
+            // --- PRIMERES 5 ENTRADES (1+2+2) ---
             $entrada = $latest[0];
             echo '<div style="display:flex;gap:32px;align-items:flex-start;margin-bottom:40px;">';
             echo '<div style="flex:0 0 80%;">';
             if (!empty($entrada['imatge_portada'])) {
-                $imgSrc = strpos($entrada['imatge_portada'], '../img/') === 0 ? $entrada['imatge_portada'] : '../img/' . $entrada['imatge_portada'];
-                echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="Portada entrada" style="width:100%;border-radius:8px;margin-bottom:16px;object-fit:cover;">';
+                $imgSrc = resolve_media_url($entrada['imatge_portada']);
+                echo '<div class="entrada-thumb">';
+                echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="Portada entrada" class="entrada-thumb-img">';
+                echo '</div>';
             }
-            $lang = getCurrentLanguage();
             $titol = $lang === 'ca' ? ($entrada['titol_ca'] ?? $entrada['titol_es']) : ($entrada['titol_es'] ?? $entrada['titol_ca']);
             $resum = $lang === 'ca' ? ($entrada['resum_ca'] ?? $entrada['resum_es']) : ($entrada['resum_es'] ?? $entrada['resum_ca']);
             echo '<h2 class="entrada-titulo" style="font-size:1.4em;color:#333;margin-bottom:8px;">' . htmlspecialchars($titol) . '</h2>';
-            // Categories i etiquetes
             $tagsHtml = '';
             if (!empty($entrada['categories_noms'])) {
                 $tagsHtml .= '<span style="margin-right:12px;color:#888;font-size:0.95em;"><i class="fas fa-folder"></i> ' . implode(', ', (array)$entrada['categories_noms']) . '</span>';
@@ -150,6 +176,9 @@
             }
             echo '<div class="entrada-meta" style="color:#888;font-size:0.95em;margin-bottom:10px;">';
             echo '<i class="fas fa-calendar-alt"></i> ' . date('d/m/Y', strtotime($entrada['data_publicacio']));
+            if (!empty($entrada['autor_nom_complet'])) {
+                echo ' &middot; <i class="fas fa-user"></i> ' . htmlspecialchars($entrada['autor_nom_complet']);
+            }
             echo '</div>';
             if (!empty($resum)) {
                 echo '<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
@@ -161,7 +190,6 @@
             // Columna lateral (20%)
             echo '<aside style="flex:0 0 20%;background:#f7f7f7;border-radius:8px;padding:18px;min-height:220px;">';
             echo '<h3 style="font-size:1.1em;color:#a89968;margin-bottom:12px;">Filtrar</h3>';
-            // Formulari de filtres
             echo '<form method="get" action="blog.php" style="display:flex;flex-direction:column;gap:16px;">';
             echo '<div>';
             echo '<label for="cat" style="font-size:0.95em;color:#888;display:block;margin-bottom:4px;">Categoría</label>';
@@ -192,7 +220,7 @@
             echo '</form>';
             echo '</aside>';
             echo '</div>';
-            // Las otras cuatro entradas en filas de dos
+            // 2+2 següents
             for ($i = 1; $i < count($latest); $i += 2) {
                 echo '<div style="display:flex;gap:32px;margin-bottom:32px;">';
                 $itemsInRow = min(2, count($latest) - $i);
@@ -200,13 +228,14 @@
                     $entrada = $latest[$i + $j];
                     echo '<div style="flex:1;">';
                     if (!empty($entrada['imatge_portada'])) {
-                        $imgSrc = strpos($entrada['imatge_portada'], 'img/') === 0 ? $entrada['imatge_portada'] : 'img/' . $entrada['imatge_portada'];
-                        echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="Portada entrada" style="width:100%;border-radius:8px;margin-bottom:16px;object-fit:cover;">';
+                        $imgSrc = resolve_media_url($entrada['imatge_portada']);
+                        echo '<div class="entrada-thumb">';
+                        echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="Portada entrada" class="entrada-thumb-img">';
+                        echo '</div>';
                     }
                     $titol = $lang === 'ca' ? ($entrada['titol_ca'] ?? $entrada['titol_es']) : ($entrada['titol_es'] ?? $entrada['titol_ca']);
                     $resum = $lang === 'ca' ? ($entrada['resum_ca'] ?? $entrada['resum_es']) : ($entrada['resum_es'] ?? $entrada['resum_ca']);
                     echo '<h2 class="entrada-titulo" style="font-size:1.1em;color:#333;margin-bottom:8px;">' . htmlspecialchars($titol) . '</h2>';
-                    // Categories i etiquetes
                     $tagsHtml = '';
                     if (!empty($entrada['categories_noms'])) {
                         $tagsHtml .= '<span style="margin-right:12px;color:#888;font-size:0.95em;"><i class="fas fa-folder"></i> ' . implode(', ', (array)$entrada['categories_noms']) . '</span>';
@@ -219,6 +248,9 @@
                     }
                     echo '<div class="entrada-meta" style="color:#888;font-size:0.95em;margin-bottom:10px;">';
                     echo '<i class="fas fa-calendar-alt"></i> ' . date('d/m/Y', strtotime($entrada['data_publicacio']));
+                    if (!empty($entrada['autor_nom_complet'])) {
+                        echo ' &middot; <i class="fas fa-user"></i> ' . htmlspecialchars($entrada['autor_nom_complet']);
+                    }
                     echo '</div>';
                     if (!empty($resum)) {
                         echo '<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
@@ -228,162 +260,100 @@
                     echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="' . $href . '">Leer más</a>';
                     echo '</div>';
                 }
-                // Si solo hay una entrada, añadir un div vacío para ocupar el otro 50%
                 if ($itemsInRow === 1) {
                     echo '<div style="flex:1;"></div>';
                 }
                 echo '</div>';
             }
+            // --- ENTRADES ADDICIONALS (3x3) ---
+            $restants = array_slice($entradas, 5);
+            // Enriquir restants amb categories, etiquetes i autor perquè el JS tingui aquesta informació
+            foreach ($restants as &$r) {
+                // categories
+                $cats = [];
+                $catObjs = $relCatEntModel->obtenirCategoriesEntrada($r['id_entrada'], getCurrentLanguage(), true);
+                foreach ($catObjs as $cat) $cats[] = $cat['nom'];
+                $r['categories_noms'] = $cats;
+                // etiquetes
+                $etis = [];
+                $etiObjs = $relEtiEntModel->obtenirEtiquetesEntrada($r['id_entrada'], getCurrentLanguage(), true);
+                foreach ($etiObjs as $eti) $etis[] = $eti['nom'];
+                $r['etiquetes_noms'] = $etis;
+                // autor
+                $autorNom = '';
+                if (!empty($r['id_autor'])) {
+                    try {
+                        $u = new UsuarisPanell($pdo);
+                        $u->id_usuario = (int)$r['id_autor'];
+                        if ($u->llegirPerId()) $autorNom = trim(($u->nombre ?? '') . ' ' . ($u->apellidos ?? ''));
+                    } catch (Exception $e) { $autorNom = ''; }
+                }
+                $r['autor_nom_complet'] = $autorNom;
+            }
+            unset($r);
+            $numRestants = count($restants);
+            if ($numRestants > 0) {
+                                echo '<div id="entrades-addicionals-container"></div>';
+                                echo '<button id="btn-mostra-mes" style="display:block;margin:32px auto 0 auto;background:#a89968;color:#fff;padding:12px 32px;border:none;border-radius:6px;font-size:1.1em;font-weight:600;cursor:pointer;">Mostrar más</button>';
+                                ?>
+                                <script>
+                                const entradesAdd = <?php echo json_encode(array_values($restants), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES); ?>;
+                                let offset = 0;
+                                const perPage = 9;
+                                const lang = '<?php echo $lang; ?>';
+                                function renderEntradesAdd() {
+                                    const container = document.getElementById("entrades-addicionals-container");
+                                    let html = "";
+                                    let filesMostrades = 0;
+                                    for (let i = offset; i < entradesAdd.length && filesMostrades < 3; i += 3, filesMostrades++) {
+                                        html += `<div style="display:flex;gap:32px;margin-bottom:32px;">`;
+                                        for (let j = 0; j < 3; j++) {
+                                            if (i+j < entradesAdd.length) {
+                                                const entrada = entradesAdd[i+j];
+                                                html += `<div style="flex:1;">`;
+                                                if (entrada.imatge_portada) {
+                                                    html += `<div class=\"entrada-thumb\"><img src=\"${entrada.imatge_portada.replace(/\"/g, '&quot;')}\" alt=\"Portada entrada\" class=\"entrada-thumb-img\"></div>`;
+                                                }
+                                                const titol = lang === "ca" ? (entrada.titol_ca || entrada.titol_es) : (entrada.titol_es || entrada.titol_ca);
+                                                const resum = lang === "ca" ? (entrada.resum_ca || entrada.resum_es) : (entrada.resum_es || entrada.resum_ca);
+                                                html += `<h2 class=\"entrada-titulo\" style=\"font-size:1.1em;color:#333;margin-bottom:8px;\">${titol ? titol.replace(/</g, '&lt;') : ''}</h2>`;
+                                                let tagsHtml = "";
+                                                if (entrada.categories_noms && entrada.categories_noms.length) {
+                                                    tagsHtml += `<span style=\"margin-right:12px;color:#888;font-size:0.95em;\"><i class=\"fas fa-folder\"></i> ${entrada.categories_noms.join(', ')}</span>`;
+                                                }
+                                                if (entrada.etiquetes_noms && entrada.etiquetes_noms.length) {
+                                                    tagsHtml += `<span style=\"color:#888;font-size:0.95em;\"><i class=\"fas fa-tag\"></i> ${entrada.etiquetes_noms.join(', ')}</span>`;
+                                                }
+                                                if (tagsHtml) html += `<div class=\"entrada-tags\" style=\"margin-bottom:8px;\">${tagsHtml}</div>`;
+                                                let metaDate = entrada.data_publicacio ? (entrada.data_publicacio.substr(8,2)+'/'+entrada.data_publicacio.substr(5,2)+'/'+entrada.data_publicacio.substr(0,4)) : '';
+                                                let autorTxt = entrada.autor_nom_complet ? (' &middot; <i class=\"fas fa-user\"></i> ' + String(entrada.autor_nom_complet).replace(/</g,'&lt;')) : '';
+                                                html += `<div class=\"entrada-meta\" style=\"color:#888;font-size:0.95em;margin-bottom:10px;\"><i class=\"fas fa-calendar-alt\"></i> ${metaDate}${autorTxt}</div>`;
+                                                if (resum) html += `<div class=\"entrada-resumen\" style=\"color:#444;margin-bottom:10px;\">${resum}</div>`;
+                                                const slug = lang === "ca" ? (entrada.slug_ca || entrada.slug_es || "") : (entrada.slug_es || entrada.slug_ca || "");
+                                                const href = slug ? `entrada.php?slug=${encodeURIComponent(slug)}` : `entrada.php?id=${entrada.id_entrada}`;
+                                                html += `<a class=\"entrada-link\" style=\"color:#a89968;text-decoration:none;font-weight:600;\" href=\"${href}\">Leer más</a>`;
+                                                html += `</div>`;
+                                            } else {
+                                                html += `<div style=\"flex:1;\"></div>`;
+                                            }
+                                        }
+                                        html += `</div>`;
+                                    }
+                                    container.innerHTML += html;
+                                    offset += filesMostrades * 3;
+                                    if (offset >= entradesAdd.length) document.getElementById("btn-mostra-mes").style.display = "none";
+                                }
+                                // Only render additional entries when the user clicks the button
+                                document.getElementById("btn-mostra-mes").addEventListener("click", renderEntradesAdd);
+                                </script>
+                                <?php
+            }
         }
         ?>
     </main>
     <?php include '_includes/footer.php'; ?>
-    <script>
-        // Script para la navegación suave
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Script para el efecto de scroll en la navegación
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Script para el selector de idioma
-
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Obtenir l'idioma del data attribute
-                    const lang = this.getAttribute('data-lang');
-                    console.log('Botón pulsado, idioma:', lang);
-                    
-                    // Eliminar classe active de tots els botons (tant desktop com mòbil)
-                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                    // Afegir classe active a tots els botons del mateix idioma
-                    document.querySelectorAll(`.lang-btn[data-lang="${lang}"]`).forEach(b => b.classList.add('active'));
-                    
-                    // Tancar menú mòbil si està obert
-                    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-                    const navMenu = document.querySelector('.nav-menu ul');
-                    if (mobileMenuToggle && navMenu) {
-                        mobileMenuToggle.classList.remove('active');
-                        navMenu.classList.remove('show');
-                    }
-                    
-                    // Canviar idioma
-                    changeLanguage(lang);
-                });
-            });
-
-            // Funcionalitat del menú hamburguesa
-            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-            const navMenu = document.querySelector('.nav-menu ul');
-
-            if (mobileMenuToggle && navMenu) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    navMenu.classList.toggle('show');
-                });
-
-                // Tancar menú quan es clica un enllaç
-                document.querySelectorAll('.nav-menu ul li a').forEach(link => {
-                    link.addEventListener('click', function() {
-                        mobileMenuToggle.classList.remove('active');
-                        navMenu.classList.remove('show');
-                    });
-                });
-
-                // Tancar menú quan es clica fora
-                document.addEventListener('click', function(e) {
-                    if (!mobileMenuToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                        mobileMenuToggle.classList.remove('active');
-                        navMenu.classList.remove('show');
-                    }
-                });
-            }
-        });
-    </script>
-    <script>
-    // SPA-ish navigation for Spanish blog list: intercept entrada links, fetch the entry and push a clean URL
-    (function(){
-        function extractMainFromHtml(htmlText){
-            try{
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(htmlText, 'text/html');
-                var main = doc.querySelector('main');
-                return main ? main.innerHTML : null;
-            }catch(e){
-                return null;
-            }
-        }
-        function handleLinkClick(e){
-            var a = e.target.closest('a.entrada-link');
-            if(!a) return;
-            var href = a.getAttribute('href');
-            if(!href) return;
-            if(href.indexOf('entrada.php') === -1) return;
-            e.preventDefault();
-            fetch(href, {credentials: 'same-origin'})
-                .then(function(resp){ if(!resp.ok) throw new Error('bad'); return resp.text(); })
-                .then(function(html){
-                    var mainHtml = extractMainFromHtml(html);
-                    if(mainHtml !== null){
-                        var container = document.getElementById('blog-main');
-                        if(container){
-                            container.innerHTML = mainHtml;
-                            var m = href.match(/[?&]slug=([^&]+)/);
-                            var slug = m ? decodeURIComponent(m[1]) : null;
-                            if(slug){
-                                // Preserve application base (project folder) for servers without vhosts (WAMP)
-                                var needle = '/es/blog';
-                                var idx = window.location.pathname.indexOf(needle);
-                                var prefix = '';
-                                if(idx !== -1){
-                                    prefix = window.location.pathname.substring(0, idx);
-                                }
-                                var pretty = prefix + needle + '/' + encodeURIComponent(slug);
-                                history.pushState({slug:slug, href:href}, '', pretty);
-                            } else {
-                                history.pushState({href:href}, '', href);
-                            }
-                        }
-                    } else {
-                        window.location.href = href;
-                    }
-                })
-                .catch(function(){ window.location.href = href; });
-        }
-        document.addEventListener('click', handleLinkClick);
-        window.addEventListener('popstate', function(ev){
-            var state = ev.state || {};
-            if(state && state.href){
-                fetch(state.href, {credentials:'same-origin'})
-                    .then(function(r){ if(!r.ok) throw new Error('bad'); return r.text(); })
-                    .then(function(html){
-                        var mainHtml = extractMainFromHtml(html);
-                        if(mainHtml !== null){
-                            var container = document.getElementById('blog-main');
-                            if(container) container.innerHTML = mainHtml;
-                        } else { location.reload(); }
-                    })
-                    .catch(function(){ location.reload(); });
-            } else { location.reload(); }
-        });
-        history.replaceState({href: window.location.pathname + window.location.search}, '', window.location.pathname + window.location.search);
-    })();
-    </script>
+    <script src="../js/site-nav.js"></script>
+    <script src="../js/blog-router.js"></script>
     <script src="../js/language.js"></script>
 </body>
 </html>

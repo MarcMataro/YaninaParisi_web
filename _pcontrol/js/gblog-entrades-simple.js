@@ -346,7 +346,17 @@ async function obrirModalEntrada() {
     // Mostrar el modal
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
-    
+    // Ensure TinyMCE editors are initialized for any .tinymce-editor elements
+    try {
+        if (typeof ensureTinyMCE === 'function') {
+            ensureTinyMCE();
+        } else {
+            console.log('ensureTinyMCE() not yet defined');
+        }
+    } catch (e) {
+        console.error('Error running ensureTinyMCE:', e);
+    }
+
     console.log('✅ Modal obert');
 }
 
@@ -444,41 +454,46 @@ function guardarEntrada() {
         alert('Error: Formulario no encontrado');
         return;
     }
-    
+
+    // --- Sync TinyMCE content to textarea before reading values ---
+    if (typeof tinymce !== 'undefined' && typeof tinymce.triggerSave === 'function') {
+        tinymce.triggerSave();
+    }
+
     const formData = new FormData(form);
-    
+
     const id = document.getElementById('entrada_id').value;
     const action = id ? 'actualitzar_entrada' : 'crear_entrada';
-    
+
     formData.append('action', action);
-    
+
     // Comentaris sempre desactivats (ja ve com a hidden input amb valor 0)
     // No cal afegir res més
-    
+
     // DEBUG: Mostrar tots els camps que s'estan enviant
     console.log('📋 FormData contingut:');
     for (let pair of formData.entries()) {
         console.log(`  ${pair[0]}: ${pair[1]}`);
     }
-    
+
     // Validació bàsica
     const titolCa = formData.get('titol_ca');
     const titolEs = formData.get('titol_es');
     const contingutCa = formData.get('contingut_ca');
     const contingutEs = formData.get('contingut_es');
-    
+
     if (!titolCa || !titolEs) {
         alert('Por favor, introduce los títulos en ambos idiomas');
         return;
     }
-    
+
     if (!contingutCa || !contingutEs) {
         alert('Por favor, introduce el contenido en ambos idiomas');
         return;
     }
-    
+
     console.log('📡 Guardant entrada...');
-    
+
     fetch('gblog.php', {
         method: 'POST',
         body: formData
@@ -486,11 +501,11 @@ function guardarEntrada() {
     .then(response => {
         console.log('📡 Response status:', response.status);
         console.log('📡 Response ok:', response.ok);
-        
+
         // Llegir la resposta com a text primer
         return response.text().then(text => {
             console.log('📄 Resposta RAW:', text);
-            
+
             try {
                 const data = JSON.parse(text);
                 return data;
@@ -506,10 +521,10 @@ function guardarEntrada() {
         if (data.success) {
             const message = data.message || TEXTS.guardada;
             alert(message);
-            
+
             // Tancar modal
             tancarModalEntrada();
-            
+
             // Recarregar la pàgina sencera per actualitzar tot
             console.log('🔄 Recarregant pàgina...');
             setTimeout(() => {
@@ -618,8 +633,18 @@ async function editarEntrada(idEntrada) {
             if (idInput) idInput.value = entrada.id_entrada;
             if (titolCaInput) titolCaInput.value = entrada.titol_ca || '';
             if (titolEsInput) titolEsInput.value = entrada.titol_es || '';
-            if (contingutCaInput) contingutCaInput.value = entrada.contingut_ca || '';
-            if (contingutEsInput) contingutEsInput.value = entrada.contingut_es || '';
+            if (contingutCaInput) {
+                contingutCaInput.value = entrada.contingut_ca || '';
+                if (typeof tinymce !== 'undefined' && tinymce.get(contingutCaInput.id)) {
+                    tinymce.get(contingutCaInput.id).setContent(entrada.contingut_ca || '');
+                }
+            }
+            if (contingutEsInput) {
+                contingutEsInput.value = entrada.contingut_es || '';
+                if (typeof tinymce !== 'undefined' && tinymce.get(contingutEsInput.id)) {
+                    tinymce.get(contingutEsInput.id).setContent(entrada.contingut_es || '');
+                }
+            }
             if (resumCaInput) resumCaInput.value = entrada.resum_ca || '';
             if (resumEsInput) resumEsInput.value = entrada.resum_es || '';
             if (estatSelect) estatSelect.value = entrada.estat || 'esborrany';
@@ -727,6 +752,49 @@ function eliminarEntrada(idEntrada, titol) {
 }
 
 // Assignar a window
+/**
+ * Ensure TinyMCE editors are initialized for all .tinymce-editor elements.
+ * If an element has no id, assign a generated id so TinyMCE can attach.
+ */
+function ensureTinyMCE() {
+    if (typeof tinymce === 'undefined') {
+        console.warn('ensureTinyMCE: tinymce is not loaded');
+        return;
+    }
+    var els = document.querySelectorAll('.tinymce-editor');
+    if (!els || els.length === 0) {
+        console.log('ensureTinyMCE: no .tinymce-editor elements found');
+        return;
+    }
+    els.forEach(function(el) {
+        try {
+            if (!el.id) {
+                el.id = 'tinymce_' + Math.random().toString(36).substr(2, 9);
+            }
+            if (!tinymce.get(el.id)) {
+                tinymce.init({
+                    target: el,
+                    plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                    toolbar_mode: 'floating',
+                    image_list: (window._TINY_IMAGE_LIST || []),
+                    image_class_list: [{title: 'Responsive', value: 'img-fluid'}],
+                    height: 300,
+                    relative_urls: false,
+                    remove_script_host: false,
+                    convert_urls: true,
+                    document_base_url: (location.protocol + '//' + location.host)
+                });
+                el.setAttribute('data-tinymce-init', '1');
+                console.log('ensureTinyMCE: initialized editor for', el.id);
+            } else {
+                // editor already exists
+            }
+        } catch (err) {
+            console.error('ensureTinyMCE error for element', el, err);
+        }
+    });
+}
+
 window.carregarEntrades = carregarEntrades;
 window.obrirModalEntrada = obrirModalEntrada;
 window.tancarModalEntrada = tancarModalEntrada;

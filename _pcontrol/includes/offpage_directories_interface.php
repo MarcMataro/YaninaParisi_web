@@ -51,7 +51,7 @@ $stats_directories = $seo_directories_stats ?? SEO_OffPage_Directories::obtenirE
 <div class="directories-stats-container">
     <div class="stats-header">
         <h2><i class="fas fa-chart-bar"></i> Estadísticas de Directorios</h2>
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=list'" class="btn btn-secondary">
+    <button onclick="window.location.href='gseooffpage.php?subtab=directories&view=list'" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Volver al listado
         </button>
     </div>
@@ -259,10 +259,10 @@ $stats_directories = $seo_directories_stats ?? SEO_OffPage_Directories::obtenirE
             <p class="subtitle">Gestión de alta en directorios y listados de negocios</p>
         </div>
         <div class="header-actions">
-            <button onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=stats'" class="btn btn-info">
+            <button onclick="window.location.href='gseooffpage.php?subtab=directories&view=stats'" class="btn btn-info">
                 <i class="fas fa-chart-bar"></i> Estadísticas
             </button>
-            <button onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=create'" class="btn btn-primary">
+            <button onclick="window.location.href='gseooffpage.php?subtab=directories&view=create'" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Añadir Directorio
             </button>
         </div>
@@ -397,7 +397,7 @@ $stats_directories = $seo_directories_stats ?? SEO_OffPage_Directories::obtenirE
                     </td>
                     <td><?php echo date('d/m/Y', strtotime($dir->getFechaCreacion())); ?></td>
                     <td class="actions-cell">
-                        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=edit&id=<?php echo $dir->getId(); ?>'" 
+                        <button onclick="window.location.href='gseooffpage.php?subtab=directories&view=edit&id=<?php echo $dir->getId(); ?>'" 
                                 class="btn-icon btn-edit" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -416,7 +416,7 @@ $stats_directories = $seo_directories_stats ?? SEO_OffPage_Directories::obtenirE
         <i class="fas fa-list-ul"></i>
         <h3>No hay directorios registrados</h3>
         <p>Comienza añadiendo directorios donde registrar tu negocio.</p>
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=create'" class="btn btn-primary">
+    <button onclick="window.location.href='gseooffpage.php?subtab=directories&view=create'" class="btn btn-primary">
             <i class="fas fa-plus"></i> Añadir Primer Directorio
         </button>
     </div>
@@ -436,12 +436,12 @@ $stats_directories = $seo_directories_stats ?? SEO_OffPage_Directories::obtenirE
             <i class="fas fa-<?php echo $modo_vista_dir === 'edit' ? 'edit' : 'plus'; ?>"></i>
             <?php echo $modo_vista_dir === 'edit' ? 'Editar' : 'Añadir'; ?> Directorio
         </h2>
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=list'" class="btn btn-secondary">
+    <button onclick="window.location.href='gseooffpage.php?subtab=directories&view=list'" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Volver al listado
         </button>
     </div>
     
-    <form method="POST" action="gseo.php" class="offpage-form">
+    <form method="POST" action="gseooffpage.php" class="offpage-form">
         <input type="hidden" name="action" value="<?php echo $modo_vista_dir === 'edit' ? 'update_directorio' : 'create_directorio'; ?>">
         <?php if ($modo_vista_dir === 'edit' && $directorio_edit): ?>
         <input type="hidden" name="id_directorio" value="<?php echo $directorio_edit->getId(); ?>">
@@ -575,7 +575,7 @@ $stats_directories = $seo_directories_stats ?? SEO_OffPage_Directories::obtenirE
         
         <!-- Botones de Acción -->
         <div class="form-actions">
-            <button type="button" onclick="window.location.href='gseo.php?tab=offpage&subtab=directories&view=list'" class="btn btn-secondary">
+            <button type="button" onclick="window.location.href='gseooffpage.php?subtab=directories&view=list'" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Cancelar
             </button>
             <button type="submit" class="btn btn-primary">
@@ -606,12 +606,12 @@ function aplicarFiltrosDirectories() {
 }
 
 function limpiarFiltrosDirectories() {
-    window.location.href = 'gseo.php?tab=offpage&subtab=directories&view=list';
+    window.location.href = 'gseooffpage.php?tab=directories&view=list';
 }
 
 function eliminarDirectorio(id) {
     if (confirm('Estàs segur que vols eliminar aquest directori? Aquesta acció no es pot desfer.')) {
-        window.location.href = 'gseo.php?action=delete_directorio&id_directorio=' + id;
+    window.location.href = 'gseooffpage.php?action=delete_directorio&id_directorio=' + id;
     }
 }
 </script>

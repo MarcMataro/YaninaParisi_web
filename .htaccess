@@ -1,3 +1,17 @@
 <Files ~ "\_data\.inc$">
     Require all denied
 </Files>
+
+# Friendly URLs for blog entries
+# /ca/slug  →  /ca/entrada.php?slug=slug
+# /es/slug  →  /es/entrada.php?slug=slug
+RewriteEngine On
+
+# Catalan entries
+RewriteRule ^ca/([a-z0-9\-]+)$ ca/entrada.php?slug=$1 [L,QSA]
+# Spanish entries
+RewriteRule ^es/([a-z0-9\-]+)$ es/entrada.php?slug=$1 [L,QSA]
+
+# (Opcional) Redirigir URLs amb trailing slash
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(ca|es)/([a-z0-9\-]+)/$ /$1/$2 [R=301,L]

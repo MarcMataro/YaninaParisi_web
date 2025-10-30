@@ -1,3 +1,76 @@
+/* Off-Page admin styles - extracted from gseooffpage.php and tuned to match gseoonpage.php aesthetics */
+/* Basic layout tweaks */
+.offpage-tabs { display: flex; gap: 12px; margin-bottom: 18px; }
+.offpage-tab { padding: 10px 16px; border-radius: 8px; cursor: pointer; background: #f5f5f5; border: 1px solid #e6e6e6; color: #333; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.offpage-tab:hover { background: #efefef; }
+.offpage-tab.active { background: #a89968; color: #fff; border-color: #9a8a5a; }
+.content-wrapper { margin-top: 32px; }
+
+/* Reuse existing dashboard button styles where present, but provide small helpers */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-family: 'Libre Baskerville', serif;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-primary { background: var(--color-accent); color: #fff; }
+.btn-secondary { background: #f8f9fa; color: #495057; border: 1px solid #e6e6e6; }
+.btn-secondary:hover { background: #eef0ec; }
+.btn-danger { background: #dc3545; color: #fff; }
+.btn-info { background: #17a2b8; color: #fff; }
+
+.btn-sm { padding: 6px 10px; border-radius: 6px; font-size: 0.9rem; }
+.btn-small { padding: 6px 8px; border-radius: 6px; font-size: 0.9rem; }
+
+/* Make header and title spacing consistent with onpage page */
+.top-bar {
+    background: white;
+    padding: 20px 45px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.top-bar-left h1 {
+    font-size: 1.3rem;
+    color: var(--color-dark);
+    margin-bottom: 2px;
+}
+
+/* Tables and container spacing */
+.onpage-table-container, .offpage-table-container { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); }
+
+/* Form helpers (mirrors onpage modal look) */
+.modal-container { background-color: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.12); max-width: 900px; width: 92%; max-height: 90vh; overflow-y: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.modal-header { padding: 24px 32px; border-bottom: 1px solid #e0e0e0; display:flex; justify-content:space-between; align-items:center; }
+.modal-body { padding: 24px 32px; }
+
+/* Small responsive tweaks */
+@media (max-width: 720px) {
+    .offpage-tabs { flex-direction: column; gap: 8px; }
+    .offpage-tab { width: 100%; justify-content: center; }
+}
+
+/* Helper for subtle badges / stats */
+.stat-badge { background:#f1f1f1; color:#333; padding:6px 10px; border-radius:8px; font-weight:600; }
+
+/* End offpage.css */
 /* ============================================
    OFFPAGE LINKS - ESTILS
    ============================================ */

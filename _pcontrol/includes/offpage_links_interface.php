@@ -61,7 +61,7 @@ try {
 <div class="offpage-stats-container">
     <div class="stats-header">
         <h2><i class="fas fa-chart-line"></i> Estadísticas de Backlinks</h2>
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=backlinks&view=list'" class="btn btn-secondary">
+    <button onclick="window.location.href='gseooffpage.php?subtab=backlinks&view=list'" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Volver al listado
         </button>
     </div>
@@ -239,10 +239,10 @@ try {
         <p class="subtitle">Total: <?php echo count($backlinks); ?> backlinks</p>
     </div>
     <div class="header-actions">
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=backlinks&view=stats'" class="btn btn-info">
+    <button onclick="window.location.href='gseooffpage.php?subtab=backlinks&view=stats'" class="btn btn-info">
             <i class="fas fa-chart-bar"></i> Estadísticas
         </button>
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=backlinks&view=create'" class="btn btn-primary">
+    <button onclick="window.location.href='gseooffpage.php?subtab=backlinks&view=create'" class="btn btn-primary">
             <i class="fas fa-plus"></i> Añadir Backlink
         </button>
     </div>
@@ -377,13 +377,9 @@ try {
                     <small><?php echo date('d/m/Y', strtotime($backlink->getFechaDescubrimiento())); ?></small>
                 </td>
                 <td class="actions-cell">
-                    <button onclick="window.location.href='gseo.php?tab=offpage&view=edit&id_backlink=<?php echo $backlink->getId(); ?>'" 
+                    <button onclick="window.location.href='gseooffpage.php?subtab=backlinks&view=edit&id_backlink=<?php echo $backlink->getId(); ?>'" 
                             class="btn-icon btn-edit" title="Editar">
                         <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="verificarBacklink(<?php echo $backlink->getId(); ?>)" 
-                            class="btn-icon btn-verify" title="Verificar">
-                        <i class="fas fa-sync"></i>
                     </button>
                     <button onclick="eliminarBacklink(<?php echo $backlink->getId(); ?>)" 
                             class="btn-icon btn-delete" title="Eliminar">
@@ -402,6 +398,31 @@ try {
 </div>
 <?php endif; ?>
 
+<script>
+function verificarBacklink(id) {
+    if (!confirm('Verificar l\'existència i atributs de l\'enllaç a la pàgina origen?')) return;
+    const url = 'gseooffpage.php?action=verify_backlink&id_offpage=' + encodeURIComponent(id);
+    fetch(url, { credentials: 'same-origin' })
+        .then(resp => resp.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+                return;
+            }
+            let msg = 'Codi HTTP: ' + (data.http_code || 'N/A') + '\n';
+            msg += 'Enllaç trobat: ' + (data.found ? 'Sí' : 'No') + '\n';
+            if (data.found) {
+                if (data.anchor) msg += 'Anchor: ' + data.anchor + '\n';
+                if (data.rel) msg += 'rel: ' + data.rel + '\n';
+            }
+            alert(msg);
+        })
+        .catch(err => {
+            alert('Error de xarxa: ' + err.message);
+        });
+}
+</script>
+
 <!-- ============================================ -->
 <!-- VISTA: CREAR/EDITAR BACKLINK                 -->
 <!-- ============================================ -->
@@ -415,12 +436,12 @@ try {
             <i class="fas fa-<?php echo $es_edicio ? 'edit' : 'plus'; ?>"></i>
             <?php echo $es_edicio ? 'Editar Backlink' : 'Añadir Nuevo Backlink'; ?>
         </h2>
-        <button onclick="window.location.href='gseo.php?tab=offpage&subtab=backlinks&view=list'" class="btn btn-secondary">
+    <button onclick="window.location.href='gseooffpage.php?subtab=backlinks&view=list'" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Volver
         </button>
     </div>
     
-    <form method="POST" action="gseo.php" class="offpage-form">
+    <form method="POST" action="gseooffpage.php" class="offpage-form">
         <input type="hidden" name="action" value="<?php echo $es_edicio ? 'update_backlink' : 'create_backlink'; ?>">
         <?php if ($es_edicio): ?>
         <input type="hidden" name="id_offpage" value="<?php echo $backlink_edit->getId(); ?>">
@@ -673,7 +694,7 @@ try {
         
         <!-- Botons d'acció -->
         <div class="form-actions">
-            <button type="button" onclick="window.location.href='gseo.php?tab=offpage&subtab=backlinks&view=list'" class="btn btn-secondary">
+            <button type="button" onclick="window.location.href='gseooffpage.php?subtab=backlinks&view=list'" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Cancelar
             </button>
             <button type="submit" class="btn btn-primary">
@@ -685,36 +706,35 @@ try {
 
 <?php endif; ?>
 
-<!-- JavaScript para filtros y acciones -->
+<!-- JavaScript para filtros, acciones i verificació -->
 <script>
 function aplicarFiltros() {
     const estado = document.getElementById('filtro_estado').value;
     const tipo = document.getElementById('filtro_tipo').value;
     const campana = document.getElementById('filtro_campana').value;
-    
-    let url = 'gseo.php?tab=offpage&subtab=backlinks&view=list';
+    let url = 'gseooffpage.php?subtab=backlinks&view=list';
     if (estado !== 'all') url += '&estado=' + estado;
     if (tipo !== 'all') url += '&tipo_backlink=' + tipo;
     if (campana !== 'all') url += '&campana=' + encodeURIComponent(campana);
-    
     window.location.href = url;
 }
 
 function limpiarFiltros() {
-    window.location.href = 'gseo.php?tab=offpage&subtab=backlinks&view=list';
+    window.location.href = 'gseooffpage.php?subtab=backlinks&view=list';
 }
 
 function verificarBacklink(id) {
-    if (confirm('¿Quieres verificar este backlink? Esto comprobará si el enlace aún existe.')) {
-        // Implementar llamada AJAX para verificar
-        console.log('Verificando backlink ID:', id);
-        alert('Funcionalidad de verificación en desarrollo');
+}
+
+function eliminarBacklink(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar este backlink? Esta acción no se puede deshacer.')) {
+        window.location.href = 'gseooffpage.php?action=delete_backlink&id_offpage=' + id + '&tab=links';
     }
 }
 
 function eliminarBacklink(id) {
     if (confirm('¿Estás seguro de que quieres eliminar este backlink? Esta acción no se puede deshacer.')) {
-        window.location.href = 'gseo.php?action=delete_backlink&id_offpage=' + id + '&tab=offpage&subtab=backlinks';
+        window.location.href = 'gseooffpage.php?action=delete_backlink&id_offpage=' + id + '&tab=links';
     }
 }
 </script>
