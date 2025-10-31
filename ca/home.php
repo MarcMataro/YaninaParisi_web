@@ -204,8 +204,14 @@ $lang = getCurrentLanguage();
         <?php /* hero image as an <img> element so path resolves correctly across subfolders */ ?>
         <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
         <div class="container hero-content">
-            <h1 class="hero-title">Construeix la <span class="highlight">vida</span> que desitges.<br>El teu canvi comença aquí</h1>
-            <p class="hero-subtitle">T'acompanyo perquè aquest canvi sigui real</p>
+            <h1 class="hero-title">
+                <?php
+                    //Aquí escriurem el títol HA que hi ha a les dades del SEO que hem extret abans
+                    //La variable a la classe és $h1_ca per al català. Hem d'extreure-la de les dades del SEO.
+                    echo htmlspecialchars(isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getH1($lang) : 'Yanina Parisi - Psicòloga');
+                ?>
+            </h1>
+            <p class="hero-subtitle">Construeix la vida que desitges. El teu canvi comença aquí</p>
 
             <div class="hero-buttons">
                 <a href="#contacte" class="btn btn-primary">

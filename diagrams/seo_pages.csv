@@ -1,0 +1,14 @@
+path,title,meta_description,h1,canonical,jsonld,meta_robots,notes
+/ (index.php),redirect to /ca/home.php or /es/home.php,,redirects to language home,NO,none,NO,Index redirects based on cookie/browser/lang param
+/ca/home.php,"dynamic: SEO_OnPage title or fallback 'Yanina Parisi - Psicòloga'","from SEO_OnPage or t('meta_description')","dynamic H1 from SEO_OnPage or fallback 'Yanina Parisi - Psicòloga'",yes,Psychologist,"index, follow","OG tags + JSON-LD present; OG/JSON-LD use placeholders for phone/email"
+/es/home.php,"dynamic: SEO_OnPage title or fallback 'Yanina Parasi - Psicóloga'","from SEO_OnPage or t('meta_description')","dynamic H1",yes,Psychologist,"index, follow","OG tags + JSON-LD present; ensure absolute https URLs"
+/ca/sobremi.php,"Sobre mi - Yanina Parisi - Psicòloga General Sanitària","Català about meta description","Psicología amb propòsit per a la teva transformació personal",no,LocalBusiness, ,"LocalBusiness JSON-LD present but contains placeholder NAP (phone/address/socials); mixed language text in H1 observed"
+/es/sobremi.php,"Sobre mi - Yanina Parisi - Psicóloga General Sanitaria","Castellà about meta description","Psicología con propósito para tu transformación personal",no,LocalBusiness, ,"LocalBusiness JSON-LD present with placeholders; review NAP and language consistency"
+/ca/contacta.php,"Contacte - Yanina Parisi","Contacta meta description","Contacta amb mi",no,none, ,"Contact form present; meta description exists; add rel=canonical and structured ContactPoint if desired"
+/es/contacta.php,"Contacto - Yanina Parisi","Contacto meta description","Contacta conmigo",no,none, ,"Same as CA; ensure canonical and hreflang consistency"
+/ca/clinica.php,"Services | Yanina Parisi","t('meta_description')","Transforma el teu benestar emocional",no,none, ,"Services page uses translation keys; canonical not explicit"
+/es/clinica.php,"Services | Yanina Parisi","t('meta_description')","Transforma tu bienestar emocional",no,none, ,"Services page mirrors CA; consider explicit canonicals"
+/ca/blog.php,"Blog | Yanina Parisi","Consulta les últimes entrades del blog de Yanina Parisi.","Blog",no,none, ,"Blog list page; entries link to /ca/entrada.php?slug=...; implement rel=prev/next if paginated"
+/es/blog.php,"Blog | Yanina Parisi","Consulta las últimas entradas del blog de Yanina Parisi.","Blog",no,none, ,"Blog list page in ES; same notes"
+/ca/entrada.php,"meta_title_ca or titol_ca","meta_description_ca or resum_ca","H1 from entry (if hero image present)",no,none, ,"Individual posts use dynamic meta fields; ensure each post has canonical and structured Article schema when appropriate"
+/es/entrada.php,"meta_title_es or titol_es","meta_description_es or resum_es","H1 from entry",no,none, ,"Same as CA post template; ensure hreflang/canonical per post translations"

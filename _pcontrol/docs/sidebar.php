@@ -5,7 +5,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <img src="../img/Logo.png" alt="Yanina Parisi" class="sidebar-logo">
+        <img src="../../img/Logo.png" alt="Yanina Parisi" class="sidebar-logo">
         <h2>Panel de Control</h2>
         <button class="sidebar-toggle" id="sidebarToggle">
             <i class="fas fa-times"></i>
@@ -13,47 +13,43 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
     
     <nav class="sidebar-nav">
-        <a href="dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
+        <a href="../dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
             <i class="fas fa-home"></i>
             <span>Dashboard</span>
         </a>
-        <a href="gpacients.php" class="nav-item <?php echo ($current_page == 'gpacients.php') ? 'active' : ''; ?>">
+        <a href="../gpacients.php" class="nav-item <?php echo ($current_page == 'gpacients.php') ? 'active' : ''; ?>">
             <i class="fas fa-users"></i>
             <span>Pacientes</span>
         </a>
-        <a href="gsessions.php" class="nav-item <?php echo ($current_page == 'gsessions.php') ? 'active' : ''; ?>">
+        <a href="../gsessions.php" class="nav-item <?php echo ($current_page == 'gsessions.php') ? 'active' : ''; ?>">
             <i class="fas fa-calendar-alt"></i>
             <span>Sesiones</span>
         </a>
-        <a href="gblog.php" class="nav-item <?php echo ($current_page == 'blog.php') ? 'active' : ''; ?>">
+        <a href="../gblog.php" class="nav-item <?php echo ($current_page == 'blog.php') ? 'active' : ''; ?>">
             <i class="fas fa-blog"></i>
             <span>Blog</span>
         </a>
-        <a href="gmedia.php" class="nav-item <?php echo ($current_page == 'gmedia.php') ? 'active' : ''; ?>">
+        <a href="../gmedia.php" class="nav-item <?php echo ($current_page == 'gmedia.php') ? 'active' : ''; ?>">
             <i class="fas fa-images"></i>
             <span>Media</span>
         </a>
-        <a href="gseo.php" class="nav-item <?php echo ($current_page == 'gseo.php') ? 'active' : ''; ?>">
+        <a href="../gseo.php" class="nav-item <?php echo ($current_page == 'gseo.php') ? 'active' : ''; ?>">
             <i class="fas fa-search"></i>
             <span>SEO</span>
         </a>
-        <a href="facturacion.php" class="nav-item <?php echo ($current_page == 'facturacion.php') ? 'active' : ''; ?>">
+        <a href="../facturacion.php" class="nav-item <?php echo ($current_page == 'facturacion.php') ? 'active' : ''; ?>">
             <i class="fas fa-file-invoice-dollar"></i>
             <span>Facturación</span>
         </a>
-        <a href="gtarifas.php" class="nav-item <?php echo ($current_page == 'tarifas.php') ? 'active' : ''; ?>">
+        <a href="../gtarifas.php" class="nav-item <?php echo ($current_page == 'tarifas.php') ? 'active' : ''; ?>">
             <i class="fas fa-calculator"></i>
             <span>Tarifas</span>
         </a>
-        <a href="gfaq.php" class="nav-item <?php echo ($current_page == 'gfaq.php') ? 'active' : ''; ?>">
-            <i class="fas fa-question-circle"></i>
-            <span>FAQ's</span>
-        </a>
-        <a href="configuracion.php" class="nav-item <?php echo ($current_page == 'configuracion.php') ? 'active' : ''; ?>">
+        <a href="../configuracion.php" class="nav-item <?php echo ($current_page == 'configuracion.php') ? 'active' : ''; ?>">
             <i class="fas fa-cog"></i>
             <span>Configuración</span>
         </a>
-        <a href="documentation.php" class="nav-item <?php echo ($current_page == 'documentation.php') ? 'active' : ''; ?>">
+        <a href="../documentation.php" class="nav-item <?php echo ($current_page == 'documentation.php') ? 'active' : ''; ?>">
             <i class="fas fa-book"></i>
             <span>Documentació</span>
         </a>

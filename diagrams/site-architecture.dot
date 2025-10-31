@@ -1,0 +1,70 @@
+digraph YaninaParisi {
+  rankdir=LR;
+  graph [fontsize=12 labelloc="t" label="Arquitectura del lloc — yaninaparisi.com" fontname="Helvetica"];
+  node [shape=box fontname="Helvetica" fontsize=11];
+
+  // Root and language homes
+  Root [label="/\n(index.php)\nredirects by lang", shape=oval, style=filled, fillcolor="#FFF2CC"];
+
+  subgraph cluster_ca {
+    label="Català (ca)";
+    style=rounded;
+    color="#D9EAD3";
+    ca_home [label="/ca/home.php\n(home)\npriority: 1.0", style=filled, fillcolor="#E2F0D9"];
+    ca_sobremi [label="/ca/sobremi.php\n(about)\npriority: 0.8"];
+    ca_contacta [label="/ca/contacta.php\n(contact)\npriority: 0.9"];
+    ca_clinica [label="/ca/clinica.php\n(services)\npriority: 0.9"];
+    ca_blog [label="/ca/blog.php\n(blog list)\npriority: 0.6"];
+    ca_entrada [label="/ca/entrada.php?slug=...\n(blog post template)", shape=note, fillcolor="#D0E3F0", style=filled];
+  }
+
+  subgraph cluster_es {
+    label="Castellà (es)";
+    style=rounded;
+    color="#F4CCCC";
+    es_home [label="/es/home.php\n(home)\npriority: 1.0", style=filled, fillcolor="#FCE5CD"];
+    es_sobremi [label="/es/sobremi.php\n(about)\npriority: 0.8"];
+    es_contacta [label="/es/contacta.php\n(contact)\npriority: 0.9"];
+    es_clinica [label="/es/clinica.php\n(services)\npriority: 0.9"];
+    es_blog [label="/es/blog.php\n(blog list)\npriority: 0.6"];
+    es_entrada [label="/es/entrada.php?slug=...\n(blog post template)", shape=note, fillcolor="#D0E3F0", style=filled];
+  }
+
+  // Edges: root -> language homes
+  Root -> ca_home [label="default (browser/cookie/lang param)"];
+  Root -> es_home;
+
+  // Internal structure edges
+  ca_home -> ca_sobremi;
+  ca_home -> ca_contacta;
+  ca_home -> ca_clinica;
+  ca_home -> ca_blog;
+  ca_blog -> ca_entrada [label="read post -> entrada.php?slug=slug"];
+
+  es_home -> es_sobremi;
+  es_home -> es_contacta;
+  es_home -> es_clinica;
+  es_home -> es_blog;
+  es_blog -> es_entrada;
+
+  // Hreflang / language alternates
+  ca_home -> es_home [dir=both label="hreflang"];
+  ca_sobremi -> es_sobremi [dir=both label="hreflang"];
+  ca_contacta -> es_contacta [dir=both label="hreflang"];
+  ca_clinica -> es_clinica [dir=both label="hreflang"];
+  ca_blog -> es_blog [dir=both label="hreflang"];
+
+  // Special/internal nodes
+  sitemap [label="/sitemap.xml\ncontains hreflang entries", shape=note, style=filled, fillcolor="#F3F3F3"];
+  robots [label="/robots.txt\nDisallow: /_pcontrol/ /_secret/ /classes/", shape=note, style=filled, fillcolor="#F3F3F3"];
+  admin [label="/_pcontrol/ (admin)\nDISALLOWED in robots", shape=folder, style=filled, fillcolor="#F8D7DA"];
+
+  // Links to sitemap/robots
+  sitemap -> ca_home [style=dashed];
+  sitemap -> es_home [style=dashed];
+  robots -> admin [style=dotted];
+
+  // Visual hints
+  ca_home [peripheries=2];
+  es_home [peripheries=2];
+}

@@ -637,7 +637,8 @@
                         
                         -- 5. SEO TÈCNIC ESPECÍFIC
                         meta_robots <span class="keyword">VARCHAR</span>(100) DEFAULT 'index, follow',
-                        canonical_url <span class="keyword">VARCHAR</span>(255) COMMENT 'Si és diferent a la URL relativa',
+                        canonical_url_ca <span class="keyword">VARCHAR</span>(255) COMMENT 'Si és diferent a la URL relativa',
+                        canonical_url_es <span class="keyword">VARCHAR</span>(255) COMMENT 'Si és diferent a la URL relativa',
                         priority <span class="keyword">ENUM</span>('1.0', '0.8', '0.6', '0.4', '0.2') <span class="keyword">DEFAULT</span> '0.8',
                         changefreq <span class="keyword">ENUM</span>('always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never') <span class="keyword">DEFAULT</span> 'monthly',
                         
@@ -1261,6 +1262,49 @@
                         <span class="keyword">INDEX</span> idx_ordre (ordre_visualitzacio),
                         <span class="keyword">INDEX</span> idx_preu_base (preu_base),
                         <span class="keyword">INDEX</span> idx_data_promocio (data_inici_promocio, data_fi_promocio)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p class="description">Aquí pots veure la estructura de la taula d'Informació de la Psicòloga.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> info_psicologa (
+                        id_info <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. INFORMACIÓ PERSONAL
+                        nom_complet_ca <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        nom_complet_es <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+                        titulacio_ca <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        titulacio_es <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+
+                        -- 2. FOTO I PRESENTACIÓ
+                        foto_perfil <span class="keyword">VARCHAR</span>(255),
+                        alt_foto_ca <span class="keyword">VARCHAR</span>(125),
+                        alt_foto_es <span class="keyword">VARCHAR</span>(125),
+
+                        -- 3. XARXES SOCIALS PERSONALS/PROFESSIONALS
+                        email_professional <span class="keyword">VARCHAR</span>(255),
+                        telefon_professional <span class="keyword">VARCHAR</span>(20),
+                        linkedin_url <span class="keyword">VARCHAR</span>(255),
+                        instagram_professional <span class="keyword">VARCHAR</span>(255),
+                        facebook_professional <span class="keyword">VARCHAR</span>(255),
+                        twitter_professional <span class="keyword">VARCHAR</span>(255),
+                        youtube_professional <span class="keyword">VARCHAR</span>(255),
+                        
+                        -- 4. INFORMACIÓ PROFESSIONAL
+                        num_collegiat <span class="keyword">VARCHAR</span>(50) <span class="keyword">NOT NULL</span>,
+                        college_professional <span class="keyword">VARCHAR</span>(100) <span class="keyword">NOT NULL</span>,
+
+                        -- 5. DATES DEL SISTEMA
+                        data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+
+                        -- ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_email_professional (email_professional),
+                        <span class="keyword">INDEX</span> idx_num_collegiat (num_collegiat)
                     ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
                 </pre>
             </div>

@@ -74,9 +74,69 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="doc-container">
             <div class="doc-index">
                 <h2>Índice de contenidos</h2>
-                <ul>
-                    <li><a href="docs/intro.php">1. Introducción</a></li>
-                </ul>
+                <p class="small-muted">Guía rápida pensada para el uso del panel: organizada por tareas diarias y apartados administrativos.</p>
+
+                <section class="doc-section">
+                    <h3>Empezar</h3>
+                    <ul>
+                        <li><a href="docs/intro.php">Introducción</a> — qué es el panel y primeros pasos</li>
+                        <li><a href="docs/arquitectura.php">Arquitectura web</a> — diagrama visual de la estructura del sitio</li>
+                    </ul>
+                </section>
+
+                <section class="doc-section">
+                    <h3>Tareas diarias</h3>
+                    <ul>
+                        <li><a href="gpacients.php">Pacientes</a> — añadir/editar pacientes, historial y notas</li>
+                        <li><a href="gsessions.php">Citas & Sesiones</a> — crear y gestionar citas, marcar asistencia</li>
+                        <li><a href="facturacion.php">Facturación</a> — facturas, estados de pago y generación de PDF</li>
+                    </ul>
+                </section>
+
+                <section class="doc-section">
+                    <h3>Contenidos y Media</h3>
+                    <ul>
+                        <li><a href="gmedia.php">Media</a> — subir imágenes, vídeos y gestionar la biblioteca</li>
+                        <li><a href="gblog.php">Blog y Entradas</a> — crear entradas, categorías y etiquetas</li>
+                    </ul>
+                </section>
+
+                <section class="doc-section">
+                    <h3>SEO y Web pública</h3>
+                    <ul>
+                        <li><a href="gseogeneral.php">SEO General</a> — metadatos generales e indexación</li>
+                        <li><a href="gseoonpage.php">On-page</a> — títulos, descripciones y contenido por página</li>
+                        <li><a href="gseooffpage.php">Off-page</a> — enlaces y directorios externos</li>
+                    </ul>
+                </section>
+
+                <section class="doc-section">
+                    <h3>Configuración y Preferencias</h3>
+                    <ul>
+                        <li><a href="configuracion.php">Configuración</a> — datos de la consulta, contacto y preferencias</li>
+                        <li><a href="gtarifas.php">Tarifas</a> — gestionar tarifas y servicios</li>
+                        <li><a href="logout.php">Seguridad</a> — cerrar sesión y buenas prácticas</li>
+                    </ul>
+                </section>
+
+                <section class="doc-section">
+                    <h3>Resolución rápida de problemas</h3>
+                    <ul>
+                        <li><strong>No veo un archivo/media</strong> — revisa <code>gmedia.php</code> y la carpeta <code>img/media/</code></li>
+                        <li><strong>Errores PHP</strong> — revisa los logs de WAMP o activa la visualización de errores localmente en <code>configuracion.php</code> (solo en desarrollo)</li>
+                        <li><strong>El diagrama no se renderiza</strong> — ve a <a href="docs/arquitectura.php">Arquitectura</a> y mira la consola del navegador (F12)</li>
+                    </ul>
+                </section>
+
+                <section class="doc-section">
+                    <h3>Enlaces útiles</h3>
+                    <ul>
+                        <li><a href="../sitemap.xml" target="_blank">Sitemap público</a></li>
+                        <li><a href="../robots.txt" target="_blank">robots.txt</a></li>
+                        <li><a href="diagrams/site-architecture.dot" target="_blank">DOT: site-architecture.dot</a> (descarga y edición)</li>
+                    </ul>
+                </section>
+
             </div>
 
         </div>

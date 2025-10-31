@@ -161,8 +161,8 @@ include '../includes/functions.php';
         <?php /* hero image as an <img> element so path resolves correctly across subfolders */ ?>
         <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
         <div class="container hero-content">
-            <h1>Construye la <span class="highlight">vida</span> que deseas.<br>Tu cambio empieza aquí</h1>
-            <h2 class="hero-subtitle">Te acompaño para que ese cambio sea real</h2>
+            <h1><?php echo htmlspecialchars(isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getH1($lang) : 'Yanina Parisi - Psicóloga'); ?></h1>
+            <p class="hero-subtitle">Construye la vida que deseas. Tu cambio empieza aquí</p>
 
             <div class="hero-buttons">
                 <a href="#contacto" class="btn btn-primary">

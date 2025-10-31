@@ -1,0 +1,77 @@
+/* Styles moved from configuracion.php for psicologa modals and modal behavior */
+
+/* Minimal flash styles */
+.flash-wrapper { max-width:1100px; margin:8px auto; }
+.flash { padding:10px 14px; border-radius:6px; font-weight:600; }
+.flash-success { background:#e6ffed; color:#0f5132; border:1px solid #b7f3c9; }
+.flash-danger { background:#ffe6e6; color:#6b0f0f; border:1px solid #f3b7b7; }
+
+/* Modal styles: full-screen overlay, centered content and scrollable body */
+.modal {
+    display: none; /* controlled via JS */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 9999;
+    display: flex;
+    align-items: center; /* center vertically for a balanced look */
+    justify-content: center;
+    padding: 24px 20px; /* top/bottom padding for small viewports */
+    box-sizing: border-box;
+    overflow-y: auto; /* allow overlay to scroll if modal is taller than viewport */
+}
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: relative;
+    /* make modals wider but shorter */
+    width: 90% !important;
+    max-width: 900px !important;
+    max-height: 60vh !important; /* shorter height */
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 18px;
+}
+.modal .close {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    background: transparent;
+    border: none;
+}
+@media (max-width:480px) {
+    .modal { padding: 12px; }
+    .modal-content { max-height: calc(100vh - 40px); }
+}
+
+/* Psicòloga modal: cleaner layout */
+.psicologa-form {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px 20px;
+    align-items: start;
+}
+.psicologa-avatar {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+}
+.psicologa-avatar img { width:120px; height:120px; object-fit:cover; border-radius:8px; border:1px solid #eee; background:#fff; }
+.psicologa-fields { display:grid; grid-template-columns: 1fr 1fr; gap:12px 12px; }
+.psicologa-row { display:flex; flex-direction:column; }
+.psicologa-row label { font-size:13px; color:#333; margin-bottom:6px; font-weight:600; }
+.psicologa-row input[type="text"], .psicologa-row input[type="email"], .psicologa-row input[type="tel"], .psicologa-row select {
+    padding:8px 10px; border:1px solid #ddd; border-radius:6px; background:#fff; box-sizing:border-box;
+}
+.psicologa-contact { grid-column: 1 / -1; display:flex; gap:12px; flex-wrap:wrap; }
+.psicologa-contact .group { flex:1 1 220px; min-width:0; }
+@media (max-width:720px) {
+    .psicologa-form { grid-template-columns: 1fr; }
+    .psicologa-fields { grid-template-columns: 1fr; }
+    .psicologa-avatar { flex-direction:row; gap:12px; }
+}

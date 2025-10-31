@@ -56,6 +56,59 @@ include '../includes/functions.php';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 </head>
+<?php
+// JSON-LD LocalBusiness snippet for SEO (modify NAP, coords, socials below)
+$siteProtocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$siteUrl = $siteProtocol . '://' . $_SERVER['HTTP_HOST'];
+$pageUrl = $siteUrl . $_SERVER['REQUEST_URI'];
+$name = 'Yanina Parisi - Psicòloga';
+$description = getCurrentLanguage() === 'ca'
+    ? 'Coneix la trajectòria professional de Yanina Parisi, Psicòloga General Sanitària, Perita Judicial i Mediadora Familiar amb més d\'una dècada d\'experiència.'
+    : 'Conoce la trayectoria profesional de Yanina Parisi, Psicóloga General Sanitaria, Perito Judicial y Mediadora Familiar con más de una década de experiencia.';
+// TODO: replace these placeholders with real business data (telephone, address, coords, socials)
+$telephone = '+34 600000000';
+$image = $siteUrl . '/img/Logo.png';
+$street = 'Carrer Exemple, 1';
+$city = 'Girona';
+$postal = '17001';
+$country = 'ES';
+$latitude = '41.985';
+$longitude = '2.820';
+$openingHours = ['Mo-Fr 09:00-18:00'];
+$sameAs = [
+    'https://www.facebook.com/yourpage',
+    'https://www.instagram.com/yourprofile'
+];
+
+$ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'LocalBusiness',
+    'name' => $name,
+    'description' => $description,
+    'url' => $pageUrl,
+    'telephone' => $telephone,
+    'image' => $image,
+    'priceRange' => '€€',
+    'address' => [
+        '@type' => 'PostalAddress',
+        'streetAddress' => $street,
+        'addressLocality' => $city,
+        'postalCode' => $postal,
+        'addressCountry' => $country
+    ],
+    'geo' => [
+        '@type' => 'GeoCoordinates',
+        'latitude' => $latitude,
+        'longitude' => $longitude
+    ],
+    'openingHours' => $openingHours,
+    'sameAs' => $sameAs,
+    'inLanguage' => getCurrentLanguage()
+];
+?>
+<script type="application/ld+json">
+<?php echo json_encode($ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); ?>
+</script>
 <body>
     <?php include '_includes/navigation.php'; ?>
     <!-- Secció Hero - Sobre Mi -->

@@ -34,7 +34,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 	</style>
 </head>
 <body>
-	<?php include __DIR__ . '/../includes/sidebar.php'; ?>
+	<?php include 'sidebar.php'; ?>
 
 	<div class="main-content">
 		<header class="top-bar">
@@ -147,4 +147,3 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 	</script>
 </body>
 </html>
-
