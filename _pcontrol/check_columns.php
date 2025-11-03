@@ -3,7 +3,6 @@ require_once '../classes/connexio.php';
 
 $conn = Connexio::getInstance()->getConnexio();
 $stmt = $conn->query('DESCRIBE blog_entrades');
-
 echo "<h2>Columnes de blog_entrades:</h2>";
 echo "<pre>";
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
 <?php
 /**
  * Generar Factura PDF

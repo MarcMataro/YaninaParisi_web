@@ -211,6 +211,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete_directorio') {
     <link rel="stylesheet" href="css/offpage.css">
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
 <?php include 'includes/sidebar.php'; ?>
 <div class="main-content">
     <header class="top-bar">

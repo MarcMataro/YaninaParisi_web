@@ -319,6 +319,8 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
     <link rel="stylesheet" href="css/configuracion-psicologa.css">
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <?php 
     include 'includes/sidebar.php'; 
     // Flash messages: map common GET params to human messages and show once.

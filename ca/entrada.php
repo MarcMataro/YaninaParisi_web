@@ -85,6 +85,8 @@ if (!empty($entrada['id_autor'])) {
     <title><?php echo htmlspecialchars($entrada['meta_title_ca'] ?? $entrada['titol_ca'] ?? 'Entrada'); ?> | Yanina Parisi</title>
     <meta name="description" content="<?php echo htmlspecialchars($entrada['meta_description_ca'] ?? strip_tags($entrada['resum_ca'] ?? '')); ?>">
     <link rel="stylesheet" href="../css/estils.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
 </head>
 <body>
     <?php include '_includes/navigation.php'; ?>

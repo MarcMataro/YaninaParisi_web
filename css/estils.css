@@ -175,6 +175,53 @@ header.scrolled {
     box-shadow: var(--shadow);
 }
 
+/* Mobile-first responsive rules for blog page */
+.blog-main{
+    max-width:900px;
+    margin:0 auto 48px auto;
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    box-sizing:border-box;
+}
+.blog-row{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-bottom:24px;
+    align-items:flex-start;
+}
+.blog-content{
+    width:100%;
+    box-sizing:border-box;
+}
+.blog-col{
+    width:100%;
+    box-sizing:border-box;
+}
+.blog-aside{
+    width:100%;
+    background:#f7f7f7;
+    border-radius:8px;
+    padding:16px;
+    min-height:auto;
+    box-sizing:border-box;
+}
+
+/* On narrow screens, show filters/aside before the main content so users can filter first */
+.blog-aside{order:-1}
+.entrada-thumb{margin-bottom:12px}
+.entrada-thumb-img{display:block;width:100%;height:auto;border-radius:8px;object-fit:cover}
+
+/* Desktop / wider screens: switch to multi-column */
+@media (min-width:800px){
+    .blog-main{padding:32px;margin-bottom:60px}
+    .blog-row{flex-direction:row;gap:32px;margin-bottom:32px}
+    .blog-content{flex:0 0 80%}
+    .blog-aside{flex:0 0 20%;width:auto;min-height:220px;order:0}
+    .blog-col{flex:1}
+}
+
 /* Millores visuals per als enllaços quan es fa scroll */
 header.scrolled nav ul li a {
     color: var(--color-text);
@@ -436,12 +483,20 @@ nav ul li a:hover {
    Accessible, compact, responsive. Use render_breadcrumbs() helper to output markup.
 */
 .breadcrumbs {
-    margin: 18px 0;
+     /* Center breadcrumbs consistently across pages.
+         Keep them visually aligned with the main content (900px wide typical)
+         while remaining responsive on small screens. */
+     margin: 12px auto;
     font-size: 0.95rem;
     color: var(--color-text);
+    display: flex;
+    justify-content: center; /* center within available container */
+    max-width: 900px; /* match blog/entrada visual width */
+    padding: 0 16px; /* small horizontal gutter on narrow screens */
 }
 .breadcrumbs ol {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: .4rem;
     align-items: center;
@@ -489,6 +544,42 @@ nav ul li a:hover {
 @media (max-width: 640px) {
     .breadcrumbs { font-size: 0.88rem; }
     .breadcrumbs ol li + li::before { margin: 0 .25rem; }
+    .breadcrumbs { max-width: 100%; padding: 0 12px; }
+}
+
+/* Ensure a consistent vertical gap between the bottom of any "*-hero" section
+   and the breadcrumbs that follow. Many entry templates use an "entry-hero"
+   which already provides a 32px bottom margin; normalize other hero types
+   so the visual distance to the breadcrumbs is identical. */
+/* Make the distance from the bottom of any hero to the breadcrumb row
+   consistent by normalizing the top spacing of the container that follows
+   the hero. Strategy:
+   - Ensure the element immediately after a hero has no external top margin.
+   - Force that following <main> to have a 32px padding-top (the canonical gap).
+   - Remove extra margin on the breadcrumbs themselves so the gap is driven by
+     the container padding (consistent across pages). */
+[class$="-hero"] + *,
+.hero + * {
+    margin-top: 0 !important;
+}
+
+/* If the following element is a <main>, use padding-top to define the gap */
+[class$="-hero"] + main,
+.hero + main {
+    padding-top: 16px !important; /* canonical gap (reduced for tighter alignment) */
+}
+
+[class$="-hero"] + main .breadcrumbs,
+.hero + main .breadcrumbs {
+    margin-top: 0 !important; /* breadcrumbs sit at the top of the padded main */
+}
+
+/* When the breadcrumbs element itself is the immediate sibling of a hero,
+   it needs its own top margin — undo the generic "zero sibling margin"
+   rule only for .breadcrumbs so it sits separated from the hero. */
+[class$="-hero"] + .breadcrumbs,
+.hero + .breadcrumbs {
+    margin-top: 16px !important;
 }
 
 /* Entry hero defaults (used by entry templates) */
@@ -1630,9 +1721,10 @@ footer {
     margin-bottom: 10px;
 }
 
-.footer-grid {
+    .footer-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* show 5 columns instead of 4 to match number of .footer-column elements */
+    grid-template-columns: repeat(5, 1fr);
     gap: 40px;
     margin-bottom: 40px;
 }

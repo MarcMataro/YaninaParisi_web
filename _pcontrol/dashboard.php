@@ -138,6 +138,8 @@ $properesSessions = $properes->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="css/dashboard-calendar.css?v=<?php echo time(); ?>">
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->

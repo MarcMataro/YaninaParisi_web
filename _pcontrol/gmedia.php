@@ -483,6 +483,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     </style>
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <?php include __DIR__ . '/includes/sidebar.php'; ?>
 
     <div class="main-content">

@@ -189,6 +189,8 @@ $tarifes = $model->listar($filters, 500, 0);
     </style>
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <?php include 'includes/sidebar.php'; ?>
 
     <div class="main-content">

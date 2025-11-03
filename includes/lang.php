@@ -4,249 +4,31 @@
 
 $translations = array(
     'ca' => array(
-        // Meta etiquetes SEO
-        'meta_title' => 'Yanina Parisi - Psicologia a Girona | Teràpia Individual i de Parella',
-        'meta_description' => 'Psicòloga col·legiada a Girona amb més de 10 anys d\'experiència. Teràpia individual, de parella, familiar i infantil. Primera consulta gratuïta. Reserves online.',
-        'meta_keywords' => 'psicòloga Girona, teràpia individual, teràpia de parella, psicologia infantil, teràpia online, Yanina Parisi, psicòloga col·legiada, benestar mental',
-        'meta_author' => 'Yanina Parisi',
-        'meta_og_title' => 'Yanina Parisi - Psicòloga a Girona',
-        'meta_og_description' => 'Teràpia psicològica personalitzada. Ajudant-te a trobar el teu camí cap al benestar mental i emocional.',
-        'meta_og_site_name' => 'Psicologia Yanina Parisi',
-        
-        
-        // Especialitats
-        'specialty_anxiety' => 'Ansietat',
-        'specialty_depression' => 'Depressió',
-        'specialty_ocd' => 'TOC',
-        'specialty_grief' => 'Duel',
-        'specialty_selfesteem' => 'Autoestima',
-        'specialty_couple' => 'Teràpia de Parella',
-        
-        'hero_services_btn' => 'Els meus serveis',
-        'hero_contact_btn' => 'Contacta\'m',
-        
-        // Segona frase inspiradora
-        'quote2_text' => 'Recorda: sempre tens l\'última llibertat, la de triar la teva actitud. Triar demanar consell i acompanyament és el primer pas per transformar el teu destí.',
-        'quote2_author' => 'Yanina Parisi',
-        
-        // Testimonis
-        'testimonials_title' => 'Testimonis',
-        'testimonials_subtitle' => 'El que diuen els meus pacients',
-        'testimonial1_text' => 'La Yanina m\'ha ajudat a superar la meva ansietat com mai havia imaginat. Les seves tècniques i suport em van donar les eines necessàries per afrontar les meves pors.',
-        'testimonial1_author' => 'Laura G.',
-        'testimonial1_since' => 'Pacient des de 2021',
-        'testimonial2_text' => 'Després de poc més de sis mesos de teràpia de parella, la nostra relació ha millorat dràsticament. Gràcies a la Yanina per ensenyar-nos a comunicar-nos millor.',
-        'testimonial2_author' => 'Marc i Elena',
-        'testimonial2_since' => 'Pacients des de 2022',
-        
-        // Tarifes
-        'pricing_title' => 'Tarifes',
-        'pricing_subtitle' => 'Escull el pla que millor s\'adapti a les teves necessitats',
-        
-        // Primera sessió gratuïta
-        'pricing_first_title' => 'Primera sessió',
-        'pricing_free' => 'GRATUÏTA',
-        'pricing_first_note' => 'Sessió de valoració sense compromís',
-        'pricing_first_feature1' => 'Sessió de 45 minuts',
-        'pricing_first_feature2' => 'Coneix el meu enfocament',
-        'pricing_first_feature3' => 'Sense cap compromís',
-        'pricing_first_feature4' => 'Valoració personalitzada',
-        
-        // Tarifes individuals
-        'pricing_individual_title' => 'Sessió Individual',
-        'pricing_individual_feature1' => 'Sessió de 60 minuts',
-        'pricing_individual_feature2' => 'Atenció personalitzada',
-        'pricing_individual_feature3' => 'Flexibilitat d\'horaris',
-        'pricing_individual_feature4' => 'Seguiment continuat',
-        
-        'pricing_couple_title' => 'Teràpia de Parella',
-        'pricing_couple_feature1' => 'Sessió de 75 minuts',
-        'pricing_couple_feature2' => 'Ambdós membres inclosos',
-        'pricing_couple_feature3' => 'Tècniques especialitzades',
-        'pricing_couple_feature4' => 'Suport entre sessions',
-        
-        'pricing_biweekly_title' => 'Pack Quinzenal',
-        'pricing_biweekly_feature1' => '2 sessions al mes',
-        'pricing_biweekly_feature2' => '50€ per sessió de 60 min',
-        'pricing_biweekly_feature3' => 'Seguiment regular',
-        'pricing_biweekly_feature4' => 'Flexibilitat d\'horaris',
-        
-        'pricing_monthly_title' => 'Pack Mensual',
-        'pricing_monthly_feature1' => '4 sessions al mes',
-        'pricing_monthly_feature2' => '45€ per sessió de 60 min',
-        'pricing_monthly_feature3' => 'Estalvi del 25%',
-        'pricing_monthly_feature4' => 'Prioritat de reserva',
-        
-        'pricing_session' => '/sessió',
-        'pricing_month' => '/mes',
-        'pricing_btn' => 'Reservar cita',
-        
-        // Característiques tarifes
-        'feature_60min' => 'Sessió de 60 minuts',
-        'feature_75min' => 'Sessió de 75 minuts',
-        'feature_50min' => 'Sessió de 50 minuts',
-        'feature_4sessions' => '4 sessions individuals',
-        'feature_personalized' => 'Atenció personalitzada',
-        'feature_both_included' => 'Ambdós membres inclosos',
-        'feature_from_home' => 'Des de casa teva',
-        'feature_17_discount' => 'Estalvi del 17%',
-        'feature_flexible' => 'Flexibilitat d\'horaris',
-        'feature_specialized' => 'Tècniques especialitzades',
-        'feature_secure_platform' => 'Plataforma segura',
-        'feature_priority' => 'Prioritat de reserva',
-        'feature_free_first' => 'Primera consulta gratuïta',
-        'feature_support_sessions' => 'Suport entre sessions',
-        'feature_same_quality' => 'Mateixa qualitat',
-        'feature_email_support' => 'Suport via email',
-        
-        // Contacte
-        'contact_title' => 'Contacte',
-        'contact_subtitle' => 'No dubtis a posar-te en contacte amb mi',
-        'contact_address' => 'Adreça',
-        'contact_address_text' => 'Carrer de la Pau, 23, Girona',
-        'contact_phone' => 'Telèfon',
-        'contact_phone_text' => '+34 972 123 45 67',
-        'contact_email' => 'Email',
-        'contact_email_text' => 'yanina@psicologiayanina.com',
-        'contact_hours' => 'Horari',
-        'contact_hours_weekdays' => 'Dilluns a Divendres: 9:00 - 20:00',
-        'contact_hours_saturday' => 'Dissabte: 10:00 - 14:00',
-        'contact_name' => 'Nom',
-        'contact_name_placeholder' => 'El teu nom',
-        'contact_email_placeholder' => 'El teu email',
-        'contact_phone_placeholder' => 'El teu telèfon',
-        'contact_message' => 'Missatge',
-        'contact_message_placeholder' => 'Com et puc ajudar?',
-        'contact_send' => 'Enviar missatge',
-        'contact_submit' => 'Enviar missatge',
-        
-        // Footer
-        'footer_tagline' => 'Ajudant-te a trobar el teu camí cap al benestar mental i emocional.',
-        'footer_quick_links' => 'Enllaços ràpids',
-        'footer_services_title' => 'Serveis',
-        'footer_service1' => 'Salut Mental Adults',
-        'footer_service2' => 'Teràpia de Parella i Família',
-        'footer_service3' => 'Psicologia Judicial',
-        'footer_service4' => 'Acompanyament Cerca de Parella',
-        'footer_service5' => 'Psicologia Pericial',
-        'footer_social_title' => 'Xarxes socials',
-        'footer_copyright' => '© 2025 Psicologia Yanina. Tots els drets reservats.',
-        
-        // Pàgina Sobre Mi
-        'about_page_title' => 'Sobre',
-        'about_page_title_highlight' => 'mi',
-        'about_page_subtitle' => 'La meva trajectòria professional i personal',
-        'about_page_badge' => 'Psicòloga General Sanitària Col·legiada',
-        
-        'about_vocation_title' => 'Una Vocació Nascuda en Família',
-        'about_vocation_text' => 'La psicologia ha estat el fil conductor de la meva vida. Vaig créixer en una família de psicòlegs i psicoanalistes argentins, on les converses sobre la ment humana i la complexitat de les relacions no eren només temes de professió, sinó part de la vida quotidiana. Aquest entorn únic va despertar en mi una vocació primerenca i una mirada particular: atenta, sensible i profundament curiosa cap a l\'ésser humà.',
-        
-        'about_journey_title' => 'La Meva Trajectòria i Compromís Professional',
-        'about_credential1_title' => 'Psicòloga General Sanitària',
-        'about_credential1_desc' => 'Col·legiada amb més d\'una dècada d\'experiència',
-        'about_credential2_title' => 'Perita Judicial',
-        'about_credential2_desc' => 'Especialitzada en casos de família i custòdia',
-        'about_credential3_title' => 'Mediadora Familiar',
-        'about_credential3_desc' => 'Facilitant la resolució de conflictes familiars',
-        'about_credential4_title' => 'Coach Certificada',
-        'about_credential4_desc' => 'Acompanyant processos de canvi i creixement personal',
-        'about_journey_desc' => 'Amb més d\'una dècada d\'experiència, he consolidat una pràctica que em permet acompanyar a persones en els seus processos de canvi des del rigor i l\'empatia. Atenc online a tota Espanya i de forma presencial a Girona.',
-        
-        'about_pillars_title' => 'Els Meus Pilars Fonamentals',
-        'about_pillar1_title' => 'Teràpia de Parella',
-        'about_pillar1_desc' => 'Ajudar a les parelles a superar crisis o a construir una relació estable i significativa des de l\'inici.',
-        'about_pillar2_title' => 'Teràpia Individual',
-        'about_pillar2_desc' => 'Acompanyar a individus que busquen superar el malestar i reconnectar amb el seu benestar.',
-        
-        'about_unique_title' => 'Un Servei Únic: Cerca de Parella Conscient',
-        'about_unique_desc' => 'Fruit de la meva especialització, ofereixo un servei distintiu de cerca de parella basat en criteris psicològics. Aquest enfocament va més enllà de les aplicacions de cites convencionals. Es tracta d\'un procés guiat on la prioritat és la compatibilitat real i la construcció de vincles autèntics, evitant la saturació i la desmotivació de les cites sense rumb.',
-        
-        'about_specialization_title' => 'Àmbits d\'Especialització',
-        'about_specialization_intro' => 'El meu treball s\'estén també a l\'àmbit jurídic, exercint com:',
-        'about_spec1_title' => 'Perita Psicòloga Judicial',
-        'about_spec1_desc' => 'Elaboro informes pericials per a casos de família, custòdia i violència filio-parental.',
-        'about_spec2_title' => 'Mediadora Familiar',
-        'about_spec2_desc' => 'Facilito la resolució de conflictes familiars en un marc de diàleg i respecte mutu.',
-        
-        'about_approach_title' => 'El Meu Enfocament Terapèutic: Integrador i Personalitzat',
-        'about_approach_desc' => 'No crec en les solucions úniques. Per això, integro diverses corrents com la psicoanàlisi, la teràpia cognitiu-conductual (TCC), la teràpia humanista i la Teràpia d\'Acceptació i Compromís (ACT). Aquesta flexibilitat em permet adaptar cada intervenció a la singularitat de la persona, oferint un abordatge a mida de les seves necessitats.',
-        'about_therapy1' => 'Psicoanàlisi',
-        'about_therapy2' => 'TCC',
-        'about_therapy3' => 'Teràpia Humanista',
-        'about_therapy4' => 'ACT',
-        
-        'about_heart_title' => 'El Cor de la Meva Pràctica',
-        'about_heart_desc1' => 'Considero que qui fa el pas d\'iniciar una teràpia són extraordinàriament valents. El meu compromís és correspondre a aquesta valentia amb un espai segur, de confiança i absolutament confidencial, on et sentiràs escoltat i comprès sense judicis.',
-        'about_specialties_title' => 'Especialitats Clíniques',
-        'about_specialty1' => 'Ansietat',
-        'about_specialty2' => 'Depressió',
-        'about_specialty3' => 'Dol',
-        'about_specialty4' => 'TOC',
-        'about_specialty5' => 'Problemes d\'autoestima',
-        'about_specialty6' => 'Crisis vitals',
-        'about_heart_desc2' => 'Estic convençuda que tota crisi, per dolorosa que sigui, tanca una oportunitat de transformació. El meu objectiu no és només alleujar el patiment, sinó dotar-te de perspectives renovades i eines pràctiques perquè puguis reconstruir la teva vida d\'una manera més conscient, lliure i plena.',
-        
-        'about_beyond_title' => 'Més Enllà de la Consulta',
-        'about_beyond_desc' => 'Crec fermament en fer la psicologia accessible. Per això, complemento la meva labor clínica amb la divulgació, escrivint articles en mitjans especialitzats i creant contingut de valor a xarxes socials. El meu objectiu és apropar recursos útils i una mirada comprensiva de la salut mental a un públic ampli.',
-        'about_activity1' => 'Articles especialitzats',
-        'about_activity2' => 'Contingut a xarxes socials',
-        'about_activity3' => 'Divulgació en salut mental',
-        
-        'about_cta_title' => 'Comença el teu Procés de Transformació',
-        'about_cta_desc' => 'Si sents que és el moment de fer un canvi en la teva vida, estic aquí per acompanyar-te en aquest viatge de descobriment i creixement personal.',
-        'about_cta_btn1' => 'Reserva la teva Cita',
-        'about_cta_btn2' => 'Veure Serveis',
-        
-        // Secció Sobre Mi - Index
-        'about_main_title' => 'Psicologia pràctica per al teu benestar',
-        'about_main_intro' => 'Sóc Yanina Parisi, psicòloga general sanitària col·legiada amb més de cinc anys d\'experiència. El meu objectiu és oferir-te un espai segur on puguis superar el malestar i construir la vida que vols, ja sigui recuperant el teu equilibri emocional o trobant una parella realment compatible.',
-        'about_services_title' => 'Com treballo?',
-        'about_service1_title' => 'Teràpia individual:',
-        'about_service1_desc' => 'Especialitzada en ansietat, depressió, TOC i crisis vitals. Junts, trobarem les eines perquè recuperis el control.',
-        'about_service2_title' => 'Teràpia de parella:',
-        'about_service2_desc' => 'Gestionem conflictes i millorem la comunicació per enfortir el vostre vincle.',
-        'about_service3_title' => 'Cerca de parella conscient:',
-        'about_service3_desc' => 'Un servei únic basat en criteris psicològics per a qui busca relacions estables i de qualitat, lluny del desgast de les apps convencionals.',
-        'about_btn_primary' => 'Reserva la teva primera sessió',
-        'about_btn_secondary' => 'Descobreix el meu mètode',
-        
-        // Blog Hero
-        'blog_hero_title' => 'Blog',
-        'blog_hero_subtitle' => 'Descobreix reflexions, consells i recursos per al teu benestar emocional.',
-        'blog_no_entries' => 'No hi ha entrades publicades encara.',
-        'blog_read_more' => 'Llegir més',
-        'blog_latest_title' => 'Últimes publicacions',
+
+        // Navegació
+        'nav_home' => 'Inici',
+        'nav_services' => 'Clínica',
+        'nav_about' => 'Sobre mi',
+        'nav_testimonials' => 'Testimonis',
+        'nav_blog' => 'Blog',
+        'nav_faq' => 'Preguntes freqüents',
+        'nav_couple_search' => 'Les dues ànimes',
+        'nav_contact' => 'Contacte',
+        'nav_appointment' => 'Demana una cita',
+
     ),
     
     'es' => array(
-        // Meta etiquetas SEO
-        'meta_title' => 'Yanina Parisi - Psicología en Girona | Terapia Individual y de Pareja',
-        'meta_description' => 'Psicóloga colegiada en Girona con más de 10 años de experiencia. Terapia individual, de pareja, familiar e infantil. Primera consulta gratuita. Reservas online.',
-        'meta_keywords' => 'psicóloga Girona, terapia individual, terapia de pareja, psicología infantil, terapia online, Yanina Parisi, psicóloga colegiada, bienestar mental',
-        'meta_author' => 'Yanina Parisi',
-        'meta_og_title' => 'Yanina Parisi - Psicóloga en Girona',
-        'meta_og_description' => 'Terapia psicológica personalizada. Ayudándote a encontrar tu camino hacia el bienestar mental y emocional.',
-        'meta_og_site_name' => 'Psicología Yanina Parisi',
-        
         // Navegación
         'nav_home' => 'Inicio',
         'nav_services' => 'Clínica',
         'nav_about' => 'Sobre mí',
         'nav_testimonials' => 'Testimonios',
         'nav_blog' => 'Blog',
+    'nav_faq' => 'Preguntas frecuentes',
         'nav_couple_search' => 'Dos almas',
         'nav_contact' => 'Contacto',
         'nav_appointment' => 'Pide una cita',
-        
-        // Hero
-        'hero_title' => 'Psicóloga',
-        'hero_name' => 'Yanina Parisi',
-        'hero_subtitle' => 'Terapia profesional online y presencial en Girona',
-        'hero_badge' => 'Psicóloga General Sanitaria Colegiada',
-        'hero_description' => 'Más de <strong>5 años de experiencia</strong> ayudando a personas de todas las edades. Atiendo <strong>online en toda España</strong> y <strong>presencial en Girona</strong>, adaptando cada terapia a tus necesidades individuales.',
-        'hero_btn_primary' => 'Solicita tu primera consulta',
-        'hero_btn_secondary' => 'Conoce mis servicios',
-        'hero_quote' => 'El primer paso hacia el cambio es atreverse a pedir ayuda. Te acompaño en este camino.',
         
         // Especialidades
         'specialty_anxiety' => 'Ansiedad',

@@ -162,6 +162,11 @@ body {
     z-index: 100;
 }
 
+/* Espai entre la top-bar i el contingut principal (aplica quan .top-bar va seguit directament de .content-wrapper) */
+.top-bar + .content-wrapper {
+    margin-top: 18px;
+}
+
 .top-bar-left {
     display: flex;
     align-items: center;

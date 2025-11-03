@@ -34,6 +34,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
 </head>
 <body>
     <?php include '_includes/navigation.php'; ?>
@@ -45,6 +47,15 @@
         </div>
     </section>
     <main>
+        <?php
+            // Breadcrumbs: Home > Dos ànimes (CAT)
+            if (function_exists('render_breadcrumbs')) {
+                render_breadcrumbs([
+                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+                    ['label' => t('nav_couple_search')]
+                ]);
+            }
+        ?>
         <!-- Intro del servei: Love Match -->
         <section class="service-intro">
             <div class="container">

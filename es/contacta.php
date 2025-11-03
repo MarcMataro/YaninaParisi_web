@@ -17,6 +17,8 @@ if (isset($_GET['lang'])) {
 }
 // Incluir sistema de traducción
 include '../includes/lang.php';
+// Asegurar helpers disponibles
+include '../includes/functions.php';
 
 // Procesar el formulario si se ha enviado
 $message_sent = false;
@@ -48,6 +50,8 @@ if ($_POST) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
     <link rel="stylesheet" href="../css/estils.css">
     <link rel="stylesheet" href="../css/contacte.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -66,6 +70,16 @@ if ($_POST) {
             </div>
         </div>
     </section>
+
+    <!-- Breadcrumbs: Home > Contact -->
+    <?php
+        if (function_exists('render_breadcrumbs')) {
+            render_breadcrumbs([
+                ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                ['label' => t('nav_contact')]
+            ]);
+        }
+    ?>
 
     <!-- Main Content -->
     <section class="contact-main">

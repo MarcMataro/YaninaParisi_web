@@ -1,5 +1,6 @@
 <?php
     // Funció per obtenir el idioma actual
+    if (!function_exists('getCurrentLanguage')) {
     function getCurrentLanguage() {
         // Primer mirar si està a la sessió
         if (isset($_SESSION['language']) && in_array($_SESSION['language'], array('ca', 'es'))) {
@@ -19,15 +20,19 @@
         $_SESSION['language'] = 'es';
         return 'es';
     }
+    }
 
     // Funció per canviar idioma
+    if (!function_exists('setLanguage')) {
     function setLanguage($lang) {
         if (in_array($lang, array('ca', 'es'))) {
             $_SESSION['language'] = $lang;
         }
     }
+    }
 
     // Funció per obtenir traducció
+    if (!function_exists('t')) {
     function t($key) {
         global $translations;
         $lang = getCurrentLanguage();
@@ -38,6 +43,7 @@
         
         // Si no encuentra la traducción, devuelve la clave
         return $key;
+    }
     }
 
     /**
@@ -144,12 +150,20 @@
                         'ca' => [
                             'nav_home' => 'Inici',
                             'nav_blog' => 'Blog',
-                            'nav_contact' => 'Contacte'
+                            'nav_contact' => 'Contacte',
+                            'nav_services' => 'Clínica',
+                            'nav_about' => 'Sobre mi',
+                            'nav_couple_search' => 'Les dues ànimes',
+                            'nav_appointment' => 'Demana una cita'
                         ],
                         'es' => [
                             'nav_home' => 'Inicio',
                             'nav_blog' => 'Blog',
-                            'nav_contact' => 'Contacto'
+                            'nav_contact' => 'Contacto',
+                            'nav_services' => 'Clínica',
+                            'nav_about' => 'Sobre mí',
+                            'nav_couple_search' => 'Dos almas',
+                            'nav_appointment' => 'Pide una cita'
                         ]
                     ];
                     if (isset($defaults[$lang][$label])) {

@@ -1308,6 +1308,55 @@
                     ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
                 </pre>
             </div>
+            <p>Gestió de les FAQ</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> faqs (
+                        id_faq <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        
+                        -- 1. PREGUNTA I RESPOSTA BILINGÜE
+                        pregunta_ca <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        pregunta_es <span class="keyword">VARCHAR</span>(255) <span class="keyword">NOT NULL</span>,
+                        resposta_ca <span class="keyword">TEXT NOT NULL</span>,
+                        resposta_es <span class="keyword">TEXT NOT NULL</span>,
+
+                        -- 2. CATEGORIA I ORGANITZACIÓ
+                        categoria <span class="keyword">ENUM</span>('general', 'terapia', 'tarifes', 'tecnica', 'primera_visita', 'urgencies') <span class="keyword">DEFAULT</span> 'general',
+                        ordre <span class="keyword">INT DEFAULT</span> 0 COMMENT 'Ordre dins de la categoria',
+
+                        -- 3. ESTAT I VISIBILITAT
+                        activa <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        destacada <span class="keyword">BOOLEAN DEFAULT FALSE</span> COMMENT 'Si apareix a la pàgina principal',
+
+                        -- 4. SEO PER A CADA FAQ
+                        meta_title_ca <span class="keyword">VARCHAR</span>(60),
+                        meta_title_es <span class="keyword">VARCHAR</span>(60),
+                        meta_description_ca <span class="keyword">VARCHAR</span>(160),
+                        meta_description_es <span class="keyword">VARCHAR</span>(160),
+                        slug_ca <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE</span>,
+                        slug_es <span class="keyword">VARCHAR</span>(120) <span class="keyword">UNIQUE</span>,
+
+                        -- 5. ESTADÍSTIQUES
+                        vegades_visualitzada <span class="keyword">INT DEFAULT</span> 0,
+                        vegades_util <span class="keyword">INT DEFAULT</span> 0 COMMENT 'Quant han dit que els ha estat útil',
+                        
+                        -- 6. DATES DEL SISTEMA
+                        data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+
+                        -- ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_categoria (categoria),
+                        <span class="keyword">INDEX</span> idx_activ (activa),
+                        <span class="keyword">INDEX</span> idx_destacada (destacada),
+                        <span class="keyword">INDEX</span> idx_ordre (ordre),
+                        <span class="keyword">INDEX</span> idx_slug_ca (slug_ca),
+                        <span class="keyword">INDEX</span> idx_slug_es (slug_es)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-table"></i>

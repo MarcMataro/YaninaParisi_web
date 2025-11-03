@@ -27,6 +27,20 @@
                     </ul>
                 </div>
                 <div class="footer-column">
+                    <h3>FAQ</h3>
+                    <ul>
+                        <li><a href="faq.php">Preguntes freqüents</a></li>
+                    </ul>
+                    <br />
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Política de privacitat</a></li>
+                        <li><a href="#">Termes i condicions</a></li>
+                        <li><a href="#">Avís legal</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
                     <h3>Xarxes socials</h3>
                     <ul>
                         <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>

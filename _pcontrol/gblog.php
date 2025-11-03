@@ -528,6 +528,8 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
     <script src="https://cdn.tiny.cloud/1/ds0tgp458zh4vbyxcyhq2bgbf9wnk8sj1k8874ohwvqpmn39/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->

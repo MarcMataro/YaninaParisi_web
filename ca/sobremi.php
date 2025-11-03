@@ -55,6 +55,8 @@ include '../includes/functions.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
 </head>
 <?php
 // JSON-LD LocalBusiness snippet for SEO (modify NAP, coords, socials below)
@@ -118,6 +120,15 @@ $ld = [
         </div>
     </section>
     <main>
+        <?php
+            // Breadcrumbs: Home > Sobre mi (CAT)
+            if (function_exists('render_breadcrumbs')) {
+                render_breadcrumbs([
+                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+                    ['label' => t('nav_about')]
+                ]);
+            }
+        ?>
         <section class="about-main spectacular">
             <div class="container">
                 <p class="about-intro">Hola, soc <strong>Yanina Parisi</strong>. La meva història no és només la d’una psicòloga; és la d’algú que va néixer i créixer entenent el llenguatge de l’ànima humana. En el si d’una família de psicòlegs i psicoanalistes a l’Argentina, vaig créixer entre converses que desxifraven la complexitat de la ment. Aquesta herència no va ser només una professió, sinó una vocació: la de mirar el món amb sensibilitat i la ferma convicció que tothom mereix una vida plena.</p>

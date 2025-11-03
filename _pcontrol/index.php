@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/Logo32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/Logo16.png">
     <div class="login-container">
         <div class="login-header">
             <img src="../img/Logo.png" alt="Yanina Parisi" class="login-logo">
