@@ -15,6 +15,7 @@ $translations = array(
         'nav_couple_search' => 'Les dues ànimes',
         'nav_contact' => 'Contacte',
         'nav_appointment' => 'Demana una cita',
+        'nav_privacy' => 'Política de privacitat',
 
     ),
     
@@ -25,10 +26,11 @@ $translations = array(
         'nav_about' => 'Sobre mí',
         'nav_testimonials' => 'Testimonios',
         'nav_blog' => 'Blog',
-    'nav_faq' => 'Preguntas frecuentes',
+        'nav_faq' => 'Preguntas frecuentes',
         'nav_couple_search' => 'Dos almas',
         'nav_contact' => 'Contacto',
         'nav_appointment' => 'Pide una cita',
+        'nav_privacy' => 'Política de privacidad',
         
         // Especialidades
         'specialty_anxiety' => 'Ansiedad',

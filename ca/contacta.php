@@ -103,11 +103,23 @@ if ($_POST) {
             <div class="contact-grid">
                 <div class="contact-form-section" id="contact-form">
                     <div class="form-header">
-                        <h2>Demana'm cita</h2>
-                        <p>Completa el formulari per contactar.</p>
+                            <h2>Demana'm cita</h2>
+                            <p>Completa el formulari per contactar. Pots triar data i hora directament des del calendari.</p>
+                            <!-- Booking calendar -->
+                            <div id="booking-calendar" class="booking-calendar" aria-label="Calendari de reserves">
+                                <div class="cal-header">
+                                    <button type="button" class="cal-prev" aria-label="Mes anterior">‹</button>
+                                    <div class="cal-title" aria-live="polite"></div>
+                                    <button type="button" class="cal-next" aria-label="Següent mes">›</button>
+                                </div>
+                                <div class="cal-grid">
+                                    <!-- Days of week -->
+                                </div>
+                            </div>
                     </div>
                     
                     <form class="contact-form" method="POST" action="">
+                        <input type="hidden" id="appointment" name="appointment" value="">
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">
@@ -261,6 +273,206 @@ if ($_POST) {
                         navMenu.classList.remove('show');
                     }
                 });
+
+                /* Simple calendar renderer */
+                (function(){
+                    const calendar = document.getElementById('booking-calendar');
+                    if (!calendar) return;
+
+                    const title = calendar.querySelector('.cal-title');
+                    const grid = calendar.querySelector('.cal-grid');
+                    const prev = calendar.querySelector('.cal-prev');
+                    const next = calendar.querySelector('.cal-next');
+
+                    const dow = ['Dl','Dm','Dc','Dj','Dv','Ds','Dg'];
+                    const today = new Date();
+                    let viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+                    /**
+                     * Render the calendar grid for the currently selected month (viewDate).
+                     * - Writes month title
+                     * - Draws day-of-week headers
+                     * - Appends day buttons (disables past days)
+                     *
+                     * This function is intentionally light-weight and purely DOM-focused.
+                     */
+                    function render(){
+                        title.textContent = viewDate.toLocaleString(getCurrentLanguage() === 'ca' ? 'ca-ES' : 'es-ES', { month:'long', year:'numeric' });
+                        grid.innerHTML = '';
+                        // headers
+                        dow.forEach(d=>{ const el=document.createElement('div'); el.className='dow'; el.textContent=d; grid.appendChild(el); });
+
+                        const firstDow = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
+                        // normalize Sunday(0) to 6, Monday should be 0 -> adjust if week starts Monday
+                        const startOffset = (firstDow + 6) % 7;
+
+                        // blanks
+                        for(let i=0;i<startOffset;i++){ const empty=document.createElement('div'); empty.className='day empty'; grid.appendChild(empty); }
+
+                        const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth()+1,0).getDate();
+                        for(let d=1; d<=daysInMonth; d++){
+                            const dt = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
+                            const el = document.createElement('button'); el.type='button'; el.className='day';
+                            el.innerHTML = '<span class="date">'+d+'</span>';
+                            // disable past days
+                                if (dt < new Date(today.getFullYear(), today.getMonth(), today.getDate())){
+                                    el.classList.add('disabled');
+                                    el.disabled = true;
+                                }
+                                if (dt.toDateString() === today.toDateString()) el.classList.add('today');
+                                el.addEventListener('click', function(){ onDayClick(dt, el); });
+                                grid.appendChild(el);
+                                // After appending, check if the day is fully booked and disable it if so
+                                if (!el.disabled) {
+                                    checkDayFullyBooked(dt, el);
+                                }
+                        }
+                    }
+
+                    /**
+                     * Convert a Date object to local YYYY-MM-DD string without timezone conversion
+                     */
+                    function toLocalISODate(date) {
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    }
+
+                    /**
+                     * Handle a user click on a calendar day.
+                     * - Fetches availability from the server for the selected date
+                     * - If the server returns slots, passes them to showTimesPanel()
+                     * - Falls back to a client-side slot list on network/error
+                     *
+                     * Inputs:
+                     *  - dateObj: JavaScript Date object for the clicked day
+                     *  - el: the DOM element for the day button (unused here but available)
+                     */
+                    function onDayClick(dateObj, el){
+                        // Fetch availability for this date from server
+                        const isoDate = toLocalISODate(dateObj);
+                        fetch('../api/get_availability.php?date=' + isoDate)
+                            .then(res => res.json())
+                            .then(json => {
+                                if (!json || !json.success) {
+                                    // fallback to client-side generation if API fails
+                                    const timesFallback = [];
+                                    for (let h = 9; h <= 20; h++) {
+                                        if (h === 13 || h === 14) continue;
+                                        timesFallback.push(String(h).padStart(2,'0')+':00');
+                                    }
+                                    showTimesPanel(dateObj, timesFallback);
+                                    return;
+                                }
+                        // json.slots is an array of {time, available}
+                        // json.sessions contains scheduled sessions with patient names
+                        showTimesPanel(dateObj, json.slots);
+                            })
+                            .catch(err => {
+                                console.error('Error fetching availability', err);
+                                // fallback
+                                const timesFallback = [];
+                                for (let h = 9; h <= 20; h++) {
+                                    if (h === 13 || h === 14) continue;
+                                    timesFallback.push(String(h).padStart(2,'0')+':00');
+                                }
+                                showTimesPanel(dateObj, timesFallback);
+                            });
+                    }
+
+                    /**
+                     * Display a modal-like times panel for the given date.
+                     * The `times` parameter may be an array of strings (['09:00', ...])
+                     * or an array of objects {time: 'HH:MM', available: bool} returned
+                     * by the API. Disabled/occupied slots are rendered with the
+                     * 'occupied' class and cannot be selected.
+                     *
+                     * On successful selection this sets the hidden #appointment input
+                     * to a 'YYYY-MM-DD HH:MM' value for server-side processing.
+                     */
+                    // Simple times panel (modal-like)
+                    function showTimesPanel(dateObj, times){
+                        let panel = document.getElementById('times-panel');
+                        if (!panel){
+                            panel = document.createElement('div'); panel.id='times-panel'; panel.className='times-panel';
+                            panel.innerHTML = '<button class="times-close" aria-label="Close">×</button><h4></h4><div class="times-list"></div>';
+                            document.body.appendChild(panel);
+                            panel.querySelector('.times-close').addEventListener('click', ()=>{ panel.style.display='none'; });
+                        }
+                        panel.querySelector('h4').textContent = dateObj.toLocaleDateString(getCurrentLanguage() === 'ca' ? 'ca-ES' : 'es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+                        const list = panel.querySelector('.times-list'); list.innerHTML='';
+                        // times may be array of strings or array of {time, available}
+                        times.forEach(t=>{
+                            const timeText = (typeof t === 'string') ? t : (t.time || '');
+                            const available = (typeof t === 'string') ? true : !!t.available;
+                            const btn = document.createElement('button'); btn.type='button'; btn.textContent = timeText;
+                            if (!available) {
+                                btn.classList.add('occupied');
+                                btn.disabled = true;
+                                btn.title = 'Hora ocupada';
+                            }
+                            list.appendChild(btn);
+
+                            btn.addEventListener('click', ()=>{
+                                if (!available) return;
+                                // set hidden input and close
+                                const iso = toLocalISODate(dateObj)+' '+timeText;
+                                const input = document.getElementById('appointment');
+                                if (input) input.value = iso;
+                                panel.style.display='none';
+                                // visually mark selected day
+                                document.querySelectorAll('#booking-calendar .day.selected').forEach(n=>n.classList.remove('selected'));
+                                // find the button that was clicked's day element and mark
+                                const allDays = document.querySelectorAll('#booking-calendar .day');
+                                allDays.forEach(node=>{
+                                    if (node.disabled) return;
+                                    if (node.querySelector('.date') && node.querySelector('.date').textContent == dateObj.getDate()){
+                                        node.classList.add('selected');
+                                    }
+                                });
+                                // scroll to form (small UX improvement)
+                                const form = document.querySelector('.contact-form'); if (form) form.scrollIntoView({behavior:'smooth', block:'center'});
+                            });
+                        });
+                        panel.style.display='block';
+                    }
+
+                    /**
+                     * Query the availability API for the provided date and update the
+                     * day element accordingly:
+                     *  - add 'has-sessions' class if there are sessions
+                     *  - disable the day if fully_booked === true
+                     */
+                    function checkDayFullyBooked(dateObj, dayEl){
+                        const isoDate = toLocalISODate(dateObj);
+                        fetch('../api/get_availability.php?date=' + isoDate)
+                            .then(res => res.json())
+                            .then(json => {
+                                if (!json || !json.success) return;
+                                // Mark days with sessions with a visual indicator
+                                if (json.session_count > 0) {
+                                    dayEl.classList.add('has-sessions');
+                                }
+                                if (json.fully_booked) {
+                                    dayEl.classList.add('fully-booked');
+                                    dayEl.disabled = true;
+                                    dayEl.title = 'Tot el dia està reservat';
+                                }
+                            })
+                            .catch(err => {
+                                // ignore errors silently
+                            });
+                    }
+
+                    prev.addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1,1); render(); });
+                    next.addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1,1); render(); });
+
+                    // small helper to expose language in JS
+                    function getCurrentLanguage(){ try{ return document.documentElement.lang || 'ca'; }catch(e){ return 'ca'; } }
+
+                    render();
+                })();
             }
         });
     </script>

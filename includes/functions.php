@@ -176,6 +176,19 @@
                 }
             }
 
+            // Decide whether this item is the 'home' breadcrumb so we can render an icon
+            $isHomeCrumb = false;
+            // If original item used the nav_home key
+            if (isset($it['label']) && $it['label'] === 'nav_home') {
+                $isHomeCrumb = true;
+            } else {
+                // Also accept common translated forms (Inici / Inicio / Home)
+                $label_check = is_string($label) ? trim($label) : '';
+                if (in_array($label_check, array('Inici', 'Inicio', 'Home', 'Inicio'))) {
+                    $isHomeCrumb = true;
+                }
+            }
+
             echo '<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" style="margin:0;">';
             if ($url && !$isLast) {
                 $abs = $normalize($url);
@@ -190,7 +203,12 @@
                 }
 
                 echo '<a href="' . htmlspecialchars($hrefOut) . '" itemprop="item" style="color:inherit;text-decoration:none;">';
-                echo '<span itemprop="name">' . $label . '</span>';
+                if ($isHomeCrumb) {
+                    // Home icon with screen-reader-only label
+                    echo '<span class="breadcrumb-home" itemprop="name"><i class="fas fa-home" aria-hidden="true"></i><span class="sr-only">' . htmlspecialchars($label) . '</span></span>';
+                } else {
+                    echo '<span itemprop="name">' . $label . '</span>';
+                }
                 echo '</a>';
                 echo '<meta itemprop="position" content="' . $position . '" />';
                 // Add to JSON-LD with absolute URL
@@ -203,7 +221,11 @@
             } else {
                 // Current item or no URL provided
                 echo '<span aria-current="page" itemprop="item">';
-                echo '<span itemprop="name">' . $label . '</span>';
+                if ($isHomeCrumb) {
+                    echo '<span class="breadcrumb-home" itemprop="name"><i class="fas fa-home" aria-hidden="true"></i><span class="sr-only">' . htmlspecialchars($label) . '</span></span>';
+                } else {
+                    echo '<span itemprop="name">' . $label . '</span>';
+                }
                 echo '</span>';
                 echo '<meta itemprop="position" content="' . $position . '" />';
                 $abs = $url ? $normalize($url) : null;

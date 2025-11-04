@@ -738,6 +738,140 @@ header.scrolled .lang-btn.active {
     transform: translateY(-3px);
 }
 
+/* Privacy policy content styles */
+.policy-content {
+    max-width: 900px;
+    margin: 24px auto 48px auto;
+    padding: 18px 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    color: var(--color-text);
+    line-height: 1.7;
+    font-size: 1rem;
+}
+.policy-content h2 {
+    font-size: 1.15rem;
+    color: var(--color-accent);
+    margin-top: 18px;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+.policy-content p, .policy-content li {
+    color: #333;
+    margin-bottom: 10px;
+}
+.policy-content ul {
+    margin-left: 18px;
+    margin-bottom: 12px;
+}
+
+@media print {
+    .policy-content { box-shadow: none; background: transparent; padding: 0; }
+}
+
+/* Cookie policy specific tweaks */
+.cookie-table-wrapper{overflow:auto;margin-top:12px}
+.cookie-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.95rem}
+.cookie-table th,.cookie-table td{padding:10px 12px;border:1px solid rgba(0,0,0,0.06);text-align:left}
+.cookie-table thead th{background:rgba(170,158,107,0.08);color:var(--color-dark);font-weight:700}
+.cookie-table tbody tr:nth-child(even){background:rgba(0,0,0,0.02)}
+.policy-content .lead{font-size:1.05rem;margin-bottom:12px;color:var(--color-dark)}
+.policy-content .last-updated{margin-top:18px;font-size:0.95rem;color:#666}
+
+@media (max-width:600px){
+    .policy-content{padding:14px}
+    .cookie-table th,.cookie-table td{padding:8px}
+}
+
+/* Utility: visually-hidden for accessible labels */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Simple booking calendar styles */
+.booking-calendar{
+    max-width:700px;
+    margin:14px 0 8px 0;
+    background: #fff;
+    border-radius:8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    padding:12px;
+}
+.booking-calendar .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.booking-calendar .cal-title{font-weight:700;color:var(--color-accent)}
+.booking-calendar .cal-prev,.booking-calendar .cal-next{background:transparent;border:0;font-size:1.4rem;cursor:pointer;color:var(--color-dark)}
+.booking-calendar .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.booking-calendar .cal-grid .dow{font-size:0.85rem;text-align:center;color:#666;padding:6px 4px}
+.booking-calendar .day{min-height:56px;padding:6px;border-radius:6px;background:transparent;border:1px solid transparent;text-align:left;cursor:pointer;transition:all 0.2s ease}
+.booking-calendar .day:hover:not(.disabled):not(.fully-booked){background:rgba(170,158,107,0.08);border-color:rgba(170,158,107,0.3)}
+.booking-calendar .day .date{display:block;font-weight:700}
+.booking-calendar .day.disabled{opacity:0.45;cursor:not-allowed}
+.booking-calendar .day.today{outline:2px solid rgba(170,158,107,0.25);background:rgba(170,158,107,0.05)}
+.booking-calendar .day.selected{background:var(--color-accent);color:#fff;border-color:var(--color-accent)}
+/* Days with sessions - subtle indicator */
+.booking-calendar .day.has-sessions{background:rgba(170,158,107,0.12);border-color:rgba(170,158,107,0.2)}
+.booking-calendar .day.has-sessions:hover:not(.disabled){background:rgba(170,158,107,0.18)}
+/* Fully booked days - clear visual feedback */
+.booking-calendar .day.fully-booked{opacity:0.5;cursor:not-allowed;background:#fef3f3;border-color:#f5c6c6;color:#999}
+
+/* small badge showing number of sessions on a day */
+.booking-calendar .day .count-badge{
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.08);
+    color: #222;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 999px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.4;
+    display: none;
+}
+
+/* Modal simple inline panel for times */
+.times-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2000;background:#fff;padding:18px;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.2);display:none;min-width:280px;max-width:90vw}
+.times-panel h4{margin:0 0 12px 0;font-size:1.1rem;color:var(--color-dark)}
+.times-panel .times-list{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.times-panel .times-list button{padding:10px 16px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:#fff;cursor:pointer;font-weight:500;transition:all 0.2s ease;min-width:75px}
+.times-panel .times-list button:hover:not([disabled]){background:var(--color-accent);color:#fff;border-color:var(--color-accent);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.times-panel .times-list button.disabled{opacity:0.5;cursor:not-allowed}
+/* Occupied time slots - clear red tint */
+.times-panel .times-list button.occupied{opacity:0.6;cursor:not-allowed;background:#fef3f3;border-color:#f5c6c6;color:#999;text-decoration:line-through}
+.times-panel .times-list button[disabled]{opacity:0.6;cursor:not-allowed}
+.times-panel .times-close{position:absolute;right:8px;top:8px;border:0;background:transparent;font-size:1.3rem;cursor:pointer;color:#999;transition:color 0.2s}
+.times-panel .times-close:hover{color:#333}
+
+/* Session info display in times panel */
+.times-panel .session-info{
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+    line-height: 1.3;
+}
+.times-panel .time-slot-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+@media (max-width:700px){
+    .booking-calendar{padding:8px}
+    .booking-calendar .day{min-height:48px}
+    .times-panel{width:90%;min-width:unset}
+}
+
 /* Secció Hero */
 .hero {
     position: relative;
@@ -784,6 +918,24 @@ header.scrolled .lang-btn.active {
     margin-top: 250px;
     position: relative;
     z-index: 2;
+}
+
+/* Specific hero sizing overrides for pages that should not be full-height
+   (match the contact page compact hero: smaller vertical padding and no 100vh) */
+.privacy-hero,
+.contact-hero {
+    padding: 140px 0 80px;
+    height: auto; /* don't force full viewport height */
+}
+
+.privacy-hero .hero-content,
+.contact-hero .contact-hero-content {
+    max-width: 800px;
+    margin: 0 auto; /* vertically center via padding instead of big margin-top */
+}
+
+.privacy-hero .hero-title {
+    font-size: 3.5rem; /* match contact hero sizing */
 }
 
 .hero h1 {

@@ -34,10 +34,10 @@
                     <br />
                     <h3>Legal</h3>
                     <ul>
-                        <li><a href="#">Política de privacidad</a></li>
-                        <li><a href="#">Términos y condiciones</a></li>
-                        <li><a href="#">Aviso legal</a></li>
-                        <li><a href="#">Cookies</a></li>
+                        <li><a href="privacy.php">Política de privacidad</a></li>
+                        <li><a href="terms.php">Términos y condiciones</a></li>
+                        <li><a href="legal.php">Aviso legal</a></li>
+                        <li><a href="cookies.php">Cookies</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
