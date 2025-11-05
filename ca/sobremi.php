@@ -124,7 +124,7 @@ $ld = [
             // Breadcrumbs: Home > Sobre mi (CAT)
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => t('nav_about')]
                 ]);
             }

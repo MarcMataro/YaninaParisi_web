@@ -51,7 +51,7 @@
             // Breadcrumbs: Home > Dos almas (ES)
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => t('nav_couple_search')]
                 ]);
             }

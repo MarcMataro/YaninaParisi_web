@@ -165,7 +165,7 @@ include '../includes/functions.php';
             <p class="hero-subtitle">Construye la vida que deseas. Tu cambio empieza aquí</p>
 
             <div class="hero-buttons">
-                <a href="#contacto" class="btn btn-primary">
+                <a href="contacto.php" class="btn btn-primary">
                     <i class="fas fa-calendar-check"></i>
                     ¡Primera consulta gratuita!
                 </a>
@@ -321,7 +321,7 @@ include '../includes/functions.php';
                     </div>
                     
                     <div class="about-actions">
-                        <a href="../contacta.php" class="btn btn-primary">
+                        <a href="contacta.php" class="btn btn-primary">
                             ¡Reserva tu primera consulta gratuita!
                         </a>
                     </div>
@@ -399,7 +399,7 @@ include '../includes/functions.php';
                             <li><i class="fas fa-check"></i> Conoce mi método</li>
                         </ul>
                     </div>
-                    <a href="#contacto" class="btn pricing-btn">¡Quiero empezar ahora!</a>
+                    <a href="contacta.php" class="btn pricing-btn">¡Quiero empezar ahora!</a>
                 </div>
 
                 <div class="pricing-card">
@@ -420,7 +420,7 @@ include '../includes/functions.php';
                             <li><i class="fas fa-check"></i> Seguimiento continuo</li>
                         </ul>
                     </div>
-                    <a href="#contacto" class="btn pricing-btn">Programa una sesión</a>
+                    <a href="contacta.php" class="btn pricing-btn">Programa una sesión</a>
                 </div>
                 <div class="pricing-card">
                     <div class="pricing-header">
@@ -440,7 +440,7 @@ include '../includes/functions.php';
                             <li><i class="fas fa-check"></i> Acompañamiento entre sesiones</li>
                         </ul>
                     </div>
-                    <a href="#contacte" class="btn pricing-btn">Programa una sesión</a>
+                    <a href="contacta.php" class="btn pricing-btn">Programa una sesión</a>
                 </div>
 
                 <div class="pricing-card">
@@ -461,7 +461,7 @@ include '../includes/functions.php';
                             <li><i class="fas fa-check"></i> Resultados optimizados</li>
                         </ul>
                     </div>
-                    <a href="#contacto" class="btn pricing-btn">Programa una sesión</a>
+                    <a href="contacta.php" class="btn pricing-btn">Programa una sesión</a>
                 </div>
             </div>
         </div>

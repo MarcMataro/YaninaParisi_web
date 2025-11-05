@@ -16,10 +16,16 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 	<link rel="stylesheet" href="../css/dashboard.css">
 	<link rel="stylesheet" href="../css/configuracion.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<!-- Load same webfont as dashboard for consistent typography -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 	<style>
+		/* Make docs typography match dashboard */
+		html, body { font-family: 'Libre Baskerville', serif; font-size:16px; }
 		/* Ajustes locales para la página de documentación */
 		.docs-hero { padding: 26px 22px; }
-		.docs-hero h1 { margin:0 0 8px 0; font-family: 'Libre Baskerville', serif; font-size:1.6rem; }
+		.docs-hero h1 { margin:0 0 8px 0; font-size:1.6rem; }
 		.docs-hero p.lead { color:var(--color-dark); margin-bottom:6px; font-style:normal; }
 		.docs-grid { display:flex; gap:24px; align-items:flex-start; }
 		.docs-index { flex:0 0 300px; max-width:300px; }
@@ -28,7 +34,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 		.docs-index a:hover { background: rgba(var(--color-light),0.18); color:var(--color-accent); }
 		.doc-body { flex:1 1 auto; }
 		.doc-body h2 { font-size:1.15rem; margin-top:18px; }
-		.doc-body p, .doc-body li { color:#333; font-size:0.98rem; line-height:1.7; }
+		.doc-body p, .doc-body li { color:#333; font-size:1rem; line-height:1.7; }
 		code { background:#f5f5f5; padding:2px 6px; border-radius:6px; }
 		@media (max-width:900px) { .docs-grid { flex-direction:column; } .docs-index { max-width:none; } }
 	</style>

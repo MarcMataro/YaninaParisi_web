@@ -213,6 +213,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;
+    vertical-align: middle; /* make cell content vertically centered (fix badge clipping) */
 }
 
 /* Anchos específicos para columnas */
@@ -229,7 +230,7 @@
 .patients-table th:nth-child(6),
 .patients-table td:nth-child(6) { width: 12%; text-align: center; overflow: visible; } /* Estado */
 .patients-table th:nth-child(7),
-.patients-table td:nth-child(7) { width: 11%; } /* Registro */
+.patients-table td:nth-child(7) { width: 11%; text-align: center; overflow: visible; } /* Verificada: allow badges to show fully */
 .patients-table th:nth-child(8),
 .patients-table td:nth-child(8) { width: 14%; text-align: center; } /* Acciones */
 
@@ -280,6 +281,20 @@
     position: static !important;
     float: none !important;
     margin: 0 auto !important;
+}
+
+/* Make badges inside the patients table behave like sessions badges */
+.patients-table .badge {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    min-width: 75px;
+    text-align: center;
+    display: inline-flex; /* center text vertically */
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    min-height: 24px;
 }
 
 /* Estados en español */

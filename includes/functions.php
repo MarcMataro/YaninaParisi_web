@@ -91,12 +91,12 @@
     /**
      * Render breadcrumbs (HTML) and emit JSON-LD BreadcrumbList for rich snippets.
      *
-     * Usage: provide an array of items where each item is [ 'label' => 'Home', 'url' => '/ca/home.php' ]
+    * Usage: provide an array of items where each item is [ 'label' => 'Home', 'url' => 'home.php' ]
      * The last item may omit 'url' or set it to null (current page).
      *
      * Example:
      *   render_breadcrumbs([
-     *     ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+    *     ['label' => t('nav_home'), 'url' => 'home.php'],
      *     ['label' => t('nav_blog'), 'url' => '/ca/blog.php'],
      *     ['label' => htmlspecialchars($post_title)],
      *   ]);
@@ -169,7 +169,7 @@
                     if (isset($defaults[$lang][$label])) {
                         $label = $defaults[$lang][$label];
                     } else {
-                        $label = $label; // leave as-is if no default
+                        // leave as-is if no default
                     }
                 } else {
                     $label = $translated;

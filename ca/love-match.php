@@ -51,7 +51,7 @@
             // Breadcrumbs: Home > Dos ànimes (CAT)
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => t('nav_couple_search')]
                 ]);
             }

@@ -15,3 +15,18 @@ RewriteRule ^es/([a-z0-9\-]+)$ es/entrada.php?slug=$1 [L,QSA]
 # (Opcional) Redirigir URLs amb trailing slash
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(ca|es)/([a-z0-9\-]+)/$ /$1/$2 [R=301,L]
+
+# Custom error documents
+ErrorDocument 400 /400.php
+ErrorDocument 401 /401.php
+ErrorDocument 402 /402.php
+ErrorDocument 403 /403.php
+ErrorDocument 404 /404.php
+ErrorDocument 405 /405.php
+
+# Server errors
+ErrorDocument 500 /500.php
+ErrorDocument 501 /501.php
+ErrorDocument 502 /502.php
+ErrorDocument 503 /503.php
+ErrorDocument 504 /504.php

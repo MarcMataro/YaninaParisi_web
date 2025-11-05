@@ -214,7 +214,7 @@ $lang = getCurrentLanguage();
             <p class="hero-subtitle">Construeix la vida que desitges. El teu canvi comença aquí</p>
 
             <div class="hero-buttons">
-                <a href="#contacte" class="btn btn-primary">
+                <a href="contacta.php" class="btn btn-primary">
                     <i class="fas fa-calendar-check"></i>
                     Primera consulta de franc!
                 </a>
@@ -370,7 +370,7 @@ $lang = getCurrentLanguage();
                     </div>
                     
                     <div class="about-actions">
-                        <a href="../contacta.php" class="btn btn-primary">
+                        <a href="contacta.php" class="btn btn-primary">
                             Reserva la teva primera consulta gratuïta!
                         </a>
                     </div>
@@ -447,7 +447,7 @@ $lang = getCurrentLanguage();
                             <li><i class="fas fa-check"></i> Coneix el meu mètode</li>
                         </ul>
                     </div>
-                    <a href="#contacte" class="btn pricing-btn">Vull començar ara!</a>
+                    <a href="contacta.php" class="btn pricing-btn">Vull començar ara!</a>
                 </div>
 
                 <div class="pricing-card">
@@ -468,7 +468,7 @@ $lang = getCurrentLanguage();
                             <li><i class="fas fa-check"></i> Seguiment continuat</li>
                         </ul>
                     </div>
-                    <a href="#contacte" class="btn pricing-btn">Programa una sessió</a>
+                    <a href="contacta.php" class="btn pricing-btn">Programa una sessió</a>
                 </div>
                 <div class="pricing-card">
                     <div class="pricing-header">
@@ -488,7 +488,7 @@ $lang = getCurrentLanguage();
                             <li><i class="fas fa-check"></i> Acompanyament entre sessions</li>
                         </ul>
                     </div>
-                    <a href="#contacte" class="btn pricing-btn">Programa una sessió</a>
+                    <a href="contacta.php" class="btn pricing-btn">Programa una sessió</a>
                 </div>
 
                 <div class="pricing-card">
@@ -509,7 +509,7 @@ $lang = getCurrentLanguage();
                             <li><i class="fas fa-check"></i> Resultats optimitzats</li>
                         </ul>
                     </div>
-                    <a href="#contacte" class="btn pricing-btn">Programa una sessió</a>
+                    <a href="contacta.php" class="btn pricing-btn">Programa una sessió</a>
                 </div>
             </div>
         </div>

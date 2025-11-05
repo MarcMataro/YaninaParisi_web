@@ -1,7 +1,7 @@
 <?php
-// Mostrar una entrada por slug o id (Español)
+// Mostrar una entrada per slug o id (Español) - estructura igual que la versió catalana
 if (session_status() === PHP_SESSION_NONE) session_start();
-// Forzar idioma español
+// Forçar idioma español
 $_SESSION['language'] = 'es';
 
 require_once __DIR__ . '/../includes/functions.php';
@@ -23,6 +23,7 @@ if ($slug !== '') {
 
 if (!$row && $id > 0) {
     $row = $entradaModel->llegirUn($id);
+    // ensure published & visible
     if ($row && (!isset($row['estat']) || $row['estat'] !== Entrada::ESTAT_PUBLICAT || (isset($row['visible']) && !$row['visible']))) {
         $row = false;
     }
@@ -42,7 +43,7 @@ if (!$row) {
         <?php include '_includes/navigation.php'; ?>
         <main class="container" style="max-width:900px;margin:60px auto;padding:32px;background:#fff;border-radius:12px;">
             <h1>Entrada no disponible en este idioma</h1>
-            <p>Esta entrada no está publicada o traducida en castellano. Puedes consultar la versión en catalán si existeix, o volver al blog.</p>
+            <p>Esta entrada no está publicada o traducida al español. Puedes consultar la versión en catalán si existe, o volver al blog.</p>
             <p><a href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . '/blog.php'; ?>">&larr; Volver al blog</a></p>
         </main>
         <?php include '_includes/footer.php'; ?>
@@ -52,8 +53,9 @@ if (!$row) {
     exit;
 }
 
-// Si tenemos $row
+// Si hem arribat aquí tenim $row
 $entrada = $row;
+// Actualitzar visualitzacions (no bloquejant la resposta)
 if (!empty($entrada['id_entrada'])) {
     try {
         $entradaModel->incrementarVisualitzacions((int)$entrada['id_entrada']);
@@ -62,7 +64,7 @@ if (!empty($entrada['id_entrada'])) {
     }
 }
 
-// Cargar nombre completo del autor para mostrar en la cabecera
+// Carregar nom complet de l'autor per mostrar a la capçalera
 $entrada['autor_nom_complet'] = '';
 if (!empty($entrada['id_autor'])) {
     try {
@@ -74,6 +76,7 @@ if (!empty($entrada['id_autor'])) {
     }
 }
 
+// Render
 ?><!doctype html>
 <html lang="es">
 <head>
@@ -87,14 +90,16 @@ if (!empty($entrada['id_autor'])) {
 </head>
 <body>
     <?php include '_includes/navigation.php'; ?>
+
     <?php
-        // Prepare title and image URL
-        $title = htmlspecialchars($entrada['titol_es'] ?? $entrada['titol_ca']);
+        // Prepare title and image URL for the hero and breadcrumbs
+        $title = htmlspecialchars($entrada['titol_es'] ?? $entrada['titol_ca'] ?? 'Entrada');
         $imgUrl = '';
         if (!empty($entrada['imatge_portada'])) {
             $imgUrl = resolve_media_url($entrada['imatge_portada']);
         }
     ?>
+
     <?php if ($imgUrl): ?>
         <!-- DEBUG ENTRY HERO: raw_imagen_portada="<?php echo htmlspecialchars($entrada['imatge_portada']); ?>" resolved_img="<?php echo htmlspecialchars($imgUrl); ?>" -->
         <section class="entry-hero">
@@ -108,11 +113,11 @@ if (!empty($entrada['id_autor'])) {
     <main class="container" style="max-width:900px;margin:60px auto;padding:32px;background:#fff;border-radius:12px;">
 
         <?php
-            // Breadcrumbs: Home > Blog > Post (ES)
+            // Breadcrumbs: Home > Blog > Post
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
-                    ['label' => t('nav_blog'), 'url' => '/es/blog.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
+                    ['label' => t('nav_blog'), 'url' => 'blog.php'],
                     ['label' => $title]
                 ]);
             }
@@ -139,5 +144,6 @@ if (!empty($entrada['id_autor'])) {
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
     <script src="../js/language.js"></script>
     <script src="../js/site-nav.js"></script>
+    <script src="../js/language.js"></script>
 </body>
 </html>

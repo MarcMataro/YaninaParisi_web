@@ -1,98 +1,112 @@
-digraph YaninaParisi {
-  rankdir=LR;
-  graph [fontsize=12 labelloc="t" label="Arquitectura del lloc — yaninaparisi.com" fontname="Helvetica"];
-  node [shape=box fontname="Helvetica" fontsize=11];
+digraph ExplorerTree {
+  // Strict top-down (vertical) tree like Windows Explorer
+  rankdir=TB;
+  splines=ortho;
+  nodesep=0.35;
+  ranksep=0.5;
+  margin=0.05;
 
-  // Root and language fronts
-  Root [label="/  (index.php)\n redirects by language/session", shape=oval, style=filled, fillcolor="#FFF2CC"];
+  node [fontname="Segoe UI" fontsize=10];
+  edge [arrowhead=none color="#666666" fontsize=9];
 
-  // Public site - Català
-  subgraph cluster_ca {
-    label="Català (/ca)";
-    style=rounded; color="#D9EAD3";
-    ca_home [label="/ca/home.php\n(home)", style=filled, fillcolor="#E2F0D9", peripheries=2];
-    ca_sobremi [label="/ca/sobremi.php\n(about)"];
-    ca_contacta [label="/ca/contacta.php\n(contact)"];
-    ca_clinica [label="/ca/clinica.php\n(services)"];
-    ca_blog [label="/ca/blog.php\n(blog list)"];
-    ca_entrada [label="/ca/entrada.php?slug=...\n(blog post template)", shape=note, style=filled, fillcolor="#D0E3F0"];
-    ca_faq [label="/ca/faq.php\n(FAQ)"];
-    ca_lovematch [label="/ca/love-match.php\n(love match service)"];
-  }
+  // Root (site root)
+  root [label="yaninaparisi.com\nindex.php" shape=folder style=filled fillcolor="#FFF3E0" color="#FFB74D"];
 
-  // Public site - Castellà
-  subgraph cluster_es {
-    label="Castellà (/es)";
-    style=rounded; color="#F4CCCC";
-    es_home [label="/es/home.php\n(home)", style=filled, fillcolor="#FCE5CD", peripheries=2];
-    es_sobremi [label="/es/sobremi.php\n(about)"];
-    es_contacta [label="/es/contacta.php\n(contact)"];
-    es_clinica [label="/es/clinica.php\n(services)"];
-    es_blog [label="/es/blog.php\n(blog list)"];
-    es_entrada [label="/es/entrada.php?slug=...\n(blog post template)", shape=note, style=filled, fillcolor="#D0E3F0"];
-    es_faq [label="/es/faq.php\n(FAQ)"];
-    es_lovematch [label="/es/love-match.php\n(love match service)"];
-  }
+  // Top-level folders (each shown as a folder node)
+  ca [label="/ca" shape=folder style=filled fillcolor="#E8F5E9" color="#66BB6A"];
+  es [label="/es" shape=folder style=filled fillcolor="#FFEBEE" color="#EF5350"];
+  pcontrol [label="/_pcontrol" shape=folder style=filled fillcolor="#F3E5F5" color="#CE93D8"];
+  classes [label="/classes" shape=folder style=filled fillcolor="#FFE0B2" color="#FFB74D"];
+  includes [label="/includes" shape=folder style=filled fillcolor="#FFF9C4" color="#FFD54F"];
+  assets [label="/assets\n(css, js, img)" shape=folder style=filled fillcolor="#BBDEFB" color="#64B5F6"];
 
-  // Admin / Panel
-  subgraph cluster_admin {
-    label="Admin panel (_pcontrol)";
-    style=rounded; color="#F8D7DA";
-    admin_index [label="/_pcontrol/index.php\n(login/dashboard)", shape=folder, style=filled, fillcolor="#FBECEC"];
-    admin_dashboard [label="/_pcontrol/dashboard.php\n(summary)"];
-    admin_gblog [label="/_pcontrol/gblog.php\n(blog manager)"];
-    admin_gmedia [label="/_pcontrol/gmedia.php\n(media manager)"];
-    admin_gpacients [label="/_pcontrol/gpacients.php\n(patients)"];
-    admin_gsessions [label="/_pcontrol/gsessions.php\n(appointments)"];
-    admin_fact [label="/_pcontrol/facturacion.php\n(billing)"];
-    admin_config [label="/_pcontrol/configuracion.php\n(settings)"];
-    admin_docs [label="/_pcontrol/documentation.php\n(internal docs)"];
-  }
+  // Public: Català branch (children as files/folders)
+  ca_home [label="home.php" shape=note style=filled fillcolor="#A5D6A7"];
+  ca_sobremi [label="sobremi.php" shape=note];
+  ca_clinica [label="clinica.php" shape=note];
+  ca_contacta [label="contacta.php" shape=note];
+  ca_blog [label="/blog" shape=folder style=filled fillcolor="#C8E6C9"];
+  ca_blog_home [label="blog.php" shape=note];
+  ca_entrada [label="entrada.php" shape=note];
+  ca_faq [label="faq.php" shape=note];
+  ca_lovematch [label="love-match.php" shape=note];
+  ca_opina [label="opina.php" shape=note];
 
-  // Backend / code / data
-  classes [label="/classes/ (models & helpers)\nEntrades, Categories, Connexio, SEO_OnPage, etc.", shape=component, style=filled, fillcolor="#EFEFEF"];
-  includes [label="/includes/ (ui + helpers)\nfunctions.php, lang.php, navigation.php, sidebar.php", shape=component, style=filled, fillcolor="#F7F7F7"];
-  sql [label="/sql/ & /_secret/ (DB dumps & migrations)", shape=note, style=filled, fillcolor="#F3F3F3"];
+  // Public: Español branch
+  es_home [label="home.php" shape=note style=filled fillcolor="#EF9A9A"];
+  es_sobremi [label="sobremi.php" shape=note];
+  es_clinica [label="clinica.php" shape=note];
+  es_contacta [label="contacta.php" shape=note];
+  es_blog [label="/blog" shape=folder style=filled fillcolor="#FFCDD2"];
+  es_blog_home [label="blog.php" shape=note];
+  es_entrada [label="entrada.php" shape=note];
+  es_faq [label="faq.php" shape=note];
+  es_lovematch [label="love-match.php" shape=note];
+  es_opina [label="opina.php" shape=note];
 
-  // Assets and static
-  assets [label="/css, /js, /img, /vendor\n(estils.css, blog-router.js, Logo.png)", shape=folder, style=filled, fillcolor="#EEF7FF"];
+  // _pcontrol (admin) contents - independent branch
+  pc_index [label="index.php" shape=note];
+  pc_dashboard [label="dashboard.php" shape=note];
+  pc_gblog [label="gblog.php" shape=note];
+  pc_gmedia [label="gmedia.php" shape=note];
+  pc_gpacients [label="gpacients.php" shape=note];
+  pc_config [label="configuracion.php" shape=note];
+  pc_fact [label="facturacion.php" shape=note];
 
-  // API / utilities
-  sitemap [label="/sitemap.xml\n(generated by scripts/generate_sitemap.php)", shape=note, style=filled, fillcolor="#FFF7E6"];
-  robots [label="/robots.txt\n(Disallow: /_pcontrol/ /_secret/)", shape=note, style=filled, fillcolor="#FFF7E6"];
-  api_node [label="/api/ (public endpoints)\nget_pacient, entrada_map ...", shape=note, style=filled, fillcolor="#F3F3F3"];
+  // Other infra
+  db [label="database" shape=cylinder style=filled fillcolor="#FFE0B2"];
+  sitemap [label="sitemap.xml" shape=note style=filled fillcolor="#FFF9C4"];
+  robots [label="robots.txt" shape=note style=filled fillcolor="#FFF9C4"];
 
-  // High-level edges: root -> language homes
-  Root -> ca_home [label="lang routing / default"];
-  Root -> es_home;
+  // --- Tree edges: strict parent -> children, no cross-language edges ---
+  root -> ca;
+  root -> es;
+  root -> pcontrol;
+  root -> classes;
+  root -> includes;
+  root -> assets;
 
-  // Pages links
-  ca_home -> ca_sobremi; ca_home -> ca_contacta; ca_home -> ca_clinica; ca_home -> ca_blog; ca_home -> ca_faq; ca_home -> ca_lovematch;
-  ca_blog -> ca_entrada [label="open post"];
+  // Català branch
+  ca -> ca_home;
+  ca -> ca_sobremi;
+  ca -> ca_clinica;
+  ca -> ca_contacta;
+  ca -> ca_blog;
+  ca_blog -> ca_blog_home;
+  ca_blog -> ca_entrada;
+  ca -> ca_faq;
+  ca -> ca_lovematch;
+  ca -> ca_opina;
 
-  es_home -> es_sobremi; es_home -> es_contacta; es_home -> es_clinica; es_home -> es_blog; es_home -> es_faq; es_home -> es_lovematch;
+  // Español branch
+  es -> es_home;
+  es -> es_sobremi;
+  es -> es_clinica;
+  es -> es_contacta;
+  es -> es_blog;
+  es_blog -> es_blog_home;
   es_blog -> es_entrada;
+  es -> es_faq;
+  es -> es_lovematch;
+  es -> es_opina;
 
-  // Hreflang pairs
-  ca_home -> es_home [dir=both label="hreflang"];
-  ca_sobremi -> es_sobremi [dir=both label="hreflang"]; ca_contacta -> es_contacta [dir=both label="hreflang"]; ca_clinica -> es_clinica [dir=both label="hreflang"]; ca_blog -> es_blog [dir=both label="hreflang"]; ca_faq -> es_faq [dir=both label="hreflang"];
+  // _pcontrol branch (independent)
+  pcontrol -> pc_index;
+  pcontrol -> pc_dashboard;
+  pcontrol -> pc_gblog;
+  pcontrol -> pc_gmedia;
+  pcontrol -> pc_gpacients;
+  pcontrol -> pc_config;
+  pcontrol -> pc_fact;
 
-  // Connections to backend/helpers
-  ca_blog -> classes [label="uses model: Entrada, RelacioEntradesCategories"];
-  ca_blog -> includes [label="uses functions.php (render_breadcrumbs), lang.php"];
-  ca_entrada -> classes [label="loads single entry (Entrades)"];
-  ca_home -> assets; es_home -> assets;
+  // Backend & resources
+  classes -> db;
+  includes -> db;
+  assets -> sitemap;
+  assets -> robots;
 
-  // Admin connections
-  admin_index -> admin_dashboard; admin_dashboard -> admin_gblog; admin_dashboard -> admin_gmedia; admin_dashboard -> admin_gpacients; admin_dashboard -> admin_gsessions; admin_dashboard -> admin_fact; admin_dashboard -> admin_config; admin_dashboard -> admin_docs;
-  // Admin uses backend
-  admin_dashboard -> classes; admin_dashboard -> includes; admin_dashboard -> sql [label="reads/writes DB"];
+  // Visual grouping: keep /ca and /es side-by-side but separate branches (no crossing)
+  { rank=same; ca; es; pcontrol; classes; includes; assets; }
 
-  // SEO and utilities
-  sitemap -> ca_home; sitemap -> es_home; sitemap -> ca_blog; sitemap -> es_blog;
-  robots -> admin_index; robots -> api_node [style=dotted];
-  api_node -> classes [label="PDO / Connexio"];
-
-  // Visual hints / grouping
-  Root [peripheries=2]; ca_home [peripheries=2]; es_home [peripheries=2]; admin_index [peripheries=2];
+  // Note: hreflang relationships are represented as textual hints in folder labels to avoid crossing lines.
 }

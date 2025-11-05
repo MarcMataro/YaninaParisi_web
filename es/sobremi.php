@@ -69,7 +69,7 @@ include '../includes/functions.php';
             // Breadcrumbs: Home > Sobre mi (ES)
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => t('nav_about')]
                 ]);
             }

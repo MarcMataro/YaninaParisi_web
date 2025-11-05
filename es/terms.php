@@ -148,7 +148,7 @@ include '../includes/functions.php';
             // Breadcrumbs: Inicio > Términos y condiciones
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => 'Términos y condiciones']
                 ]);
             }

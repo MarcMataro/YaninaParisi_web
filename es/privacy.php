@@ -148,7 +148,7 @@ include '../includes/functions.php';
             // Breadcrumbs: Inicio > Política de privacidad
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => 'Política de privacidad']
                 ]);
             }

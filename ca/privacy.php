@@ -149,7 +149,7 @@ include '../includes/functions.php';
             if (function_exists('render_breadcrumbs')) {
                 // Use an explicit, human-friendly label here (don't rely on nav_privacy key)
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => 'Política de privacitat']
                 ]);
             }

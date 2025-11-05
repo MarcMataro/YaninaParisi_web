@@ -1357,6 +1357,81 @@
                     ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
                 </pre>
             </div>
+            <p>Gestió de les ressenyes</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE</span> ressenyes (
+                        id_ressenya <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        pacient_id <span class="keyword">INT NOT NULL</span>,
+                        
+                        -- 1. INFORMACIÓ DEL PACIENT (OPCIONAL PER PRIVACITAT)
+                        nom_pacient <span class="keyword">VARCHAR</span>(100) COMMENT 'Nom o pseudònim, opcional',
+                        inicials <span class="keyword">VARCHAR</span>(10) COMMENT 'Inicials per a major privacitat',
+                        edat <span class="keyword">TINYINT UNSIGNED</span> COMMENT 'Edat del pacient',
+                        
+                        -- 2. CONTINGUT DE LA RESSEYA
+                        titol_ca <span class="keyword">VARCHAR</span>(150) <span class="keyword">NOT NULL</span>,
+                        titol_es <span class="keyword">VARCHAR</span>(150) <span class="keyword">NOT NULL</span>,
+                        text_ressenya_ca <span class="keyword">TEXT</span> <span class="keyword">NOT NULL</span>,
+                        text_ressenya_es <span class="keyword">TEXT</span> <span class="keyword">NOT NULL</span>,
+                        
+                        -- 3. VALORACIÓ
+                        puntuacio <span class="keyword">TINYINT UNSIGNED NOT NULL</span> COMMENT 'Puntuació de 1 a 5',
+                        data_terapia <span class="keyword">DATE</span> COMMENT 'Data aproximada quan va rebre la teràpia',
+                        
+                        -- 4. TIPUS DE TERÀPIA
+                        tipus_terapia <span class="keyword">ENUM</span>('individual', 'parella', 'familiar', 'online', 'presencial') <span class="keyword">DEFAULT</span> 'individual',
+                        
+                        -- 5. ESTAT I MODERACIÓ
+                        estat <span class="keyword">ENUM</span>('pendent', 'aprovat', 'rebutjat') <span class="keyword">DEFAULT</span> 'pendent',
+                        verificada <span class="keyword">BOOLEAN DEFAULT FALSE</span> COMMENT 'Si es verifica que és un pacient real',
+                        
+                        -- 6. AUTORITZACIÓ I PRIVACITAT
+                        autoritzacio_publicacio <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        mostrar_nom <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        mostrar_inicials <span class="keyword">BOOLEAN DEFAULT TRUE</span>,
+                        
+                        -- 7. MÈTRIQUES D'ENGATJAMENT
+                        likes <span class="keyword">INT DEFAULT</span> 0,
+                        reportada <span class="keyword">BOOLEAN DEFAULT FALSE</span>,
+                        
+                        -- 8. DATES DEL SISTEMA
+                        data_creacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        data_aprovacio <span class="keyword">DATETIME NULL</span>,
+                        data_actualitzacio <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+                        
+                        -- ÍNDEXS
+                        <span class="keyword">INDEX</span> idx_estat (estat),
+                        <span class="keyword">INDEX</span> idx_puntuacio (puntuacio),
+                        <span class="keyword">INDEX</span> idx_data_terapia (data_terapia),
+                        <span class="keyword">INDEX</span> idx_tipus_terapia (tipus_terapia),
+                        <span class="keyword">INDEX</span> idx_verificada (verificada),
+                        <span class="keyword">INDEX</span> idx_data_creacio (data_creacio),
+                        <span class="keyword">FULLTEXT</span> idx_text_ca (text_ressenya_ca),
+                        <span class="keyword">FULLTEXT</span> idx_text_es (text_ressenya_es)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
+            </div>
+            <p>>Gestió dels tokens per a ressenyes</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">
+                    <i class="fas fa-copy"></i> Copiar
+                </button>
+                <pre>
+                    <span class="keyword">CREATE TABLE IF NOT EXISTS</span> ressenya_tokens (
+                        id <span class="keyword">INT PRIMARY KEY AUTO_INCREMENT</span>,
+                        pacient_id <span class="keyword">INT NOT NULL</span>,
+                        token <span class="keyword">VARCHAR</span>(64) <span class="keyword">NOT NULL UNIQUE</span>,
+                        created_at <span class="keyword">DATETIME DEFAULT CURRENT_TIMESTAMP</span>,
+                        used_at <span class="keyword">DATETIME NULL</span>,
+                        expires_at <span class="keyword">DATETIME NULL</span>,
+                        <span class="keyword">INDEX</span> idx_pacient_id (pacient_id),
+                        <span class="keyword">INDEX</span> idx_token (token)
+                    ) <span class="keyword">ENGINE</span>=InnoDB <span class="keyword">DEFAULT CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;
+                </pre>
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-table"></i>

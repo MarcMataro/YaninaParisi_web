@@ -116,8 +116,8 @@ if (!empty($entrada['id_autor'])) {
             // Breadcrumbs: Home > Blog > Post
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
-                    ['label' => t('nav_blog'), 'url' => '/ca/blog.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
+                    ['label' => t('nav_blog'), 'url' => 'blog.php'],
                     ['label' => $title]
                 ]);
             }

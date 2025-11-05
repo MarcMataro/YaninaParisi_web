@@ -114,6 +114,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $tipusMissatge = 'error';
             }
             break;
+        case 'generar_token':
+            // Generar token manualment per a un pacient determinat (cridat des de la UI)
+            $idToToken = (int)($_POST['id_pacient'] ?? 0);
+            if ($idToToken > 0) {
+                require_once '../classes/ressenya_tokens.php';
+                try {
+                    $tModel = new RessenyaTokens($pdo);
+                    $token = $tModel->createToken($idToToken, 168);
+                    if ($token) {
+                        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                        $link = $scheme . '://' . $host . '/ca/opina.php?token=' . $token;
+                        $missatge = "Token generat per al pacient #{$idToToken}: <a href=\"{$link}\" target=\"_blank\">Enllaç per opinar</a>";
+                        $tipusMissatge = 'success';
+                    } else {
+                        $missatge = 'No s\'ha pogut generar el token.';
+                        $tipusMissatge = 'error';
+                    }
+                } catch (Exception $e) {
+                    $missatge = 'Error generant token: ' . htmlspecialchars($e->getMessage());
+                    $tipusMissatge = 'error';
+                }
+            } else {
+                $missatge = 'ID de pacient invàlid per generar token.';
+                $tipusMissatge = 'error';
+            }
+            break;
     }
 }
 
@@ -360,6 +387,13 @@ if ($vista === 'editar' && $idPacient) {
                                     <button class="btn-action btn-status" onclick="canviarEstat(<?php echo $p['id_pacient']; ?>, '<?php echo $p['estat']; ?>')" title="Cambiar estado">
                                         <i class="fas fa-exchange-alt"></i>
                                     </button>
+                                        <?php if (isset($p['estat']) && strtolower($p['estat']) === 'alta'): ?>
+                                        <form method="POST" action="gpacients.php" style="display:inline;margin:0;">
+                                            <input type="hidden" name="accio" value="generar_token">
+                                            <input type="hidden" name="id_pacient" value="<?php echo $p['id_pacient']; ?>">
+                                            <button type="submit" class="btn-action btn-token" title="Generar token"><i class="fas fa-key"></i></button>
+                                        </form>
+                                        <?php endif; ?>
                                 </div>
                             </td>
                         </tr>

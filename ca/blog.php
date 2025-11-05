@@ -174,7 +174,7 @@ if (isset($_GET['lang'])) {
             // Breadcrumbs: Home > Blog
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/ca/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => t('nav_blog')]
                 ]);
             }

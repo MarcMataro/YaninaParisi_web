@@ -202,7 +202,7 @@ if (isset($_GET['lang'])) {
             // Breadcrumbs: Home > Clínica (ES)
             if (function_exists('render_breadcrumbs')) {
                 render_breadcrumbs([
-                    ['label' => t('nav_home'), 'url' => '/es/home.php'],
+                    ['label' => t('nav_home'), 'url' => 'home.php'],
                     ['label' => t('nav_services')]
                 ]);
             }
@@ -414,7 +414,7 @@ if (isset($_GET['lang'])) {
                     <p class="clinica-cta-text">No dejes que el malestar emocional te limite más tiempo. Contacta conmigo y definamos un plan práctico y sensible para tu familia o pareja.</p>
                 </div>
                 <div class="clinica-cta-actions">
-                    <a href="/<?php echo getCurrentLanguage(); ?>/contacte.php" class="clinica-cta-button">Contacta ahora <span class="chev" aria-hidden="true">›</span></a>
+                    <a href="contacta.php" class="clinica-cta-button">Contacta ahora <span class="chev" aria-hidden="true">›</span></a>
                 </div>
             </div>
         </section>
