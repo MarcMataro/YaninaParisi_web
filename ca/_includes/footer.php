@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>© <?php echo date("Y"); ?> Psicologia Yanina. Tots els drets reservats.</p>
+                <p>© <?php echo date("Y"); ?> Yanina Parisi. Tots els drets reservats.</p>
             </div>
         </div>
     </footer>
