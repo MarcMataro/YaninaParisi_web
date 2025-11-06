@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>© <?php echo date("Y"); ?> Yanina Parisi. Todos los derechos reservados.</p>
+                <p>© <?php echo date("Y"); ?> Yanina Parisi psicòloga. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
