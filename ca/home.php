@@ -28,10 +28,8 @@ $lang = getCurrentLanguage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- METAETIQUETES ESSENCIALS -->
-        <?php
-        $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-        ?>
     <?php
+    $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
     // Carregar la classe SEO_OnPage i intentar obtenir el title configurat per a la pàgina "home"
     require_once __DIR__ . '/../classes/seo_onpage.php';
 
