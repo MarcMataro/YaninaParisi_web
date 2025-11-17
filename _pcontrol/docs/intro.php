@@ -134,10 +134,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 							<li>Si detectas un fallo crítico, describe el problema (pasos para reproducirlo, usuario afectado, capturas si es posible) y envíalo al equipo de soporte.</li>
 						</ul>
 					</section>
-
-					<footer style="margin-top:18px; color:#666; font-size:0.95rem">
-						<p>¿Quieres que convierta esta sección a PDF o que añada un editor en el panel para modificarla de forma directa? Puedo añadir ambas opciones si lo prefieres.</p>
-					</footer>
 				</article>
 			</div>
 		</main>

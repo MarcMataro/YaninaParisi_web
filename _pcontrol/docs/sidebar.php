@@ -37,6 +37,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-search"></i>
             <span>SEO</span>
         </a>
+        <a href="../gressenyes.php" class="nav-item <?php echo ($current_page == 'facturacion.php') ? 'active' : ''; ?>">
+            <i class="fas fa-star"></i>
+            <span>Reseñas</span>
+        </a>
         <a href="../facturacion.php" class="nav-item <?php echo ($current_page == 'facturacion.php') ? 'active' : ''; ?>">
             <i class="fas fa-file-invoice-dollar"></i>
             <span>Facturación</span>
@@ -45,13 +49,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-calculator"></i>
             <span>Tarifas</span>
         </a>
+        <a href="../gfaq.php" class="nav-item <?php echo ($current_page == 'gfaq.php') ? 'active' : ''; ?>">
+            <i class="fas fa-question-circle"></i>
+            <span>FAQ's</span>
+        </a>
         <a href="../configuracion.php" class="nav-item <?php echo ($current_page == 'configuracion.php') ? 'active' : ''; ?>">
             <i class="fas fa-cog"></i>
             <span>Configuración</span>
         </a>
         <a href="../documentation.php" class="nav-item <?php echo ($current_page == 'documentation.php') ? 'active' : ''; ?>">
             <i class="fas fa-book"></i>
-            <span>Documentació</span>
+            <span>Documentación</span>
         </a>
     </nav>
     

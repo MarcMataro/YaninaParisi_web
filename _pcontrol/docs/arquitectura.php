@@ -95,7 +95,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 </div>
                 <pre id="dotRaw" style="display:none;margin-top:12px;background:#f7f7f7;padding:12px;border-radius:8px;white-space:pre-wrap;overflow:auto;"><?php echo $dot_content !== null ? htmlspecialchars($dot_content) : "(No s'ha trobat el fitxer diagrams/site-architecture.dot)"; ?></pre>
             </section>
-
 		</main>
 	</div>
 
