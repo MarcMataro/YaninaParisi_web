@@ -398,3 +398,37 @@
     [size] => 146541
 )
 
+[2025-11-18 08:57:42] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-11-18 08:57:42] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => Que-maestrias-puedo-estudiar-si-soy-psicologo2.jpg
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-11-18 08:57:42] Array
+(
+    [event] => processing_file
+    [orig] => Que-maestrias-puedo-estudiar-si-soy-psicologo2.jpg
+    [tmp] => C:\wamp64\tmp\php8927.tmp
+    [php_type] => image/jpeg
+    [size] => 44286
+)
+

@@ -200,7 +200,7 @@ $lang = getCurrentLanguage();
     <!-- Secció Hero -->
     <section class="hero" id="inici">
         <?php /* hero image as an <img> element so path resolves correctly across subfolders */ ?>
-        <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
+        <img src="../img/Portada.jpg" alt="Portada" class="hero-img">
         <div class="container hero-content">
             <h1 class="hero-title">
                 <?php
@@ -328,7 +328,7 @@ $lang = getCurrentLanguage();
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="../img/img_2282.jpeg" 
+                    <img src="../img/IMG_2282.jpeg" 
                          alt="Yanina Parisi - Psicòloga General Sanitària Col·legiada a Girona"
                          width="300" 
                          height="350"

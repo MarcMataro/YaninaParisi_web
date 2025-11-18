@@ -37,7 +37,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-search"></i>
             <span>SEO</span>
         </a>
-        <a href="gressenyes.php" class="nav-item <?php echo ($current_page == 'facturacion.php') ? 'active' : ''; ?>">
+        <a href="gressenyes.php" class="nav-item <?php echo ($current_page == 'gressenyes.php') ? 'active' : ''; ?>">
             <i class="fas fa-star"></i>
             <span>Reseñas</span>
         </a>

@@ -3,7 +3,7 @@
     <div class="header-container">
         <div class="logo">
             <a href="#inici">
-                <img src="../img/logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
+                <img src="../img/Logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
             </a>
         </div>
         
@@ -11,7 +11,7 @@
             <ul>
                 <li><a href="home.php"><span class="breadcrumb-home"><i class="fas fa-home" aria-hidden="true"></i><span class="sr-only">Inici</span></span></a></li>
                 <li><a href="clinica.php">Clínica</a></li>
-                <li><a href="love-match.php" class="love-link">Dues ànimes</a></li>
+                <!-- <li><a href="love-match.php" class="love-link">Dues ànimes</a></li> -->
                 <li><a href="blog.php">Blog</a></li>
                 <li><a href="sobremi.php">Sobre mi</a></li>
                 <li><a href="contacta.php">Contacta</a></li>
