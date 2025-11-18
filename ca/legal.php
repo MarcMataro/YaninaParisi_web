@@ -137,7 +137,7 @@ include '../includes/functions.php';
 
         <section class="hero privacy-hero">
             <?php /* hero image as <img> so paths resolve consistently */ ?>
-            <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
+            <img src="<?php echo htmlspecialchars(resolve_media_url('../img/Portada.jpg')); ?>" alt="Portada" class="hero-img">
             <div class="container hero-content">
                 <h1 class="hero-title"><?php echo htmlspecialchars(isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getH1($lang) : 'Avís legal'); ?></h1>
             </div>

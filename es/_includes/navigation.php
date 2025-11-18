@@ -3,7 +3,7 @@
     <div class="header-container">
         <div class="logo">
             <a href="#inicio">
-                <img src="../img/logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
+                <img src="../img/Logo.png" class="logo-nav" alt="Yanina Parisi" placeholder="Logo Yanina Parisi">
             </a>
         </div>
         <nav class="nav-menu">

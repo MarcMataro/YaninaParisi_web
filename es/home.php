@@ -159,7 +159,7 @@ include '../includes/functions.php';
     <!-- Sección Hero -->
     <section class="hero" id="inici">
         <?php /* hero image as an <img> element so path resolves correctly across subfolders */ ?>
-        <img src="<?php echo htmlspecialchars(resolve_media_url('img/portada.jpg')); ?>" alt="Portada" class="hero-img">
+        <img src="<?php echo htmlspecialchars(resolve_media_url('img/Portada.jpg')); ?>" alt="Portada" class="hero-img">
         <div class="container hero-content">
             <h1><?php echo htmlspecialchars(isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getH1($lang) : 'Yanina Parisi - Psicóloga'); ?></h1>
             <p class="hero-subtitle">Construye la vida que deseas. Tu cambio empieza aquí</p>
