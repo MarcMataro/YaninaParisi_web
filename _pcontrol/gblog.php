@@ -28,6 +28,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
+require_once 'includes/role_check.php';
+
 // Incluir classes necessàries
 require_once __DIR__ . '/../classes/connexio.php';
 require_once __DIR__ . '/../classes/categories.php';

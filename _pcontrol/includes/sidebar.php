@@ -1,6 +1,7 @@
 <?php
 // Detectar la pàgina actual
 $current_page = basename($_SERVER['PHP_SELF']);
+$user_role = $_SESSION['user_role'] ?? 'viewer';
 ?>
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
@@ -13,6 +14,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
     
     <nav class="sidebar-nav">
+        <?php if ($user_role !== 'seo_manager' && $user_role !== 'editor'): ?>
         <a href="dashboard.php" class="nav-item <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
             <i class="fas fa-home"></i>
             <span>Dashboard</span>
@@ -25,18 +27,30 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-calendar-alt"></i>
             <span>Sesiones</span>
         </a>
+        <?php endif; ?>
+
+        <?php if ($user_role !== 'seo_manager'): ?>
         <a href="gblog.php" class="nav-item <?php echo ($current_page == 'blog.php') ? 'active' : ''; ?>">
             <i class="fas fa-blog"></i>
             <span>Blog</span>
         </a>
+        <?php endif; ?>
+
+        <?php if ($user_role !== 'seo_manager' && $user_role !== 'editor'): ?>
         <a href="gmedia.php" class="nav-item <?php echo ($current_page == 'gmedia.php') ? 'active' : ''; ?>">
             <i class="fas fa-images"></i>
             <span>Media</span>
         </a>
+        <?php endif; ?>
+
+        <?php if ($user_role !== 'editor'): ?>
         <a href="gseo.php" class="nav-item <?php echo ($current_page == 'gseo.php') ? 'active' : ''; ?>">
             <i class="fas fa-search"></i>
             <span>SEO</span>
         </a>
+        <?php endif; ?>
+
+        <?php if ($user_role !== 'seo_manager' && $user_role !== 'editor'): ?>
         <a href="gressenyes.php" class="nav-item <?php echo ($current_page == 'gressenyes.php') ? 'active' : ''; ?>">
             <i class="fas fa-star"></i>
             <span>Reseñas</span>
@@ -61,6 +75,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-book"></i>
             <span>Documentación</span>
         </a>
+        <?php endif; ?>
     </nav>
     
     <div class="sidebar-footer">

@@ -57,7 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
         }
 
         // Redirigir al dashboard (GET) para evitar reenvío de formulario
-        header('Location: dashboard.php');
+        if (($userRow['rol'] ?? '') === 'seo_manager') {
+            header('Location: gseo.php');
+        } elseif (($userRow['rol'] ?? '') === 'editor') {
+            header('Location: gblog.php');
+        } else {
+            header('Location: dashboard.php');
+        }
         exit;
     }
 
@@ -69,6 +75,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
 // Verificar autenticación para acceso directo por GET
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: index.php');
+    exit;
+}
+
+// Redirect SEO Manager to SEO page
+if (($_SESSION['user_role'] ?? '') === 'seo_manager') {
+    header('Location: gseo.php');
+    exit;
+}
+
+// Redirect Editor to Blog page
+if (($_SESSION['user_role'] ?? '') === 'editor') {
+    header('Location: gblog.php');
     exit;
 }
 

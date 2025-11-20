@@ -29,6 +29,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: index.php');
     exit;
 }
+
+require_once 'includes/role_check.php';
+
 // Evitar problemes amb headers enviats abans (bufferització) i inicialitzar dependències
 ob_start();
 
@@ -198,6 +201,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
+        // Security check: Admin cannot create Superadmin
+        $currentUserRole = $_SESSION['user_role'] ?? 'editor';
+        if ($currentUserRole === 'admin' && $u_rol === 'superadmin') {
+            header('Location: configuracion.php?user_error=permisos');
+            exit;
+        }
+
         // Comprovar si l'email ja existeix
         $tempModel = new UsuarisPanell($db);
         if ($tempModel->existeixEmail($u_email)) {
@@ -255,6 +265,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
+            // Security check: Admin cannot edit Superadmin or promote to Superadmin
+            $currentUserRole = $_SESSION['user_role'] ?? 'editor';
+            if ($currentUserRole === 'admin') {
+                // Check if target user is superadmin
+                if (($usersModel->rol ?? '') === 'superadmin') {
+                    header('Location: configuracion.php?user_error=permisos');
+                    exit;
+                }
+                // Check if trying to set role to superadmin
+                if ($rol === 'superadmin') {
+                    header('Location: configuracion.php?user_error=permisos');
+                    exit;
+                }
+            }
+
             // Apply updates
             $usersModel->nombre = $nom;
             $usersModel->apellidos = $apellidos;
@@ -286,6 +311,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval($_POST['delete_user_id'] ?? 0);
         if ($id) {
             $usersModel->id_usuario = $id;
+            
+            // Security check: Admin cannot delete Superadmin
+            $currentUserRole = $_SESSION['user_role'] ?? 'editor';
+            if ($currentUserRole === 'admin') {
+                if ($usersModel->llegirPerId()) {
+                    if (($usersModel->rol ?? '') === 'superadmin') {
+                        header('Location: configuracion.php?user_error=permisos');
+                        exit;
+                    }
+                }
+            }
+
             $res = $usersModel->eliminar(true); // hard delete
             if ($res) {
                 header('Location: configuracion.php?user_deleted=1');
@@ -328,7 +365,11 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
     if (isset($_GET['user_created'])) $flash[] = ['type' => 'success', 'text' => 'Usuari creat correctament.'];
     if (isset($_GET['user_edited'])) $flash[] = ['type' => 'success', 'text' => 'Usuari actualitzat.'];
     if (isset($_GET['user_deleted'])) $flash[] = ['type' => 'success', 'text' => 'Usuari eliminat.'];
-    if (isset($_GET['user_error'])) $flash[] = ['type' => 'danger', 'text' => 'Error en operació d\'usuari: ' . htmlspecialchars($_GET['user_error'])];
+    if (isset($_GET['user_error'])) {
+        $msg = htmlspecialchars($_GET['user_error']);
+        if ($_GET['user_error'] === 'permisos') $msg = 'No tens permisos per realitzar aquesta acció sobre un Superadmin.';
+        $flash[] = ['type' => 'danger', 'text' => 'Error en operació d\'usuari: ' . $msg];
+    }
     // Tarifes flash messages removed
     if (isset($_GET['error']) && $_GET['error'] === 'csrf') $flash[] = ['type' => 'danger', 'text' => 'Error de seguretat (CSRF).'];
     if (!empty($flash)) {
@@ -411,15 +452,27 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                         <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th>Acciones</th></tr>
                     </thead>
                     <tbody>
-                        <?php if ($users): foreach ($users as $u): ?>
+                        <?php 
+                        $currentUserRole = $_SESSION['user_role'] ?? 'editor';
+                        if ($users): foreach ($users as $u): 
+                            $isSuperAdminTarget = ($u['rol'] === 'superadmin');
+                            $canEdit = true;
+                            if ($currentUserRole === 'admin' && $isSuperAdminTarget) {
+                                $canEdit = false;
+                            }
+                        ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($u['nombre'] . ' ' . $u['apellidos']); ?></td>
                                 <td><?php echo htmlspecialchars($u['email']); ?></td>
                                 <td><?php echo htmlspecialchars($u['rol']); ?></td>
                                 <td><input type="checkbox" <?php echo $u['activo'] ? 'checked' : ''; ?> disabled></td>
                                 <td>
+                                    <?php if ($canEdit): ?>
                                     <button type="button" class="btn btn-secondary" onclick="openEditUserModal(<?php echo $u['id_usuario']; ?>)">Editar</button>
                                     <button type="button" class="btn btn-danger" onclick="openDeleteUserModal(<?php echo $u['id_usuario']; ?>)">Eliminar</button>
+                                    <?php else: ?>
+                                    <span style="color:#999;font-size:0.9em;font-style:italic;">Protegit</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; else: ?>
@@ -498,7 +551,9 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                                 <div class="form-group" style="flex:1 1 220px;min-width:0;">
                                     <label for="edit_user_rol">Rol</label>
                                     <select id="edit_user_rol" name="edit_user_rol" style="width:100%;box-sizing:border-box;">
+                                        <?php if ($currentUserRole === 'superadmin'): ?>
                                         <option value="superadmin">Superadmin</option>
+                                        <?php endif; ?>
                                         <option value="admin">Admin</option>
                                         <option value="editor">Editor</option>
                                         <option value="seo_manager">SEO Manager</option>
@@ -557,7 +612,9 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                                 <div class="form-group" style="flex:1 1 220px;min-width:0;">
                                     <label for="user_rol">Rol</label>
                                     <select id="user_rol" name="user_rol" style="width:100%;box-sizing:border-box;">
+                                        <?php if ($currentUserRole === 'superadmin'): ?>
                                         <option value="superadmin">Superadmin</option>
+                                        <?php endif; ?>
                                         <option value="admin">Admin</option>
                                         <option value="editor">Editor</option>
                                         <option value="seo_manager">SEO Manager</option>

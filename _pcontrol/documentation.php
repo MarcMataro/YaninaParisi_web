@@ -6,6 +6,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: index.php');
     exit;
 }
+
+require_once 'includes/role_check.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">

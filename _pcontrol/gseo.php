@@ -16,6 +16,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
+require_once 'includes/role_check.php';
+
 // Carregar classes SEO
 require_once __DIR__ . '/../classes/seo_global.php';
 require_once __DIR__ . '/../classes/seo_onpage.php';

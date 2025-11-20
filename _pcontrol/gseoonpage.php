@@ -14,11 +14,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 		echo "</pre>";
 		exit;
 	}
-	header('Location: index.php');
-	exit;
+    header('Location: index.php');
+    exit;
 }
 
-require_once __DIR__ . '/../classes/seo_onpage.php';
+require_once 'includes/role_check.php';require_once __DIR__ . '/../classes/seo_onpage.php';
 
 // Processar formulari On Page SEO
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
