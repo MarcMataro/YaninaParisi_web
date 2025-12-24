@@ -190,6 +190,7 @@ if (isset($_GET['lang'])) {
     })();
     </script>
     <section class="hero clinica-hero" id="clinica-hero">
+        <img src="../img/IMG_2282.jpeg" alt="" class="hero-img" aria-hidden="true">
         <div class="container hero-content">
             <h1>
                 <?php echo htmlspecialchars(isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getH1('ca') : 'Transforma el teu benestar emocional'); ?>

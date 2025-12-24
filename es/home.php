@@ -281,7 +281,7 @@ include '../includes/functions.php';
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="../img/img_2282.jpeg" 
+                    <img src="../img/media/1766556992_yanina.jpg"
                          alt="Yanina Parisi - Psicòloga General Sanitària Col·legiada a Girona"
                          width="300" 
                          height="350"

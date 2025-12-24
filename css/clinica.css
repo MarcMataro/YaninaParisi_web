@@ -463,13 +463,21 @@
 }
 /* Estils per la pàgina de la clínica Yanina Parisi */
 .clinica-hero {
-    background-image: url("../img/IMG_2284.jpeg");
-    background-repeat: no-repeat;
-    background-size: cover;
     padding: 160px 0 100px;
     text-align: center;
     height: 100vh;
     position: relative;
+    overflow: hidden;
+}
+
+.clinica-hero .hero-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
 }
 
 .clinica-hero::before {

@@ -432,3 +432,37 @@
     [size] => 44286
 )
 
+[2025-12-24 06:16:32] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-24 06:16:32] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => yanina.jpg
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-12-24 06:16:32] Array
+(
+    [event] => processing_file
+    [orig] => yanina.jpg
+    [tmp] => C:\wamp64\tmp\phpA6E2.tmp
+    [php_type] => image/jpeg
+    [size] => 75792
+)
+
