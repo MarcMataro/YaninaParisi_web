@@ -113,7 +113,8 @@ class Connexio {
             
         } catch (PDOException $e) {
             error_log("Error de connexió a la base de dades: " . $e->getMessage());
-            throw new Exception("No s'ha pogut connectar a la base de dades. Contacti amb l'administrador.");
+            // Mostrar error detallat temporalment per debug
+            throw new Exception("Error de connexió a BD: " . $e->getMessage() . " | DSN: " . $dsn . " | User: " . $this->config['username']);
         }
     }
     

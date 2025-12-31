@@ -1,12 +1,12 @@
 <?php
+// Activar errors per debug temporal
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 // Inicialitzar sessió si no està iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Debug ABANS del processament
-echo "<!-- DEBUG INDEX ABANS: GET lang: " . ($_GET['lang'] ?? 'no definit') . " -->";
-echo "<!-- DEBUG INDEX ABANS: Session lang abans: " . ($_SESSION['language'] ?? 'no definit') . " -->";
 
 // Forçar idioma català en aquesta pàgina
 $_SESSION['language'] = 'ca';

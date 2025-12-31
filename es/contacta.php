@@ -36,11 +36,69 @@ if ($_POST) {
     $message = $_POST['message'] ?? '';
     $privacy = isset($_POST['privacy']);
     
-    // Validación básica
-    if (!empty($name) && !empty($email) && !empty($message) && $privacy) {
-        $message_sent = true;
+    // Validación detallada
+    $errors = [];
+    if (empty($name)) $errors[] = 'Nombre completo';
+    if (empty($email)) $errors[] = 'Correo electrónico';
+    if (empty($message)) $errors[] = 'Mensaje';
+    if (!$privacy) $errors[] = 'Aceptar la política de privacidad';
+    
+    if (empty($errors)) {
+        $lang = getCurrentLanguage();
+        
+        // Cargar PHPMailer
+        require_once __DIR__ . '/../classes/PHPMailer.php';
+        $config_file = __DIR__ . '/../_configs/smtp_config.php';
+        
+        try {
+            // 1. Correo al cliente
+            $mail_client = new PHPMailer($config_file);
+            
+            $client_subject = $lang === 'ca' ? 'Gràcies per contactar amb mi - Yanina Parisi' : 'Gracias por contactar conmigo - Yanina Parisi';
+            $client_message = $lang === 'ca' 
+                ? "Hola " . $name . ",\n\nGràcies per posar-te en contacte amb mi. He rebut el teu missatge i et respondré el més aviat possible.\n\nEstic aquí per ajudar-te en el teu procés de creixement personal i benestar emocional.\n\nUna abraçada,\nYanina Parisi\nPsicòloga\n\ninfo@yaninaparisi.com"
+                : "Hola " . $name . ",\n\nGracias por ponerte en contacto conmigo. He recibido tu mensaje y te responderé lo antes posible.\n\nEstoy aquí para ayudarte en tu proceso de crecimiento personal y bienestar emocional.\n\nUn abrazo,\nYanina Parisi\nPsicóloga\n\ninfo@yaninaparisi.com";
+            
+            $mail_client->addAddress($email, $name);
+            $mail_client->Subject = $client_subject;
+            $mail_client->Body = $client_message;
+            
+            $client_sent = $mail_client->send();
+            
+            if (!$client_sent) {
+                throw new Exception("Error correo cliente: " . $mail_client->ErrorInfo);
+            }
+            
+            // 2. Correo a la psicóloga
+            $mail_psychologist = new PHPMailer($config_file);
+            
+            $psychologist_message = "Nueva consulta recibida:\n\n";
+            $psychologist_message .= "Nombre: " . $name . "\n";
+            $psychologist_message .= "Email: " . $email . "\n";
+            $psychologist_message .= "Mensaje:\n" . $message . "\n\n";
+            $psychologist_message .= "Idioma del formulario: " . strtoupper($lang);
+            
+            $mail_psychologist->addAddress('info@yaninaparisi.com', 'Yanina Parisi');
+            $mail_psychologist->addReplyTo($email, $name);
+            $mail_psychologist->Subject = "Nueva consulta desde el formulario de contacto";
+            $mail_psychologist->Body = $psychologist_message;
+            
+            $psychologist_sent = $mail_psychologist->send();
+            
+            if (!$psychologist_sent) {
+                throw new Exception("Error correo psicóloga: " . $mail_psychologist->ErrorInfo);
+            }
+            
+            $message_sent = true;
+            
+        } catch (Exception $e) {
+            $message_error = true;
+            $error_message = "Error: " . $e->getMessage();
+            error_log("PHPMailer: " . $e->getMessage());
+        }
     } else {
         $message_error = true;
+        $error_message = "Faltan los siguientes campos: " . implode(', ', $errors);
     }
 }
 ?>
@@ -96,7 +154,7 @@ if ($_POST) {
             <?php if ($message_error): ?>
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i>
-                    <span>Completa todos los campos obligatorios</span>
+                    <span><?php echo isset($error_message) ? $error_message : 'Error en el formulario'; ?></span>
                 </div>
             <?php endif; ?>
 
@@ -104,22 +162,10 @@ if ($_POST) {
                 <div class="contact-form-section" id="contact-form">
                     <div class="form-header">
                             <h2>Solicita una cita</h2>
-                            <p>Completa el formulario para contactar. Puedes elegir fecha y hora directamente desde el calendario.</p>
-                            <!-- Booking calendar -->
-                            <div id="booking-calendar" class="booking-calendar" aria-label="Calendario de reservas">
-                                <div class="cal-header">
-                                    <button type="button" class="cal-prev" aria-label="Mes anterior">‹</button>
-                                    <div class="cal-title" aria-live="polite"></div>
-                                    <button type="button" class="cal-next" aria-label="Mes siguiente">›</button>
-                                </div>
-                                <div class="cal-grid">
-                                    <!-- Days of week -->
-                                </div>
-                            </div>
+                            <p>Completa el formulario para contactar.</p>
                     </div>
                     
                     <form class="contact-form" method="POST" action="">
-                        <input type="hidden" id="appointment" name="appointment" value="">
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">
@@ -273,184 +319,12 @@ if ($_POST) {
                         navMenu.classList.remove('show');
                     }
                 });
-
-                /* Simple calendar renderer (ES) */
-                (function(){
-                    const calendar = document.getElementById('booking-calendar');
-                    if (!calendar) return;
-
-                    const title = calendar.querySelector('.cal-title');
-                    const grid = calendar.querySelector('.cal-grid');
-                    const prev = calendar.querySelector('.cal-prev');
-                    const next = calendar.querySelector('.cal-next');
-
-                    const dow = ['Lu','Ma','Mi','Ju','Vi','Sa','Do'];
-                    const today = new Date();
-                    let viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
-
-                    function render(){
-                        title.textContent = viewDate.toLocaleString(document.documentElement.lang || 'es', { month:'long', year:'numeric' });
-                        grid.innerHTML = '';
-                        // headers
-                        dow.forEach(d=>{ const el=document.createElement('div'); el.className='dow'; el.textContent=d; grid.appendChild(el); });
-
-                        const firstDow = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
-                        const startOffset = (firstDow + 6) % 7;
-
-                        for(let i=0;i<startOffset;i++){ const empty=document.createElement('div'); empty.className='day empty'; grid.appendChild(empty); }
-
-                        const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth()+1,0).getDate();
-                        for(let d=1; d<=daysInMonth; d++){
-                            const dt = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
-                            const el = document.createElement('button'); el.type='button'; el.className='day';
-                            el.innerHTML = '<span class="date">'+d+'</span>';
-                            if (dt < new Date(today.getFullYear(), today.getMonth(), today.getDate())){
-                                el.classList.add('disabled');
-                                el.disabled = true;
-                            }
-                            if (dt.toDateString() === today.toDateString()) el.classList.add('today');
-                            el.addEventListener('click', function(){ onDayClick(dt, el); });
-                            grid.appendChild(el);
-                            if (!el.disabled) {
-                                checkDayFullyBooked(dt, el);
-                            }
-                        }
-                    }
-
-                    function toLocalISODate(date) {
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
-                        return `${year}-${month}-${day}`;
-                    }
-
-                    function onDayClick(dateObj, el){
-                        const isoDate = toLocalISODate(dateObj);
-                        fetch('../api/get_availability.php?date=' + isoDate)
-                            .then(res => res.json())
-                            .then(json => {
-                                if (!json || !json.success) {
-                                    const timesFallback = [];
-                                    for (let h = 9; h <= 20; h++) {
-                                        if (h === 13 || h === 14) continue;
-                                        timesFallback.push(String(h).padStart(2,'0')+':00');
-                                    }
-                                    showTimesPanel(dateObj, timesFallback);
-                                    return;
-                                }
-                                showTimesPanel(dateObj, json.slots);
-                            })
-                            .catch(err => {
-                                console.error('Error fetching availability', err);
-                                const timesFallback = [];
-                                for (let h = 9; h <= 20; h++) {
-                                    if (h === 13 || h === 14) continue;
-                                    timesFallback.push(String(h).padStart(2,'0')+':00');
-                                }
-                                showTimesPanel(dateObj, timesFallback);
-                            });
-                    }
-
-                    function showTimesPanel(dateObj, times){
-                        let panel = document.getElementById('times-panel');
-                        if (!panel){
-                            panel = document.createElement('div'); panel.id='times-panel'; panel.className='times-panel';
-                            panel.innerHTML = '<button class="times-close" aria-label="Close">×</button><h4></h4><div class="times-list"></div>';
-                            document.body.appendChild(panel);
-                            panel.querySelector('.times-close').addEventListener('click', ()=>{ panel.style.display='none'; });
-                        }
-                        panel.querySelector('h4').textContent = dateObj.toLocaleDateString(document.documentElement.lang || 'es', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-                        const list = panel.querySelector('.times-list'); list.innerHTML='';
-                        times.forEach(t=>{
-                            const timeText = (typeof t === 'string') ? t : (t.time || '');
-                            const available = (typeof t === 'string') ? true : !!t.available;
-                            const btn = document.createElement('button'); btn.type='button'; btn.textContent = timeText;
-                            if (!available) {
-                                btn.classList.add('occupied');
-                                btn.disabled = true;
-                                btn.title = 'Hora ocupada';
-                            }
-                            list.appendChild(btn);
-
-                            btn.addEventListener('click', ()=>{
-                                if (!available) return;
-                                const iso = toLocalISODate(dateObj)+' '+timeText;
-                                const input = document.getElementById('appointment');
-                                if (input) input.value = iso;
-                                panel.style.display='none';
-                                document.querySelectorAll('#booking-calendar .day.selected').forEach(n=>n.classList.remove('selected'));
-                                const allDays = document.querySelectorAll('#booking-calendar .day');
-                                allDays.forEach(node=>{
-                                    if (node.disabled) return;
-                                    if (node.querySelector('.date') && node.querySelector('.date').textContent == dateObj.getDate()){
-                                        node.classList.add('selected');
-                                    }
-                                });
-                                const form = document.querySelector('.contact-form'); if (form) form.scrollIntoView({behavior:'smooth', block:'center'});
-                            });
-                        });
-                        panel.style.display='block';
-                    }
-
-                    function checkDayFullyBooked(dateObj, dayEl){
-                        const isoDate = toLocalISODate(dateObj);
-                        fetch('../api/get_availability.php?date=' + isoDate)
-                            .then(res => res.json())
-                            .then(json => {
-                                if (!json || !json.success) return;
-                                if (json.session_count > 0) {
-                                    dayEl.classList.add('has-sessions');
-                                }
-                                if (json.fully_booked) {
-                                    dayEl.classList.add('fully-booked');
-                                    dayEl.disabled = true;
-                                    dayEl.title = 'Todo el día está reservado';
-                                }
-                            })
-                            .catch(err => {
-                                // ignore errors silently
-                            });
-                    }
-
-                    prev.addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()-1,1); render(); });
-                    next.addEventListener('click', ()=>{ viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth()+1,1); render(); });
-
-                    render();
-                })();
             }
         });
     </script>
     <script src="../js/language.js"></script>
 </body>
 </html>
-<?php 
-// Inicializar sesión si no está iniciada
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-// Forzar idioma español en esta página
-$_SESSION['language'] = 'es';
-// Procesar cambio de idioma primero
-if (isset($_GET['lang'])) {
-    $lang = $_GET['lang'];
-    if (in_array($lang, array('ca', 'es'))) {
-        $_SESSION['language'] = $lang;
-        header('Location: /' . $lang . '/home.php');
-        exit;
-    }
-}
-// Incluir sistema de traducción
-include '../includes/lang.php';
-// Asegurar helpers disponibles
-include '../includes/functions.php';
-
-// Procesar el formulario si se ha enviado
-$message_sent = false;
-$message_error = false;
-
-if ($_POST) {
-    $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $phone = $_POST['phone'] ?? '';
     $subject = $_POST['subject'] ?? '';

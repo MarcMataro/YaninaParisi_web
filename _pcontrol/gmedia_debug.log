@@ -466,3 +466,449 @@
     [size] => 75792
 )
 
+[2025-12-29 19:01:12] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 19:01:12] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1208.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 19:01:12] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1208.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 19:01:12] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1208.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 19:01:51] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 19:01:51] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1165.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 19:01:51] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1165.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 19:01:51] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1165.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 19:04:23] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 19:04:23] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1157.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 19:04:23] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1157.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 19:04:23] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1157.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 19:05:25] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 19:05:25] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1085.jpg
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-12-29 19:05:25] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1085.jpg
+    [tmp] => C:\wamp64\tmp\php60F4.tmp
+    [php_type] => image/jpeg
+    [size] => 1039238
+)
+
+[2025-12-29 19:08:32] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 19:08:32] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => Captura de pantalla 2024-08-11 194911.png
+                    [error] => 0
+                )
+
+        )
+
+)
+
+[2025-12-29 19:08:32] Array
+(
+    [event] => processing_file
+    [orig] => Captura de pantalla 2024-08-11 194911.png
+    [tmp] => C:\wamp64\tmp\php3B2F.tmp
+    [php_type] => image/png
+    [size] => 55598
+)
+
+[2025-12-29 21:26:13] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 21:26:13] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1157.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 21:26:13] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1157.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 21:26:13] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1157.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 21:26:48] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 21:26:48] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1159.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 21:26:48] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1159.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 21:26:48] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1159.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 21:28:17] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 21:28:17] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1157.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 21:28:17] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1157.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 21:28:17] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1157.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 21:31:47] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 21:31:47] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1157.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 21:31:47] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1157.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 21:31:47] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1157.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 21:32:02] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 21:32:02] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1157.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 21:32:02] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1157.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 21:32:02] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1157.jpg
+    [tmp] => 
+    [fkey] => file
+)
+
+[2025-12-29 21:38:25] Array
+(
+    [action] => upload_start
+    [_FILES_keys] => Array
+        (
+            [0] => file
+        )
+
+)
+
+[2025-12-29 21:38:25] Array
+(
+    [_FILES_summary] => Array
+        (
+            [0] => Array
+                (
+                    [key] => file
+                    [name] => DSCF1157.jpg
+                    [error] => 1
+                )
+
+        )
+
+)
+
+[2025-12-29 21:38:25] Array
+(
+    [event] => processing_file
+    [orig] => DSCF1157.jpg
+    [tmp] => 
+    [php_type] => 
+    [size] => 0
+)
+
+[2025-12-29 21:38:25] Array
+(
+    [event] => not_uploaded_file
+    [file] => DSCF1157.jpg
+    [tmp] => 
+    [fkey] => file
+)
+

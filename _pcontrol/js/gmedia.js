@@ -269,12 +269,58 @@ document.addEventListener('DOMContentLoaded', function () {
             xhr.onload = function () {
                 try {
                     const data = JSON.parse(xhr.responseText);
-                    if (data.success) { status.textContent = 'Completado'; }
-                    else { status.textContent = 'Error'; }
-                } catch (e) { status.textContent = 'Error'; }
-                setTimeout(() => { progressList.removeChild(row); listMedia(); }, 800);
+                    console.log('Upload response:', data); // Debug
+                    
+                    if (data.success) { 
+                        status.textContent = 'Completado';
+                        status.style.color = '#28a745';
+                        // Mostrar info d'optimització si existeix
+                        if (data.uploaded && data.uploaded.length > 0) {
+                            const uploadInfo = data.uploaded[0];
+                            console.log('Upload info:', uploadInfo); // Debug
+                            
+                            if (typeof uploadInfo === 'object' && uploadInfo.optimized !== undefined) {
+                                let optimizeMsg = '';
+                                if (uploadInfo.optimized) {
+                                    if (uploadInfo.optimize_message) {
+                                        optimizeMsg = uploadInfo.optimize_message;
+                                        if (uploadInfo.size_before_kb && uploadInfo.size_after_kb) {
+                                            optimizeMsg += ` (${uploadInfo.size_before_kb}KB → ${uploadInfo.size_after_kb}KB)`;
+                                        }
+                                    }
+                                    status.innerHTML = `✓ ${optimizeMsg || 'Optimitzada'}`;
+                                    status.style.color = '#28a745';
+                                } else if (uploadInfo.optimize_message) {
+                                    status.innerHTML = `⚠ ${uploadInfo.optimize_message}`;
+                                    status.style.color = '#ff9800';
+                                }
+                            }
+                        }
+                    } else { 
+                        status.textContent = 'Error: ' + (data.message || 'Desconegut'); 
+                        status.style.color = '#dc3545';
+                        // Mostrar errors específics
+                        if (data.errors && data.errors.length > 0) {
+                            const errorMsgs = data.errors.map(e => e.message).join(', ');
+                            status.textContent = 'Error: ' + errorMsgs;
+                        }
+                    }
+                } catch (e) { 
+                    console.error('Parse error:', e, 'Response:', xhr.responseText); // Debug
+                    status.textContent = 'Error de parseo: ' + e.message; 
+                    status.style.color = '#dc3545';
+                }
+                setTimeout(() => { 
+                    if (progressList.contains(row)) {
+                        progressList.removeChild(row); 
+                    }
+                    listMedia(); 
+                }, 2000);
             };
-            xhr.onerror = function () { status.textContent = 'Error'; };
+            xhr.onerror = function () { 
+                status.textContent = 'Error de xarxa'; 
+                status.style.color = '#dc3545';
+            };
             const fd = new FormData();
             fd.append('file[]', file, file.name);
             // required by server to trigger upload handler

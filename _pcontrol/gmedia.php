@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Media Manager - Upload images and videos
  */
@@ -40,6 +40,194 @@ function safe_filename($name) {
     // replace spaces
     $name = preg_replace('/[^A-Za-z0-9._-]/', '_', $name);
     return $name;
+}
+
+// Helper: optimize image to target file size (max 200KB) while maintaining quality
+// Returns array: ['success' => bool, 'message' => string, 'size_before' => int, 'size_after' => int]
+function optimize_image($filePath, $mime, $targetSizeKB = 200, $maxSizeKB = 500) {
+    try {
+        if (!file_exists($filePath)) {
+            return ['success' => false, 'message' => 'Fitxer no trobat', 'size_before' => 0, 'size_after' => 0];
+        }
+        
+        $currentSize = filesize($filePath);
+        
+        // Si la imatge és menor que el llindar, no cal optimitzar
+        if ($currentSize <= $maxSizeKB * 1024) {
+            gmedia_log(['optimize_skip', 'file' => basename($filePath), 'size_kb' => round($currentSize / 1024, 2), 'reason' => 'below_threshold']);
+            return ['success' => true, 'message' => 'No necessita optimització', 'size_before' => $currentSize, 'size_after' => $currentSize, 'skipped' => true];
+        }
+        
+        gmedia_log(['optimize_start', 'file' => basename($filePath), 'original_size_kb' => round($currentSize / 1024, 2), 'mime' => $mime]);
+        
+        // Carregar imatge segons el tipus
+        $src = null;
+        $loadError = null;
+        
+        switch ($mime) {
+            case 'image/jpeg':
+                $src = @imagecreatefromjpeg($filePath);
+                if (!$src) $loadError = 'Error carregant JPEG';
+                break;
+            case 'image/png':
+                $src = @imagecreatefrompng($filePath);
+                if (!$src) $loadError = 'Error carregant PNG';
+                break;
+            case 'image/webp':
+                if (function_exists('imagecreatefromwebp')) {
+                    $src = @imagecreatefromwebp($filePath);
+                    if (!$src) $loadError = 'Error carregant WebP';
+                } else {
+                    $loadError = 'WebP no suportat';
+                }
+                break;
+            case 'image/gif':
+                $src = @imagecreatefromgif($filePath);
+                if (!$src) $loadError = 'Error carregant GIF';
+                break;
+            default:
+                $loadError = 'Tipus MIME no suportat: ' . $mime;
+        }
+        
+        if (!$src) {
+            gmedia_log(['optimize_error', 'reason' => $loadError]);
+            return ['success' => false, 'message' => $loadError, 'size_before' => $currentSize, 'size_after' => $currentSize];
+        }
+        
+        $width = imagesx($src);
+        $height = imagesy($src);
+        gmedia_log(['image_dimensions' => "{$width}x{$height}"]);
+        
+        // Intentar amb compressió
+        $quality = 85;
+        $tempFile = $filePath . '.tmp';
+        $bestSize = $currentSize;
+        
+        // Només fer uns quants intents de compressió
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $saveSuccess = false;
+            
+            if ($mime === 'image/jpeg') {
+                $saveSuccess = @imagejpeg($src, $tempFile, $quality);
+            } elseif ($mime === 'image/png') {
+                $pngQuality = max(0, min(9, intval((100 - $quality) / 10)));
+                $saveSuccess = @imagepng($src, $tempFile, $pngQuality);
+            } elseif ($mime === 'image/webp' && function_exists('imagewebp')) {
+                $saveSuccess = @imagewebp($src, $tempFile, $quality);
+            } else {
+                break;
+            }
+            
+            if (!$saveSuccess || !file_exists($tempFile)) {
+                gmedia_log(['optimize_error', 'attempt' => $attempt, 'reason' => 'no es pot guardar temporal']);
+                break;
+            }
+            
+            $newSize = filesize($tempFile);
+            $bestSize = $newSize;
+            gmedia_log(['optimize_attempt' => $attempt + 1, 'quality' => $quality, 'size_kb' => round($newSize / 1024, 2)]);
+            
+            // Si hem aconseguit el tamany desitjat, sortim
+            if ($newSize <= $targetSizeKB * 1024) {
+                gmedia_log(['optimize_compression_success' => true]);
+                break;
+            }
+            
+            // Reduir qualitat
+            $quality -= 10;
+            if ($quality < 50) {
+                break;
+            }
+        }
+        
+        // Si encara és massa gran, redimensionar
+        if (file_exists($tempFile) && filesize($tempFile) > $targetSizeKB * 1024) {
+            gmedia_log(['optimize_trying_resize' => true]);
+            $scale = 0.85;
+            $newWidth = intval($width * $scale);
+            $newHeight = intval($height * $scale);
+            
+            // Només 2 intents de redimensionament
+            for ($i = 0; $i < 2 && $newWidth > 200 && $newHeight > 200; $i++) {
+                $resized = @imagecreatetruecolor($newWidth, $newHeight);
+                
+                if (!$resized) {
+                    gmedia_log(['resize_error' => 'no es pot crear canvas']);
+                    break;
+                }
+                
+                // Preservar transparència
+                if ($mime === 'image/png' || $mime === 'image/webp') {
+                    @imagecolortransparent($resized, @imagecolorallocatealpha($resized, 0, 0, 0, 127));
+                    @imagealphablending($resized, false);
+                    @imagesavealpha($resized, true);
+                }
+                
+                @imagecopyresampled($resized, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                
+                $saveSuccess = false;
+                if ($mime === 'image/jpeg') {
+                    $saveSuccess = @imagejpeg($resized, $tempFile, 75);
+                } elseif ($mime === 'image/png') {
+                    $saveSuccess = @imagepng($resized, $tempFile, 6);
+                } elseif ($mime === 'image/webp' && function_exists('imagewebp')) {
+                    $saveSuccess = @imagewebp($resized, $tempFile, 75);
+                }
+                
+                @imagedestroy($resized);
+                
+                if (!$saveSuccess || !file_exists($tempFile)) {
+                    gmedia_log(['resize_save_error' => true]);
+                    break;
+                }
+                
+                $newSize = filesize($tempFile);
+                $bestSize = $newSize;
+                gmedia_log(['optimize_resized' => "{$newWidth}x{$newHeight}", 'size_kb' => round($newSize / 1024, 2)]);
+                
+                if ($newSize <= $targetSizeKB * 1024) {
+                    break;
+                }
+                
+                $newWidth = intval($newWidth * $scale);
+                $newHeight = intval($newHeight * $scale);
+            }
+        }
+        
+        @imagedestroy($src);
+        
+        // Substituir fitxer original si s'ha millorat
+        if (file_exists($tempFile)) {
+            $finalSize = filesize($tempFile);
+            if ($finalSize > 0 && $finalSize < $currentSize) {
+                $renamed = @rename($tempFile, $filePath);
+                if ($renamed) {
+                    $reduction = round((1 - $finalSize / $currentSize) * 100, 1);
+                    gmedia_log(['optimize_success', 'final_size_kb' => round($finalSize / 1024, 2), 'reduction' => $reduction . '%']);
+                    return ['success' => true, 'message' => "Optimitzada: -{$reduction}%", 'size_before' => $currentSize, 'size_after' => $finalSize];
+                } else {
+                    @unlink($tempFile);
+                    gmedia_log(['optimize_error' => 'no es pot reanomenar fitxer temporal']);
+                    return ['success' => false, 'message' => 'Error reanomenant fitxer optimitzat', 'size_before' => $currentSize, 'size_after' => $currentSize];
+                }
+            } else {
+                @unlink($tempFile);
+                gmedia_log(['optimize_skip', 'reason' => 'no_improvement', 'final_size' => $finalSize, 'original' => $currentSize]);
+                return ['success' => true, 'message' => 'Sense millora significativa', 'size_before' => $currentSize, 'size_after' => $currentSize, 'skipped' => true];
+            }
+        }
+        
+        return ['success' => true, 'message' => 'Processada però sense canvis', 'size_before' => $currentSize, 'size_after' => $currentSize, 'skipped' => true];
+        
+    } catch (Exception $e) {
+        gmedia_log(['optimize_exception' => $e->getMessage()]);
+        // Netejar fitxer temporal si existeix
+        $tempFile = $filePath . '.tmp';
+        if (isset($tempFile) && file_exists($tempFile)) {
+            @unlink($tempFile);
+        }
+        return ['success' => false, 'message' => 'Excepció: ' . $e->getMessage(), 'size_before' => filesize($filePath), 'size_after' => filesize($filePath)];
+    }
 }
 
 // Simple debug logger (admin-only, small file) to help diagnose upload failures
@@ -253,6 +441,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         }
                     $dest = $IMG_DIR . '/' . $safe;
                     if (move_uploaded_file($tmp, $dest)) {
+                        // Optimitzar imatge si és massa gran (>500KB -> màx 200KB)
+                        $optimizeResult = optimize_image($dest, $mime, 200, 500);
+                        gmedia_log(['optimize_result' => $optimizeResult]);
+                        
+                        // Afegir info d'optimització al resultat
+                        $uploadInfo = ['file' => basename($dest)];
+                        if (isset($optimizeResult['success'])) {
+                            $uploadInfo['optimized'] = $optimizeResult['success'];
+                            $uploadInfo['optimize_message'] = $optimizeResult['message'];
+                            if (isset($optimizeResult['size_before']) && isset($optimizeResult['size_after'])) {
+                                $uploadInfo['size_before_kb'] = round($optimizeResult['size_before'] / 1024, 2);
+                                $uploadInfo['size_after_kb'] = round($optimizeResult['size_after'] / 1024, 2);
+                            }
+                        }
+                        
                         // create thumbnail
                         $thumbPath = $IMG_THUMBS . '/' . $safe;
                         try {
@@ -282,8 +485,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             }
                         } catch (Exception $e) {
                             // ignore thumbnail errors
+                            gmedia_log(['event'=>'thumbnail_error','error'=>$e->getMessage()]);
                         }
-                        $results['uploaded'][] = basename($dest);
+                        
+                        // Afegir als resultats amb info d'optimització
+                        $results['uploaded'][] = $uploadInfo;
+                        
                         // set default title metadata (original filename without timestamp prefix)
                         try {
                             $meta = meta_load();
@@ -323,7 +530,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 }
             }
         }
-        echo json_encode(['success' => true, 'results' => $results]);
+        // Retornar directament uploaded i errors per compatibilitat amb el client
+        echo json_encode([
+            'success' => (count($results['errors']) === 0),
+            'uploaded' => $results['uploaded'],
+            'errors' => $results['errors']
+        ]);
         exit;
     }
 

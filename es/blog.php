@@ -1,4 +1,8 @@
 <?php
+// Activar errors per debug temporal
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 // Inicialitzar sessió si no està iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
