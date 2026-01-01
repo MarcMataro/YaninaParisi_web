@@ -27,6 +27,10 @@ $user_role = $_SESSION['user_role'] ?? 'viewer';
             <i class="fas fa-calendar-alt"></i>
             <span>Sesiones</span>
         </a>
+        <a href="gprofessionals.php" class="nav-item <?php echo ($current_page == 'gprofessionals.php') ? 'active' : ''; ?>">
+            <i class="fas fa-user-md"></i>
+            <span>Profesionales</span>
+        </a>
         <?php endif; ?>
 
         <?php if ($user_role !== 'seo_manager'): ?>

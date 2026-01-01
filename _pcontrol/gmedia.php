@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Media Manager - Upload images and videos
  */
