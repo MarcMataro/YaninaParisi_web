@@ -1,0 +1,389 @@
+/* =================================================
+   ESTILS ESPECÍFICS PER LA PÀGINA CONEIX-NOS / CONÓCENOS
+   Disseny seguint l'estructura del hero de contacte
+   ================================================= */
+
+/* ============================================
+   NAVEGACIÓ ESPECÍFICA
+   ============================================ */
+nav ul li a.active {
+    color: var(--color-accent) !important;
+    font-weight: 600;
+    position: relative;
+}
+
+nav ul li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-accent);
+    border-radius: 1px;
+}
+
+header.scrolled nav ul li a.active {
+    color: var(--color-accent) !important;
+}
+
+/* ============================================
+   VARIABLES ESPECÍFIQUES
+   ============================================ */
+:root {
+    --team-gradient: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    --team-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --team-shadow-light: 0 5px 15px rgba(0, 0, 0, 0.05);
+    --team-border-radius: 15px;
+    --team-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.team-hero {
+    background: var(--team-gradient);
+    padding: 140px 0 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.team-hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.team-hero h1 {
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.team-hero-subtitle {
+    font-size: 1.3rem;
+    color: white;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+/* ============================================
+   SECCIÓ PRINCIPAL DE PROFESSIONALS
+   ============================================ */
+.team-main {
+    padding: 80px 0;
+    background: #f9f9f9;
+}
+
+.team-main .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ============================================
+   GRID DE PROFESSIONALS
+   ============================================ */
+.professionals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+}
+
+/* ============================================
+   TARGETA DE PROFESSIONAL
+   ============================================ */
+.professional-card {
+    background: white;
+    border-radius: var(--team-border-radius);
+    overflow: hidden;
+    box-shadow: var(--team-shadow-light);
+    transition: var(--team-transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.professional-card:hover {
+    box-shadow: var(--team-shadow);
+    transform: translateY(-5px);
+}
+
+/* Imatge del professional */
+.professional-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+.professional-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: var(--team-transition);
+}
+
+.professional-card:hover .professional-image img {
+    transform: scale(1.05);
+}
+
+.professional-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 5rem;
+    opacity: 0.5;
+}
+
+/* Contingut del professional */
+.professional-content {
+    padding: 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.professional-name {
+    font-size: 1.8rem;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.professional-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-accent);
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.professional-college,
+.professional-experience {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.professional-college i,
+.professional-experience i {
+    color: var(--color-accent);
+    font-size: 1rem;
+}
+
+.professional-description {
+    margin: 20px 0;
+    line-height: 1.8;
+    color: #555;
+    font-size: 1rem;
+    flex: 1;
+}
+
+/* Botó veure perfil */
+.btn-view-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.btn-view-profile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-view-profile i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-view-profile:hover i {
+    transform: translateX(5px);
+}
+
+/* Informació de contacte */
+.professional-contact {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: var(--team-transition);
+}
+
+.contact-link:hover {
+    color: var(--color-accent);
+    transform: translateX(5px);
+}
+
+.contact-link i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* ============================================
+   MISSATGE SENSE PROFESSIONALS
+   ============================================ */
+.no-professionals {
+    text-align: center;
+    padding: 80px 20px;
+    color: #666;
+}
+
+.no-professionals i {
+    font-size: 4rem;
+    color: var(--color-accent);
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.no-professionals p {
+    font-size: 1.2rem;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablets */
+@media (max-width: 768px) {
+    .team-hero {
+        padding: 120px 0 60px;
+    }
+
+    .team-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .team-hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .professionals-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .professional-image {
+        height: 250px;
+    }
+
+    .professional-name {
+        font-size: 1.5rem;
+    }
+
+    .team-main {
+        padding: 60px 0;
+    }
+}
+
+/* Mòbils */
+@media (max-width: 480px) {
+    .team-hero {
+        padding: 100px 0 50px;
+    }
+
+    .team-hero h1 {
+        font-size: 2rem;
+    }
+
+    .team-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .professional-content {
+        padding: 20px;
+    }
+
+    .professional-name {
+        font-size: 1.3rem;
+    }
+
+    .professional-subtitle {
+        font-size: 1rem;
+    }
+
+    .professional-image {
+        height: 200px;
+    }
+
+    .team-main {
+        padding: 40px 0;
+    }
+
+    .professionals-grid {
+        gap: 20px;
+    }
+}
+
+/* ============================================
+   ANIMACIONS
+   ============================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.professional-card {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.professional-card:nth-child(1) { animation-delay: 0.1s; }
+.professional-card:nth-child(2) { animation-delay: 0.2s; }
+.professional-card:nth-child(3) { animation-delay: 0.3s; }
+.professional-card:nth-child(4) { animation-delay: 0.4s; }
+.professional-card:nth-child(5) { animation-delay: 0.5s; }
+.professional-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Per a més de 6 targetes, no afegir més delay */
+.professional-card:nth-child(n+7) { animation-delay: 0.6s; }

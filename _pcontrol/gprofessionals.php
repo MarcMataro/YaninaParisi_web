@@ -30,6 +30,7 @@ require_once __DIR__ . '/../classes/professionals.php';
 require_once __DIR__ . '/../classes/especialitats.php';
 require_once __DIR__ . '/../classes/professional_especialitat.php';
 require_once __DIR__ . '/../classes/professional_certificacions.php';
+require_once __DIR__ . '/../classes/professional_photos.php';
 
 try {
     $connexio = Connexio::getInstance();
@@ -42,6 +43,7 @@ $profModel = Professionals::getInstance();
 $espModel = Especialitats::getInstance();
 $relModel = ProfessionalEspecialitat::getInstance();
 $certModel = ProfessionalCertificacions::getInstance();
+$photosModel = ProfessionalPhotos::getInstance();
 
 // CSRF token
 if (empty($_SESSION['csrf_token'])) {
@@ -260,6 +262,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: ' . $redirect . '&msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
                     exit;
 
+                // ============= ACCIONES DE FOTOS =============
+                case 'crear_foto':
+                    $prof_id = (int)($_POST['professional_id'] ?? 0);
+                    
+                    $photosModel->netejar();
+                    $photosModel->setProfessionalId($prof_id);
+                    $photosModel->setImagePath($_POST['image_path'] ?? '');
+                    $photosModel->setTitleCa($_POST['title_ca'] ?? '');
+                    $photosModel->setTitleEs($_POST['title_es'] ?? '');
+                    $photosModel->setDescriptionCa($_POST['description_ca'] ?? null);
+                    $photosModel->setDescriptionEs($_POST['description_es'] ?? null);
+                    $photosModel->setAltCa($_POST['alt_ca'] ?? '');
+                    $photosModel->setAltEs($_POST['alt_es'] ?? '');
+                    
+                    try {
+                        $photosModel->crear();
+                        $mensaje = 'Foto creada correctamente.';
+                        $tipoMensaje = 'success';
+                    } catch (Exception $e) {
+                        $mensaje = 'Error al crear la foto: ' . $e->getMessage();
+                        $tipoMensaje = 'error';
+                    }
+                    
+                    $redirect = 'gprofessionals.php?vista=fotos&id=' . $prof_id;
+                    header('Location: ' . $redirect . '&msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
+                    exit;
+
+                case 'editar_foto':
+                    $foto_id = (int)($_POST['foto_id'] ?? 0);
+                    $prof_id = (int)($_POST['professional_id'] ?? 0);
+                    
+                    $photosModel->netejar();
+                    $photosModel->setId($foto_id);
+                    $photosModel->setProfessionalId($prof_id);
+                    $photosModel->setImagePath($_POST['image_path'] ?? '');
+                    $photosModel->setTitleCa($_POST['title_ca'] ?? '');
+                    $photosModel->setTitleEs($_POST['title_es'] ?? '');
+                    $photosModel->setDescriptionCa($_POST['description_ca'] ?? null);
+                    $photosModel->setDescriptionEs($_POST['description_es'] ?? null);
+                    $photosModel->setAltCa($_POST['alt_ca'] ?? '');
+                    $photosModel->setAltEs($_POST['alt_es'] ?? '');
+                    
+                    try {
+                        $photosModel->actualitzar();
+                        $mensaje = 'Foto actualizada correctamente.';
+                        $tipoMensaje = 'success';
+                    } catch (Exception $e) {
+                        $mensaje = 'Error al actualizar la foto: ' . $e->getMessage();
+                        $tipoMensaje = 'error';
+                    }
+                    
+                    $redirect = 'gprofessionals.php?vista=fotos&id=' . $prof_id;
+                    header('Location: ' . $redirect . '&msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
+                    exit;
+
+                case 'eliminar_foto':
+                    $foto_id = (int)($_POST['foto_id'] ?? 0);
+                    $prof_id = (int)($_POST['professional_id'] ?? 0);
+                    
+                    try {
+                        $photosModel->eliminar($foto_id);
+                        $mensaje = 'Foto eliminada correctamente.';
+                        $tipoMensaje = 'success';
+                    } catch (Exception $e) {
+                        $mensaje = 'Error al eliminar la foto: ' . $e->getMessage();
+                        $tipoMensaje = 'error';
+                    }
+                    
+                    $redirect = 'gprofessionals.php?vista=fotos&id=' . $prof_id;
+                    header('Location: ' . $redirect . '&msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
+                    exit;
+
                 case 'toggle_actiu':
                     $id = (int)($_POST['id'] ?? 0);
                     if ($profModel->llegirPerId($id)) {
@@ -377,10 +451,18 @@ $profEditar = null;
 $especialitatsEditar = [];
 $certificacionsEditar = null;
 if ($vista === 'editar' && $idEditar) {
-    $profEditar = $profModel->obtenirPerId($idEditar);
+    $profEditar = $profModel->obtenirPerId((int)$idEditar);
     if ($profEditar) {
         $especialitatsEditar = $relModel->obtenirIdsEspecialitatsProfessional($idEditar);
         $certificacionsEditar = $certModel->obtenirPerProfessional($idEditar);
+    }
+}
+
+// Si estamos en vista de certificaciones o fotos, también cargar el profesional
+if (($vista === 'certificacions' || $vista === 'fotos') && $idEditar && !$profEditar) {
+    $profEditar = $profModel->obtenirPerId((int)$idEditar);
+    if ($profEditar) {
+        error_log("DEBUG: Profesional cargado correctamente: " . $profEditar['nom']);
     }
 }
 
@@ -405,7 +487,7 @@ if ($vista === 'editar' && $idEditarEsp) {
     <link rel="stylesheet" href="css/configuracion.css">
     <style>
         .professionals-table { width:100%; border-collapse:collapse; margin-top:20px; }
-        .professionals-table th, .professionals-table td { padding:12px; border-bottom:1px solid #eee; text-align:left; }
+        .professionals-table th, .professionals-table td { padding:12px; border-bottom:1px solid #eee; text-align:left; position:relative; z-index:1; }
         
         /* Tabs para secciones */
         .section-tabs { display:flex; gap:8px; margin-bottom:20px; border-bottom:2px solid #eee; }
@@ -465,6 +547,8 @@ if ($vista === 'editar' && $idEditarEsp) {
                 </button>
             </div>
 
+            <!-- DEBUG INFO: <?php echo htmlspecialchars($debugInfo ?? 'no debug info'); ?> -->
+            
             <?php if ($seccion === 'professionals'): ?>
                 <!-- SECCIÓN DE PROFESIONALES -->
             <?php if ($vista === 'lista'): ?>
@@ -473,7 +557,7 @@ if ($vista === 'editar' && $idEditarEsp) {
                         <i class="fas fa-plus"></i> Nuevo Profesional
                     </button>
                 </div>
-            <?php else: ?>
+            <?php elseif ($vista !== 'certificacions' && $vista !== 'fotos'): ?>
                 <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
                     <button class="btn btn-secondary" onclick="mostrarVista('lista')">
                         <i class="fas fa-arrow-left"></i> Volver al Listado
@@ -587,44 +671,72 @@ if ($vista === 'editar' && $idEditarEsp) {
                                                         <small style="color:#999;">Sin especialidades</small>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td>
-                                                    <?php if ($prof['actiu']): ?>
-                                                        <span class="badge badge-success">Activo</span>
-                                                    <?php else: ?>
-                                                        <span class="badge badge-danger">Inactivo</span>
-                                                    <?php endif; ?>
-                                                    <?php if ($prof['visible_web']): ?>
-                                                        <span class="badge badge-success">Web</span>
-                                                    <?php endif; ?>
+                                                <td style="text-align:center;white-space:nowrap;">
+                                                    <?php 
+                                                    // Badge de estado activo/inactivo
+                                                    if (isset($prof['actiu']) && $prof['actiu']) {
+                                                        echo '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Activo</span>';
+                                                    } else {
+                                                        echo '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Inactivo</span>';
+                                                    }
+                                                    
+                                                    echo '<br>';
+                                                    
+                                                    // Badge de visibilidad web
+                                                    if (isset($prof['visible_web']) && $prof['visible_web']) {
+                                                        echo '<span class="badge badge-success" style="margin-top:4px;"><i class="fas fa-globe"></i> Web</span>';
+                                                    } else {
+                                                        echo '<span class="badge badge-warning" style="margin-top:4px;"><i class="fas fa-eye-slash"></i> Oculto</span>';
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <td class="professionals-actions">
-                                                    <a href="?vista=editar&id=<?php echo $prof['id']; ?>" 
-                                                       class="btn btn-sm btn-primary" title="Editar">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    
-                                                    <a href="?vista=certificacions&id=<?php echo $prof['id']; ?>" 
-                                                       class="btn btn-sm btn-info" title="Gestionar Certificaciones">
-                                                        <i class="fas fa-certificate"></i>
-                                                    </a>
-                                                    
-                                                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Cambiar estado activo/inactivo?');">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="accion" value="toggle_actiu">
-                                                        <input type="hidden" name="id" value="<?php echo $prof['id']; ?>">
-                                                        <button type="submit" class="btn btn-sm btn-warning" title="Toggle Activo">
-                                                            <i class="fas fa-toggle-<?php echo $prof['actiu'] ? 'on' : 'off'; ?>"></i>
-                                                        </button>
-                                                    </form>
-                                                    
-                                                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este profesional?');">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="accion" value="eliminar">
-                                                        <input type="hidden" name="id" value="<?php echo $prof['id']; ?>">
-                                                        <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+                                                        <a href="?vista=editar&id=<?php echo $prof['id']; ?>" 
+                                                           class="btn btn-sm btn-primary" 
+                                                           title="Editar profesional"
+                                                           style="border-radius:6px;padding:6px 10px;">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        
+                                                        <a href="?vista=certificacions&id=<?php echo $prof['id']; ?>" 
+                                                           class="btn btn-sm btn-info" 
+                                                           title="Certificaciones y másters"
+                                                           style="border-radius:6px;padding:6px 10px;">
+                                                            <i class="fas fa-certificate"></i>
+                                                        </a>
+                                                        
+                                                        <a href="?vista=fotos&id=<?php echo $prof['id']; ?>" 
+                                                           class="btn btn-sm btn-success" 
+                                                           title="Galería de fotos"
+                                                           style="border-radius:6px;padding:6px 10px;">
+                                                            <i class="fas fa-images"></i>
+                                                        </a>
+                                                        
+                                                        <form method="POST" style="display:inline;margin:0;" onsubmit="return confirm('¿Cambiar estado activo/inactivo?');">
+                                                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                                            <input type="hidden" name="accion" value="toggle_actiu">
+                                                            <input type="hidden" name="id" value="<?php echo $prof['id']; ?>">
+                                                            <button type="submit" 
+                                                                    class="btn btn-sm btn-warning" 
+                                                                    title="<?php echo $prof['actiu'] ? 'Desactivar' : 'Activar'; ?> profesional"
+                                                                    style="border-radius:6px;padding:6px 10px;">
+                                                                <i class="fas fa-toggle-<?php echo $prof['actiu'] ? 'on' : 'off'; ?>"></i>
+                                                            </button>
+                                                        </form>
+                                                        
+                                                        <form method="POST" style="display:inline;margin:0;" onsubmit="return confirm('¿Eliminar este profesional? Esta acción no se puede deshacer.');">
+                                                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                                            <input type="hidden" name="accion" value="eliminar">
+                                                            <input type="hidden" name="id" value="<?php echo $prof['id']; ?>">
+                                                            <button type="submit" 
+                                                                    class="btn btn-sm btn-danger" 
+                                                                    title="Eliminar profesional"
+                                                                    style="border-radius:6px;padding:6px 10px;">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -687,8 +799,22 @@ if ($vista === 'editar' && $idEditarEsp) {
                                     </div>
                                     
                                     <div class="form-group form-grid-full">
-                                        <label for="foto">URL de la Foto</label>
-                                        <input type="text" id="foto" name="foto" class="form-control" placeholder="../img/professionals/...">
+                                        <label for="foto">Foto del Professional</label>
+                                        <div class="image-picker-container">
+                                            <input type="hidden" id="foto" name="foto" value="">
+                                            <div class="image-picker-controls">
+                                                <button type="button" id="btnPickFoto" class="btn btn-secondary">
+                                                    <i class="fas fa-images"></i> Seleccionar Imatge
+                                                </button>
+                                                <button type="button" id="btnClearFoto" class="btn btn-outline-secondary" style="display:none;">
+                                                    <i class="fas fa-times"></i> Eliminar
+                                                </button>
+                                            </div>
+                                            <div class="image-preview-container" id="fotoPreviewContainer" style="display:none; margin-top:15px;">
+                                                <img id="fotoPreview" src="" alt="Preview" class="foto-preview" style="max-width:300px; max-height:300px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                                                <p class="image-url-text" id="fotoUrlText" style="font-size:0.85rem; color:#666; margin-top:8px; word-break:break-all;"></p>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     <div class="form-group form-grid-full">
@@ -953,13 +1079,22 @@ if ($vista === 'editar' && $idEditarEsp) {
                                     </div>
                                     
                                     <div class="form-group form-grid-full">
-                                        <label for="foto">URL de la Foto</label>
-                                        <input type="text" id="foto" name="foto" class="form-control" 
-                                               value="<?php echo htmlspecialchars($profEditar['foto'] ?? ''); ?>">
-                                        <?php if (!empty($profEditar['foto'])): ?>
-                                            <img src="<?php echo htmlspecialchars($profEditar['foto']); ?>" 
-                                                 alt="Preview" class="foto-preview">
-                                        <?php endif; ?>
+                                        <label for="foto_edit">Foto del Professional</label>
+                                        <div class="image-picker-container">
+                                            <input type="hidden" id="foto_edit" name="foto" value="<?php echo htmlspecialchars($profEditar['foto'] ?? ''); ?>">
+                                            <div class="image-picker-controls">
+                                                <button type="button" id="btnPickFotoEdit" class="btn btn-secondary">
+                                                    <i class="fas fa-images"></i> Seleccionar Imatge
+                                                </button>
+                                                <button type="button" id="btnClearFotoEdit" class="btn btn-outline-secondary" <?php echo empty($profEditar['foto']) ? 'style="display:none;"' : ''; ?>>
+                                                    <i class="fas fa-times"></i> Eliminar
+                                                </button>
+                                            </div>
+                                            <div class="image-preview-container" id="fotoPreviewContainerEdit" <?php echo empty($profEditar['foto']) ? 'style="display:none;"' : 'style="margin-top:15px;"'; ?>>
+                                                <img id="fotoPreviewEdit" src="<?php echo htmlspecialchars($profEditar['foto'] ?? ''); ?>" alt="Preview" class="foto-preview" style="max-width:300px; max-height:300px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                                                <p class="image-url-text" id="fotoUrlTextEdit" style="font-size:0.85rem; color:#666; margin-top:8px; word-break:break-all;"><?php echo htmlspecialchars($profEditar['foto'] ?? ''); ?></p>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     <div class="form-group form-grid-full">
@@ -1017,13 +1152,219 @@ if ($vista === 'editar' && $idEditarEsp) {
                         </div>
                     </div>
 
-                <?php else: ?>
-                    <div class="alert alert-danger">
-                        Profesional no encontrado.
+                <?php elseif ($vista === 'fotos' && $idEditar): ?>
+                    <!-- Gestión de Fotos del Professional -->
+                    <?php 
+                    // Carregar el professional directament aquí per assegurar-nos que està disponible
+                    $profFotos = $profModel->obtenirPerId((int)$idEditar);
+                    
+                    if (!$profFotos) {
+                        echo '<div class="alert alert-danger">No se pudo cargar el profesional.</div>';
+                    } else {
+                        $fotos = $photosModel->llistarPerProfessional($idEditar);
+                ?>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <h2 style="margin:0;"><i class="fas fa-images"></i> Fotos de <?php echo htmlspecialchars($profFotos['nom'] . ' ' . $profFotos['cognoms']); ?></h2>
+                    <div>
+                        <a href="gprofessionals.php" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver a Profesionales
+                        </a>
                     </div>
-                <?php endif; ?>
+                </div>
+
+                <!-- Formulario para crear nueva foto -->
+                <div class="card" style="margin-bottom:24px;">
+                    <div class="card-header">
+                        <h3 style="margin:0;"><i class="fas fa-plus-circle"></i> Añadir Nueva Foto</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                            <input type="hidden" name="accion" value="crear_foto">
+                            <input type="hidden" name="professional_id" value="<?php echo $idEditar; ?>">
+                            
+                            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="form-group">
+                                    <label for="new_title_ca">Título (Catalán) *</label>
+                                    <input type="text" id="new_title_ca" name="title_ca" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="new_title_es">Título (Español) *</label>
+                                    <input type="text" id="new_title_es" name="title_es" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="new_alt_ca">Texto Alternativo (Catalán) *</label>
+                                    <input type="text" id="new_alt_ca" name="alt_ca" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="new_alt_es">Texto Alternativo (Español) *</label>
+                                    <input type="text" id="new_alt_es" name="alt_es" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Imagen *</label>
+                                <div class="image-picker-container">
+                                    <input type="hidden" id="new_image_path" name="image_path" required>
+                                    <div class="image-picker-controls">
+                                        <button type="button" id="btnPickNewFoto" class="btn btn-secondary">
+                                            <i class="fas fa-images"></i> Seleccionar Imagen
+                                        </button>
+                                        <button type="button" id="btnClearNewFoto" class="btn btn-outline-secondary" style="display:none;">
+                                            <i class="fas fa-times"></i> Eliminar
+                                        </button>
+                                    </div>
+                                    <div class="image-preview-container" id="newFotoPreviewContainer" style="display:none; margin-top:15px;">
+                                        <img id="newFotoPreview" src="" alt="Preview" style="max-width:300px; max-height:300px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                                        <p class="image-url-text" id="newFotoUrlText" style="font-size:0.85rem; color:#666; margin-top:8px; word-break:break-all;"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="form-group">
+                                    <label for="new_description_ca">Descripción (Catalán)</label>
+                                    <textarea id="new_description_ca" name="description_ca" class="form-control" rows="3"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="new_description_es">Descripción (Español)</label>
+                                    <textarea id="new_description_es" name="description_es" class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Guardar Foto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Lista de fotos existentes -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin:0;"><i class="fas fa-list"></i> Fotos Existentes (<?php echo count($fotos); ?>)</h3>
+                    </div>
+                    <div class="card-body">
+                        <?php if (empty($fotos)): ?>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                No hay fotos registradas para este profesional.
+                            </div>
+                        <?php else: ?>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                                <?php foreach ($fotos as $foto): ?>
+                                    <div class="card" style="margin:0;">
+                                        <div style="position:relative;">
+                                            <?php 
+                                                $fotoPath = $foto['image_path'];
+                                                if (strpos($fotoPath, 'http') !== 0) {
+                                                    if (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') === 0) {
+                                                        $fotoPath = '../' . $fotoPath;
+                                                    } elseif (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') !== 0) {
+                                                        $fotoPath = '../img/' . $fotoPath;
+                                                    }
+                                                }
+                                            ?>
+                                            <img src="<?php echo htmlspecialchars($fotoPath); ?>" 
+                                                 alt="<?php echo htmlspecialchars($foto['alt_ca']); ?>"
+                                                 style="width:100%; height:200px; object-fit:cover;">
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 style="margin:0 0 8px 0;"><?php echo htmlspecialchars($foto['title_ca']); ?></h4>
+                                            <p style="font-size:0.9em; color:#666; margin-bottom:12px;">
+                                                <?php echo htmlspecialchars($foto['description_ca'] ?: 'Sin descripción'); ?>
+                                            </p>
+                                            <div style="display:flex; gap:8px;">
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="editarFoto(<?php echo $foto['id']; ?>)">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </button>
+                                                <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta foto?');">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                                    <input type="hidden" name="accion" value="eliminar_foto">
+                                                    <input type="hidden" name="foto_id" value="<?php echo $foto['id']; ?>">
+                                                    <input type="hidden" name="professional_id" value="<?php echo $idEditar; ?>">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i> Eliminar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Modal de edición oculto por defecto -->
+                                        <div id="editModal_<?php echo $foto['id']; ?>" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; padding:20px; overflow-y:auto;">
+                                            <div style="max-width:800px; margin:40px auto; background:white; border-radius:8px; padding:24px;">
+                                                <h3><i class="fas fa-edit"></i> Editar Foto</h3>
+                                                <form method="POST">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                                    <input type="hidden" name="accion" value="editar_foto">
+                                                    <input type="hidden" name="foto_id" value="<?php echo $foto['id']; ?>">
+                                                    <input type="hidden" name="professional_id" value="<?php echo $idEditar; ?>">
+                                                    
+                                                    <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                                        <div class="form-group">
+                                                            <label>Título (Catalán) *</label>
+                                                            <input type="text" name="title_ca" class="form-control" value="<?php echo htmlspecialchars($foto['title_ca']); ?>" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Título (Español) *</label>
+                                                            <input type="text" name="title_es" class="form-control" value="<?php echo htmlspecialchars($foto['title_es']); ?>" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Alt (Catalán) *</label>
+                                                            <input type="text" name="alt_ca" class="form-control" value="<?php echo htmlspecialchars($foto['alt_ca']); ?>" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Alt (Español) *</label>
+                                                            <input type="text" name="alt_es" class="form-control" value="<?php echo htmlspecialchars($foto['alt_es']); ?>" required>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group">
+                                                        <label>Imagen *</label>
+                                                        <input type="text" name="image_path" class="form-control" value="<?php echo htmlspecialchars($foto['image_path']); ?>" required readonly>
+                                                        <small style="color:#666;">Para cambiar la imagen, elimina esta foto y crea una nueva.</small>
+                                                    </div>
+                                                    
+                                                    <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                                        <div class="form-group">
+                                                            <label>Descripción (Catalán)</label>
+                                                            <textarea name="description_ca" class="form-control" rows="3"><?php echo htmlspecialchars($foto['description_ca'] ?? ''); ?></textarea>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Descripción (Español)</label>
+                                                            <textarea name="description_es" class="form-control" rows="3"><?php echo htmlspecialchars($foto['description_es'] ?? ''); ?></textarea>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div style="display:flex; gap:8px; margin-top:16px;">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            <i class="fas fa-save"></i> Guardar Cambios
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary" onclick="cerrarModal(<?php echo $foto['id']; ?>)">
+                                                            <i class="fas fa-times"></i> Cancelar
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php } // End else profesional encontrado ?>
             
-            <?php else: ?>
+            <?php endif; ?>
+            <!-- End if seccion === 'professionals' -->
+            
+            <?php if ($seccion === 'especialitats'): ?>
                 <!-- SECCIÓN DE ESPECIALIDADES -->
                 <?php if ($vista === 'lista'): ?>
                     <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
@@ -1244,8 +1585,10 @@ if ($vista === 'editar' && $idEditarEsp) {
                         Especialidad no encontrada.
                     </div>
                 <?php endif; ?>
-
-            <?php endif; // Fin de sección especialitats ?>
+            
+            
+                
+            <?php endif; // Fin de seccion professionals + especialitats ?>
 
         </div>
     </div>
@@ -1272,7 +1615,147 @@ if ($vista === 'editar' && $idEditarEsp) {
                     setTimeout(() => alert.remove(), 300);
                 }, 5000);
             });
+
+            // --- Media picker helper for photo selection ---
+            function openMediaPickerFor(callback) {
+                try {
+                    var picker = window.open('gmedia.php?picker=1&admin_picker=1', 'MediaPicker', 'width=900,height=600');
+                } catch (err) {
+                    console.error('open popup failed', err);
+                    return;
+                }
+                function receive(e) {
+                    try {
+                        if (e.origin && e.origin !== window.location.origin) {
+                            return;
+                        }
+                    } catch (err) {
+                        console.error('origin check failed', err);
+                    }
+                    if (e.data && e.data.mediaUrl) {
+                        try { callback(e.data); } catch (err) { console.error('picker callback error', err); }
+                        window.removeEventListener('message', receive);
+                    }
+                }
+                window.addEventListener('message', receive);
+                setTimeout(function(){ try { window.removeEventListener('message', receive); } catch(e){} }, 30000);
+            }
+
+            // Wire up photo picker for CREATE form
+            var btnPick = document.getElementById('btnPickFoto');
+            var btnClear = document.getElementById('btnClearFoto');
+            var input = document.getElementById('foto');
+            var preview = document.getElementById('fotoPreview');
+            var previewContainer = document.getElementById('fotoPreviewContainer');
+            var urlText = document.getElementById('fotoUrlText');
+
+            function setPhoto(url) {
+                if (input) input.value = url || '';
+                if (url) {
+                    if (preview) preview.src = url;
+                    if (previewContainer) previewContainer.style.display = 'block';
+                    if (urlText) urlText.textContent = url;
+                    if (btnClear) btnClear.style.display = 'inline-block';
+                } else {
+                    if (preview) preview.src = '';
+                    if (previewContainer) previewContainer.style.display = 'none';
+                    if (urlText) urlText.textContent = '';
+                    if (btnClear) btnClear.style.display = 'none';
+                }
+            }
+
+            if (btnPick) btnPick.addEventListener('click', function(){
+                openMediaPickerFor(function(data){
+                    setPhoto(data.mediaUrl);
+                });
+            });
+            if (btnClear) btnClear.addEventListener('click', function(){ setPhoto(''); });
+
+            // Wire up photo picker for EDIT form
+            var btnPickEdit = document.getElementById('btnPickFotoEdit');
+            var btnClearEdit = document.getElementById('btnClearFotoEdit');
+            var inputEdit = document.getElementById('foto_edit');
+            var previewEdit = document.getElementById('fotoPreviewEdit');
+            var previewContainerEdit = document.getElementById('fotoPreviewContainerEdit');
+            var urlTextEdit = document.getElementById('fotoUrlTextEdit');
+
+            function setPhotoEdit(url) {
+                if (inputEdit) inputEdit.value = url || '';
+                if (url) {
+                    if (previewEdit) previewEdit.src = url;
+                    if (previewContainerEdit) previewContainerEdit.style.display = 'block';
+                    if (urlTextEdit) urlTextEdit.textContent = url;
+                    if (btnClearEdit) btnClearEdit.style.display = 'inline-block';
+                } else {
+                    if (previewEdit) previewEdit.src = '';
+                    if (previewContainerEdit) previewContainerEdit.style.display = 'none';
+                    if (urlTextEdit) urlTextEdit.textContent = '';
+                    if (btnClearEdit) btnClearEdit.style.display = 'none';
+                }
+            }
+
+            if (btnPickEdit) btnPickEdit.addEventListener('click', function(){
+                openMediaPickerFor(function(data){
+                    setPhotoEdit(data.mediaUrl);
+                });
+            });
+            if (btnClearEdit) btnClearEdit.addEventListener('click', function(){ setPhotoEdit(''); });
+
+            // Wire up photo picker for NEW FOTO in gallery
+            var btnPickNewFoto = document.getElementById('btnPickNewFoto');
+            var btnClearNewFoto = document.getElementById('btnClearNewFoto');
+            var inputNewFoto = document.getElementById('new_image_path');
+            var previewNewFoto = document.getElementById('newFotoPreview');
+            var previewContainerNewFoto = document.getElementById('newFotoPreviewContainer');
+            var urlTextNewFoto = document.getElementById('newFotoUrlText');
+
+            function setNewFoto(url) {
+                if (inputNewFoto) inputNewFoto.value = url || '';
+                if (url) {
+                    if (previewNewFoto) previewNewFoto.src = url;
+                    if (previewContainerNewFoto) previewContainerNewFoto.style.display = 'block';
+                    if (urlTextNewFoto) urlTextNewFoto.textContent = url;
+                    if (btnClearNewFoto) btnClearNewFoto.style.display = 'inline-block';
+                } else {
+                    if (previewNewFoto) previewNewFoto.src = '';
+                    if (previewContainerNewFoto) previewContainerNewFoto.style.display = 'none';
+                    if (urlTextNewFoto) urlTextNewFoto.textContent = '';
+                    if (btnClearNewFoto) btnClearNewFoto.style.display = 'none';
+                }
+            }
+
+            if (btnPickNewFoto) btnPickNewFoto.addEventListener('click', function(){
+                openMediaPickerFor(function(data){
+                    setNewFoto(data.mediaUrl);
+                });
+            });
+            if (btnClearNewFoto) btnClearNewFoto.addEventListener('click', function(){ setNewFoto(''); });
+
+            // Functions for edit modal management
+            window.editarFoto = function(fotoId) {
+                var modal = document.getElementById('editModal_' + fotoId);
+                if (modal) modal.style.display = 'block';
+            };
+
+            window.cerrarModal = function(fotoId) {
+                var modal = document.getElementById('editModal_' + fotoId);
+                if (modal) modal.style.display = 'none';
+            };
+
+            // Close modals on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    var modals = document.querySelectorAll('[id^="editModal_"]');
+                    modals.forEach(function(modal) {
+                        modal.style.display = 'none';
+                    });
+                }
+            });
         });
     </script>
+    
+    <?php endif; ?>
+    <!-- End if seccion === 'especialitats' -->
+    
 </body>
 </html>

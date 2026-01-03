@@ -253,4 +253,72 @@
         ];
         echo '<script type="application/ld+json">' . json_encode($ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
     }
+
+/**
+ * Genera un slug a partir del nom i cognoms d'un professional
+ * Aquesta funció no modifica la base de dades, només genera slugs temporals
+ * 
+ * @param string $nom Nom del professional
+ * @param string $cognoms Cognoms del professional
+ * @return string Slug generat
+ */
+if (!function_exists('generateSlug')) {
+    function generateSlug($nom, $cognoms) {
+        $text = $nom . '-' . $cognoms;
+        
+        // Convertir a minúscules
+        $text = mb_strtolower($text, 'UTF-8');
+        
+        // Reemplaçar accents i caràcters especials catalans i espanyols
+        $replacements = [
+            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ä' => 'a',
+            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+            'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'ö' => 'o',
+            'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+            'ñ' => 'n', 'ç' => 'c',
+            'l·l' => 'll'
+        ];
+        
+        $text = str_replace(array_keys($replacements), array_values($replacements), $text);
+        
+        // Eliminar tots els caràcters que no siguin lletres, números o guions
+        $text = preg_replace('/[^a-z0-9\-]/', '-', $text);
+        
+        // Reemplaçar múltiples guions per un sol guió
+        $text = preg_replace('/-+/', '-', $text);
+        
+        // Eliminar guions del principi i final
+        $text = trim($text, '-');
+        
+        return $text;
+    }
+}
+
+/**
+ * Busca un professional pel slug generat dinàmicament
+ * 
+ * @param string $slug Slug a buscar
+ * @param Professionals $profModel Instància del model de professionals
+ * @return array|null Dades del professional o null
+ */
+if (!function_exists('findProfessionalBySlug')) {
+    function findProfessionalBySlug($slug, $profModel) {
+        try {
+            $professionals = $profModel->llistar();
+            
+            foreach ($professionals as $prof) {
+                $generatedSlug = generateSlug($prof['nom'], $prof['cognoms']);
+                if ($generatedSlug === $slug) {
+                    return $prof;
+                }
+            }
+            
+            return null;
+        } catch (Exception $e) {
+            error_log("Error buscant professional per slug: " . $e->getMessage());
+            return null;
+        }
+    }
+}
 ?>

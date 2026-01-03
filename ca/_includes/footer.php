@@ -10,7 +10,7 @@
                     <ul>
                         <li><a href="home.php">Inici</a></li>
                         <li><a href="clinica.php">Consulta</a></li>
-                        <li><a href="sobremi.php">Sobre mi</a></li>
+                        <li><a href="coneixnos.php">Coneix-nos</a></li>
                         <li><a href="blog.php">Blog</a></li>
                         <li><a href="dues-animes.php" class="love-link">Dues ànimes</a></li>
                         <li><a href="contacta.php">Contacta</a></li>

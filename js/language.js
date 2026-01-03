@@ -73,11 +73,32 @@ function fallbackSwitch(lang) {
         var filename = window.location.pathname.split('/').pop();
         var params = new URLSearchParams(window.location.search);
         var extra = '';
+        
+        // Mapa de fitxers amb noms diferents segons idioma
+        var pageMap = {
+            'coneixnos.php': { ca: 'coneixnos.php', es: 'conocenos.php' },
+            'conocenos.php': { ca: 'coneixnos.php', es: 'conocenos.php' },
+            'psicoleg.php': { ca: 'psicoleg.php', es: 'psicologo.php' },
+            'psicologo.php': { ca: 'psicoleg.php', es: 'psicologo.php' }
+        };
+        
+        // Si el fitxer està al mapa, usar el nom correcte per l'idioma de destí
+        if (pageMap[filename]) {
+            filename = pageMap[filename][lang];
+        }
+        
         if (filename === 'entrada.php') {
             if (params.has('slug')) {
                 extra = '?slug=' + encodeURIComponent(params.get('slug'));
             } else if (params.has('id')) {
                 extra = '?id=' + encodeURIComponent(params.get('id'));
+            }
+        } else if (filename === 'psicoleg.php' || filename === 'psicologo.php') {
+            // Mantenir el paràmetre nom/nombre segons l'idioma
+            if (params.has('nom')) {
+                extra = '?' + (lang === 'ca' ? 'nom' : 'nombre') + '=' + encodeURIComponent(params.get('nom'));
+            } else if (params.has('nombre')) {
+                extra = '?' + (lang === 'ca' ? 'nom' : 'nombre') + '=' + encodeURIComponent(params.get('nombre'));
             }
         }
         if (lang === 'es') {

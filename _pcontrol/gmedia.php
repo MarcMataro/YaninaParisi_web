@@ -176,19 +176,32 @@ $isPickerMode = isset($_GET['picker']) && $_GET['picker'] == '1';
 $imgBaseDir = realpath(__DIR__ . '/../img');
 $imgBaseDir = str_replace('\\', '/', $imgBaseDir);
 
-// En mode picker, SEMPRE mostrar només la carpeta de l'usuari (inclús per admins)
-// Això assegura que cada usuari només pot seleccionar imatges de la seva pròpia carpeta
+// En mode picker, determinar el comportament segons el rol i el paràmetre admin_picker
+// Si és admin/superadmin i es passa admin_picker=1, pot veure tot img/
+// En cas contrari, només veu la seva carpeta personal
 if ($isPickerMode) {
-    $userBaseDir = $imgBaseDir . '/user_' . $userId;
-    $defaultPath = 'user_' . $userId;
-    $isAdmin = false; // Forçar comportament no-admin en mode picker
+    $adminPicker = isset($_GET['admin_picker']) && $_GET['admin_picker'] == '1';
     
-    // Crear carpeta si no existeix
-    if (!is_dir($userBaseDir)) {
-        mkdir($userBaseDir, 0755, true);
-        chmod($userBaseDir, 0755);
-        file_put_contents($userBaseDir . '/.htaccess', "# Carpeta personal de l'usuari\nOptions +Indexes\n");
-        chmod($userBaseDir . '/.htaccess', 0644);
+    if ($isAdmin && $adminPicker) {
+        // Admins amb admin_picker=1 poden veure tot /img
+        $userBaseDir = $imgBaseDir;
+        $defaultPath = '';
+    } else {
+        // Resta d'usuaris: només la seva carpeta personal
+        $userBaseDir = $imgBaseDir . '/user_' . $userId;
+        $defaultPath = 'user_' . $userId;
+        $isAdmin = false; // Forçar comportament no-admin per usuaris normals
+        
+        // Crear carpeta si no existeix
+        if (!is_dir($userBaseDir)) {
+            if (@mkdir($userBaseDir, 0755, true)) {
+                chmod($userBaseDir, 0755);
+                file_put_contents($userBaseDir . '/.htaccess', "# Carpeta personal de l'usuari\nOptions +Indexes\n");
+                chmod($userBaseDir . '/.htaccess', 0644);
+            } else {
+                error_log("No s'ha pogut crear la carpeta d'usuari: " . $userBaseDir);
+            }
+        }
     }
 } else {
     // Mode normal: determinar directori inicial segons el rol
@@ -203,10 +216,13 @@ if ($isPickerMode) {
         
         // Crear carpeta si no existeix
         if (!is_dir($userBaseDir)) {
-            mkdir($userBaseDir, 0755, true);
-            chmod($userBaseDir, 0755);
-            file_put_contents($userBaseDir . '/.htaccess', "# Carpeta personal de l'usuari\nOptions +Indexes\n");
-            chmod($userBaseDir . '/.htaccess', 0644);
+            if (@mkdir($userBaseDir, 0755, true)) {
+                chmod($userBaseDir, 0755);
+                file_put_contents($userBaseDir . '/.htaccess', "# Carpeta personal de l'usuari\nOptions +Indexes\n");
+                chmod($userBaseDir . '/.htaccess', 0644);
+            } else {
+                error_log("No s'ha pogut crear la carpeta d'usuari: " . $userBaseDir);
+            }
         }
     }
 }
@@ -253,8 +269,66 @@ if (!$isAdmin) {
     }
 }
 
+// Verificar que la carpeta de destí existeix, si no, intentar crear-la
+$folderCreationError = null;
+if (!is_dir($fullPath)) {
+    if ($fullPath === $userBaseDir || strpos($fullPath, $userBaseDir) === 0) {
+        // Intentar crear la carpeta d'usuari amb permisos màxims temporalment
+        $oldUmask = umask(0); // Permetre crear amb qualsevol permís
+        
+        if (@mkdir($fullPath, 0777, true)) {
+            // Carpeta creada, ara ajustar permisos de manera segura
+            @chmod($fullPath, 0755);
+            
+            // Crear .htaccess per permetre llistat
+            $htaccessContent = "# Carpeta personal de l'usuari\nOptions +Indexes\n";
+            @file_put_contents($fullPath . '/.htaccess', $htaccessContent);
+            @chmod($fullPath . '/.htaccess', 0644);
+            
+            umask($oldUmask); // Restaurar umask
+            
+            error_log("Carpeta d'usuari creada correctament: $fullPath");
+        } else {
+            umask($oldUmask); // Restaurar umask en cas d'error
+            
+            // Obtenir més informació sobre el problema
+            $error = error_get_last();
+            $parentDir = dirname($fullPath);
+            
+            $errorDetails = [];
+            if (!is_dir($parentDir)) {
+                $errorDetails[] = "La carpeta pare no existeix: $parentDir";
+            }
+            if (is_dir($parentDir) && !is_writable($parentDir)) {
+                $errorDetails[] = "No tens permisos d'escriptura a: $parentDir";
+            }
+            if ($error) {
+                $errorDetails[] = $error['message'];
+            }
+            
+            $folderCreationError = "No s'ha pogut crear la carpeta d'usuari. " . 
+                                    (!empty($errorDetails) ? implode('. ', $errorDetails) : 'Contacta amb l\'administrador.');
+            
+            error_log("Error creant carpeta d'usuari: $fullPath. Detalls: " . implode(', ', $errorDetails));
+        }
+    } else {
+        // Per altres carpetes, simplement marcar l'error
+        $folderCreationError = "La carpeta no existeix: " . basename($fullPath);
+        error_log("Carpeta no existent: $fullPath");
+        // Redirigir a la carpeta pare si és possible
+        $parentPath = dirname($requestedPath);
+        $fullPath = $imgBaseDir . ($parentPath !== '.' ? '/' . $parentPath : '');
+        if (!is_dir($fullPath)) {
+            $fullPath = $isAdmin ? $imgBaseDir : $userBaseDir;
+        }
+    }
+}
+
 // Processar accions AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    // Iniciar output buffering per evitar que warnings trenquin el JSON
+    ob_start();
+    
     header('Content-Type: application/json');
     
     $action = $_POST['action'];
@@ -265,22 +339,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $folderName = preg_replace('/[^A-Za-z0-9_-]/', '_', $folderName);
             
             if (empty($folderName)) {
+                ob_end_clean();
                 echo json_encode(['success' => false, 'message' => 'Nom de carpeta no vàlid']);
+                exit;
+            }
+            
+            // Verificar que la carpeta pare existeix
+            if (!is_dir($fullPath)) {
+                ob_end_clean();
+                error_log("Carpeta pare no existeix: $fullPath");
+                echo json_encode(['success' => false, 'message' => 'La carpeta pare no existeix: ' . $fullPath]);
+                exit;
+            }
+            
+            // Verificar permisos d'escriptura
+            if (!is_writable($fullPath)) {
+                ob_end_clean();
+                error_log("No hi ha permisos d'escriptura a: $fullPath");
+                echo json_encode(['success' => false, 'message' => 'No tens permisos d\'escriptura a la carpeta pare']);
                 exit;
             }
             
             $newFolderPath = $fullPath . '/' . $folderName;
             
             if (file_exists($newFolderPath)) {
+                ob_end_clean();
                 echo json_encode(['success' => false, 'message' => 'La carpeta ja existeix']);
                 exit;
             }
             
-            if (mkdir($newFolderPath, 0755)) {
+            if (@mkdir($newFolderPath, 0755)) {
                 chmod($newFolderPath, 0755);
+                ob_end_clean();
                 echo json_encode(['success' => true, 'message' => 'Carpeta creada']);
             } else {
-                echo json_encode(['success' => false, 'message' => 'Error creant carpeta']);
+                $error = error_get_last();
+                $errorMsg = 'Error creant carpeta';
+                
+                if ($error && isset($error['message'])) {
+                    $errorMsg .= ': ' . $error['message'];
+                }
+                
+                error_log("Error creant carpeta $newFolderPath: " . ($error['message'] ?? 'desconegut'));
+                ob_end_clean();
+                echo json_encode(['success' => false, 'message' => $errorMsg]);
             }
             exit;
             
@@ -298,7 +400,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             
             for ($i = 0; $i < $fileCount; $i++) {
                 if ($files['error'][$i] !== UPLOAD_ERR_OK) {
-                    $errors[] = $files['name'][$i] . ': Error de pujada';
+                    $uploadError = '';
+                    switch ($files['error'][$i]) {
+                        case UPLOAD_ERR_INI_SIZE:
+                        case UPLOAD_ERR_FORM_SIZE:
+                            $uploadError = 'El fitxer és massa gran';
+                            break;
+                        case UPLOAD_ERR_PARTIAL:
+                            $uploadError = 'El fitxer només es va pujar parcialment';
+                            break;
+                        case UPLOAD_ERR_NO_FILE:
+                            $uploadError = 'No s\'ha pujat cap fitxer';
+                            break;
+                        case UPLOAD_ERR_NO_TMP_DIR:
+                            $uploadError = 'Falta la carpeta temporal';
+                            break;
+                        case UPLOAD_ERR_CANT_WRITE:
+                            $uploadError = 'Error d\'escriptura al disc';
+                            break;
+                        case UPLOAD_ERR_EXTENSION:
+                            $uploadError = 'Una extensió de PHP va aturar la pujada';
+                            break;
+                        default:
+                            $uploadError = 'Error desconegut (' . $files['error'][$i] . ')';
+                    }
+                    $errors[] = $files['name'][$i] . ': ' . $uploadError;
                     continue;
                 }
                 
@@ -306,13 +432,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $fileName = preg_replace('/[^A-Za-z0-9._-]/', '_', $fileName);
                 $targetPath = $fullPath . '/' . $fileName;
                 
+                // Verificar permisos abans d'intentar moure
+                if (!is_writable($fullPath)) {
+                    $errors[] = $fileName . ': No tens permisos d\'escriptura a la carpeta de destí';
+                    continue;
+                }
+                
                 if (move_uploaded_file($files['tmp_name'][$i], $targetPath)) {
                     chmod($targetPath, 0644);
                     // Optimitzar imatge si és necessari
                     optimizeImageIfNeeded($targetPath);
                     $uploaded[] = $fileName;
                 } else {
-                    $errors[] = $fileName . ': Error movent fitxer';
+                    $phpError = error_get_last();
+                    $errorDetail = $phpError && isset($phpError['message']) ? ': ' . $phpError['message'] : '';
+                    $errors[] = $fileName . ': Error movent fitxer' . $errorDetail;
+                    error_log("Error movent fitxer $fileName a $targetPath" . $errorDetail);
                 }
             }
             
@@ -827,7 +962,17 @@ foreach ($pathParts as $index => $part) {
         </header>
         
         <div class="content-wrapper media-explorer">
-            <div id="alertContainer"></div>
+            <div id="alertContainer">
+                <?php if ($folderCreationError): ?>
+                    <div class="alert alert-warning" style="margin-bottom: 20px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Avís:</strong> <?php echo htmlspecialchars($folderCreationError); ?>
+                        <p style="margin-top: 10px; font-size: 0.9em;">
+                            Verifica que el servidor web té permisos d'escriptura a la carpeta <code><?php echo htmlspecialchars($imgBaseDir); ?></code>
+                        </p>
+                    </div>
+                <?php endif; ?>
+            </div>
             
             <!-- Breadcrumb Navigation -->
             <div class="breadcrumb">
@@ -905,9 +1050,16 @@ foreach ($pathParts as $index => $part) {
                     $isImage = in_array($file['extension'], ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']);
                     $relativePath = str_replace($imgBaseDir, '', $fullPath) . '/' . $file['name'];
                     $relativePath = ltrim($relativePath, '/');
+                    
+                    // Construir URL completa per a la imatge
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                    $host = $_SERVER['HTTP_HOST'];
+                    $pathParts = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+                    $basePath = (count($pathParts) > 1 && $pathParts[0] !== '_pcontrol') ? '/' . $pathParts[0] : '';
+                    $imageUrl = $protocol . '://' . $host . $basePath . '/img/' . $relativePath;
                     ?>
                     <div class="media-item" data-type="file" data-name="<?php echo htmlspecialchars($file['name']); ?>"
-                         data-url="/img/<?php echo htmlspecialchars($relativePath); ?>"
+                         data-url="<?php echo htmlspecialchars($imageUrl); ?>"
                          onclick="<?php echo $isPickerMode ? 'selectImage(this, event)' : 'toggleSelect(this, event)'; ?>">
                         <div class="media-icon">
                             <?php if ($isImage): ?>
@@ -1048,7 +1200,20 @@ foreach ($pathParts as $index => $part) {
                     body: formData
                 });
                 
-                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status + ' ' + response.statusText);
+                }
+                
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Invalid JSON response:', responseText);
+                    throw new Error('Resposta no vàlida del servidor. Comprova la consola per més detalls.');
+                }
                 
                 if (result.success) {
                     showAlert('success', result.message);
@@ -1058,7 +1223,8 @@ foreach ($pathParts as $index => $part) {
                     showAlert('danger', result.message);
                 }
             } catch (error) {
-                showAlert('danger', 'Error de connexió');
+                console.error('Error creant carpeta:', error);
+                showAlert('danger', 'Error: ' + error.message);
             }
         }
         
@@ -1085,6 +1251,10 @@ foreach ($pathParts as $index => $part) {
                     body: formData
                 });
                 
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status + ' ' + response.statusText);
+                }
+                
                 const result = await response.json();
                 
                 if (result.success) {
@@ -1095,7 +1265,8 @@ foreach ($pathParts as $index => $part) {
                     showAlert('danger', result.errors.join(', '));
                 }
             } catch (error) {
-                showAlert('danger', 'Error de connexió');
+                console.error('Error pujant fitxers:', error);
+                showAlert('danger', 'Error de connexió: ' + error.message);
             }
         }
         
@@ -1119,12 +1290,17 @@ foreach ($pathParts as $index => $part) {
                         body: formData
                     });
                     
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    
                     const result = await response.json();
                     if (!result.success) {
-                        showAlert('danger', 'Error eliminant ' + itemName);
+                        showAlert('danger', 'Error eliminant ' + itemName + ': ' + (result.message || 'Error desconegut'));
                     }
                 } catch (error) {
-                    showAlert('danger', 'Error de connexió');
+                    console.error('Error eliminant element:', error);
+                    showAlert('danger', 'Error de connexió: ' + error.message);
                 }
             }
             

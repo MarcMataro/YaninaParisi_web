@@ -1261,7 +1261,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
                     file_picker_callback: function(callback, value, meta) {
                         if (meta.filetype === 'image') {
                             console.log('[gblog] opening media picker...');
-                            var picker = window.open('gmedia.php?picker=1', 'MediaPicker', 'width=900,height=600');
+                            var picker = window.open('gmedia.php?picker=1&admin_picker=1', 'MediaPicker', 'width=900,height=600');
                             function receive(e) {
                                 console.log('[gblog] message received from picker:', e);
                                 // Basic origin check - allow same origin or any for debugging (adjust to specific origin in production)
@@ -1306,7 +1306,7 @@ $estats = ['Todos', 'Publicado', 'Borrador', 'Revisar'];
             // --- Media picker helper for cover image selection (non-TinyMCE) ---
             function openMediaPickerFor(callback) {
                 try {
-                    var picker = window.open('gmedia.php?picker=1', 'MediaPicker', 'width=900,height=600');
+                    var picker = window.open('gmedia.php?picker=1&admin_picker=1', 'MediaPicker', 'width=900,height=600');
                 } catch (err) {
                     console.error('open popup failed', err);
                     return;
