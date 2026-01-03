@@ -18,8 +18,8 @@ if ($user_role === 'seo_manager') {
 
 // Editor restrictions
 if ($user_role === 'editor') {
-    // Allow Blog page and logout
-    $allowed_editor = ['gblog.php', 'logout.php'];
+    // Allow Blog, FAQ, Media pages and logout
+    $allowed_editor = ['gblog.php', 'gfaq.php', 'gmedia.php', 'logout.php'];
     if (!in_array($current_script, $allowed_editor)) {
         header('Location: gblog.php');
         exit;

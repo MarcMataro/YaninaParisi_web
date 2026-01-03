@@ -162,7 +162,7 @@ if (isset($_GET['lang'])) {
     <?php include '_includes/navigation.php'; ?>
     <!-- Hero Section Blog -->
     <section class="hero blog-hero">
-        <img src="../img/Portada.jpg" alt="Portada" class="hero-img">
+        <img src="<?php echo htmlspecialchars(resolve_media_url('img/IMG_2285.png')); ?>" alt="Portada" class="hero-img">
         <div class="container hero-content">
             <h1 class="hero-title"><?php echo htmlspecialchars(isset($pagina_seo) && $pagina_seo instanceof SEO_OnPage ? $pagina_seo->getH1($lang) : t('nav_blog')); ?></h1>
             <h2 class="hero-subtitle">

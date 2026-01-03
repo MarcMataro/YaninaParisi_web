@@ -221,6 +221,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'actualitzar_entrada':
             $id = (int)($_POST['id'] ?? 0);
             if ($entradaModel->llegirUn($id)) {
+                // Verificar permisos: Editors només poden editar les seves pròpies entrades
+                $user_role = $_SESSION['user_role'] ?? 'viewer';
+                if ($user_role === 'editor' && $entradaModel->id_autor != $_SESSION['user_id']) {
+                    echo json_encode(['success' => false, 'message' => 'No tienes permisos para editar esta entrada']);
+                    exit;
+                }
+                
                 // Actualitzar dades bàsiques
                 $entradaModel->titol_ca = $_POST['titol_ca'] ?? $entradaModel->titol_ca;
                 $entradaModel->titol_es = $_POST['titol_es'] ?? $entradaModel->titol_es;
@@ -284,6 +291,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 error_log("Entrada trobada: " . ($entrada ? "SI" : "NO"));
                 
                 if ($entrada) {
+                    // Verificar permisos: Editors només poden obtenir les seves pròpies entrades
+                    $user_role = $_SESSION['user_role'] ?? 'viewer';
+                    if ($user_role === 'editor' && $entradaModel->id_autor != $_SESSION['user_id']) {
+                        echo json_encode(['success' => false, 'message' => 'No tienes permisos para ver esta entrada']);
+                        exit;
+                    }
+                    
                     error_log("Obtenint categories de l'entrada...");
                     // Obtenir categories de l'entrada (només IDs)
                     $categoriesData = $relCatEntModel->obtenirCategoriesEntrada($id, 'es', false);
@@ -322,6 +336,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 if (isset($_POST['data_desde'])) $filtres['data_desde'] = $_POST['data_desde'];
                 if (isset($_POST['data_fins'])) $filtres['data_fins'] = $_POST['data_fins'];
                 
+                // Si és Editor, només mostrar les seves pròpies entrades
+                $user_role = $_SESSION['user_role'] ?? 'viewer';
+                if ($user_role === 'editor') {
+                    $filtres['id_autor'] = $_SESSION['user_id'] ?? null;
+                }
+                
                 $limit = isset($_POST['limit']) ? (int)$_POST['limit'] : 50;
                 $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
                 $orderBy = $_POST['orderBy'] ?? 'data_creacio';
@@ -347,6 +367,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'canviar_estat_entrada':
             $id = (int)($_POST['id'] ?? 0);
             $nouEstat = $_POST['nou_estat'] ?? '';
+            
+            // Verificar permisos: Editors només poden canviar l'estat de les seves pròpies entrades
+            $user_role = $_SESSION['user_role'] ?? 'viewer';
+            if ($user_role === 'editor') {
+                $entradaTemp = $entradaModel->llegirUn($id);
+                if ($entradaTemp && $entradaModel->id_autor != $_SESSION['user_id']) {
+                    echo json_encode(['success' => false, 'message' => 'No tienes permisos para cambiar el estado de esta entrada']);
+                    exit;
+                }
+            }
+            
             if ($entradaModel->canviarEstat($id, $nouEstat)) {
                 echo json_encode(['success' => true, 'message' => "Entrada cambiada a estado: {$nouEstat}"]);
             } else {
@@ -442,6 +473,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $id = (int)($_POST['id'] ?? 0);
                 error_log("ID a eliminar: " . $id);
                 
+                // Verificar permisos: Editors només poden eliminar les seves pròpies entrades
+                $user_role = $_SESSION['user_role'] ?? 'viewer';
+                if ($user_role === 'editor') {
+                    $entradaTemp = $entradaModel->llegirUn($id);
+                    if ($entradaTemp && $entradaModel->id_autor != $_SESSION['user_id']) {
+                        echo json_encode(['success' => false, 'message' => 'No tienes permisos para eliminar esta entrada']);
+                        exit;
+                    }
+                }
+                
                 if ($entradaModel->eliminar($id)) {
                     error_log("Entrada eliminada correctament");
                     echo json_encode(['success' => true, 'message' => 'Entrada eliminada correctamente']);
@@ -483,12 +524,17 @@ try {
     // Verificar si la taula blog_entrades existeix
     $stmt = $pdo->query("SHOW TABLES LIKE 'blog_entrades'");
     if ($stmt->rowCount() > 0) {
+        // Si és Editor, filtrar per les seves pròpies entrades
+        $user_role = $_SESSION['user_role'] ?? 'viewer';
+        $user_id = $_SESSION['user_id'] ?? null;
+        $whereClause = ($user_role === 'editor' && $user_id) ? "WHERE id_autor = $user_id" : "";
+        
         $stmt = $pdo->query("SELECT 
             COUNT(*) as total,
             SUM(CASE WHEN estat = 'publicat' THEN 1 ELSE 0 END) as publicats,
             SUM(CASE WHEN estat = 'esborrany' THEN 1 ELSE 0 END) as esborranys,
             SUM(COALESCE(visualitzacions, 0)) as total_visualitzacions
-            FROM blog_entrades");
+            FROM blog_entrades $whereClause");
         $statsData = $stmt->fetch(PDO::FETCH_ASSOC);
         
         $stats = [

@@ -114,6 +114,8 @@ body {
     width: 18px;
     text-align: center;
     line-height: 1;
+    font-weight: 900 !important;
+    font-style: normal !important;
 }
 
 .sidebar-footer {

@@ -34,13 +34,20 @@ $user_role = $_SESSION['user_role'] ?? 'viewer';
         <?php endif; ?>
 
         <?php if ($user_role !== 'seo_manager'): ?>
-        <a href="gblog.php" class="nav-item <?php echo ($current_page == 'blog.php') ? 'active' : ''; ?>">
+        <a href="gblog.php" class="nav-item <?php echo ($current_page == 'gblog.php') ? 'active' : ''; ?>">
             <i class="fas fa-blog"></i>
             <span>Blog</span>
         </a>
         <?php endif; ?>
 
-        <?php if ($user_role !== 'seo_manager' && $user_role !== 'editor'): ?>
+        <?php if ($user_role !== 'seo_manager'): ?>
+        <a href="gfaq.php" class="nav-item <?php echo ($current_page == 'gfaq.php') ? 'active' : ''; ?>">
+            <i class="fas fa-question-circle"></i>
+            <span>FAQ's</span>
+        </a>
+        <?php endif; ?>
+
+        <?php if ($user_role !== 'seo_manager'): ?>
         <a href="gmedia.php" class="nav-item <?php echo ($current_page == 'gmedia.php') ? 'active' : ''; ?>">
             <i class="fas fa-images"></i>
             <span>Media</span>
@@ -66,10 +73,6 @@ $user_role = $_SESSION['user_role'] ?? 'viewer';
         <a href="gtarifas.php" class="nav-item <?php echo ($current_page == 'tarifas.php') ? 'active' : ''; ?>">
             <i class="fas fa-calculator"></i>
             <span>Tarifas</span>
-        </a>
-        <a href="gfaq.php" class="nav-item <?php echo ($current_page == 'gfaq.php') ? 'active' : ''; ?>">
-            <i class="fas fa-question-circle"></i>
-            <span>FAQ's</span>
         </a>
         <a href="configuracion.php" class="nav-item <?php echo ($current_page == 'configuracion.php') ? 'active' : ''; ?>">
             <i class="fas fa-cog"></i>

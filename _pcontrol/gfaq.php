@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $faqModel->meta_description_es = $_POST['meta_description_es'] ?? null;
             $faqModel->slug_ca = $_POST['slug_ca'] ?? null;
             $faqModel->slug_es = $_POST['slug_es'] ?? null;
+            $faqModel->id_usuario = $_SESSION['user_id'] ?? null;
 
             $id = $faqModel->crear();
             if ($id) {
@@ -76,6 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'actualizar':
             $faqModel->id_faq = $_POST['id_faq'] ?? 0;
+            
+            // Verificar permisos: Editors només poden editar les seves pròpies FAQs
+            $user_role = $_SESSION['user_role'] ?? 'viewer';
+            if ($user_role === 'editor') {
+                $faqExistent = $faqModel->obtenirPerId($faqModel->id_faq);
+                if (!$faqExistent || $faqExistent['id_usuario'] != $_SESSION['user_id']) {
+                    $mensaje = 'No tienes permisos para editar esta FAQ.';
+                    $tipoMensaje = 'error';
+                    header('Location: gfaq.php?msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
+                    exit;
+                }
+            }
+            
             $faqModel->pregunta_ca = $_POST['pregunta_ca'] ?? '';
             $faqModel->pregunta_es = $_POST['pregunta_es'] ?? '';
             $faqModel->resposta_ca = $_POST['resposta_ca'] ?? '';
@@ -104,6 +118,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'eliminar':
             $idEliminar = $_POST['id_faq'] ?? 0;
+            
+            // Verificar permisos: Editors només poden eliminar les seves pròpies FAQs
+            $user_role = $_SESSION['user_role'] ?? 'viewer';
+            if ($user_role === 'editor') {
+                $faqExistent = $faqModel->obtenirPerId($idEliminar);
+                if (!$faqExistent || $faqExistent['id_usuario'] != $_SESSION['user_id']) {
+                    $mensaje = 'No tienes permisos para eliminar esta FAQ.';
+                    $tipoMensaje = 'error';
+                    header('Location: gfaq.php?msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
+                    exit;
+                }
+            }
+            
             if ($faqModel->eliminar($idEliminar)) {
                 $mensaje = 'FAQ eliminada correctamente.';
                 $tipoMensaje = 'success';
@@ -151,16 +178,35 @@ $filtroCategoria = $_GET['categoria'] ?? '';
 $filtroActiva = isset($_GET['activa']) ? $_GET['activa'] : '';
 $busqueda = $_GET['q'] ?? '';
 
+// Obtener rol del usuario
+$user_role = $_SESSION['user_role'] ?? 'viewer';
+$user_id = $_SESSION['user_id'] ?? null;
+
 // Obtener lista de FAQs según filtros
 $opts = [];
 if (!empty($filtroCategoria)) $opts['categoria'] = $filtroCategoria;
 if ($filtroActiva !== '') $opts['activa'] = $filtroActiva === '1' ? true : false;
+
+// Si es Editor, filtrar por sus propias FAQs
+if ($user_role === 'editor' && $user_id) {
+    $opts['id_usuario'] = $user_id;
+}
+
 // Nota: búsqueda por texto simple en pregunta_es
 if (!empty($busqueda)) {
     // búsqueda simple: utilizamos LIKE sobre pregunta_es
-    $sql = "SELECT * FROM faqs WHERE pregunta_es LIKE :q OR resposta_es LIKE :q ORDER BY categoria, ordre, id_faq";
+    $sql = "SELECT * FROM faqs WHERE pregunta_es LIKE :q OR resposta_es LIKE :q";
+    // Si es Editor, añadir filtro de usuario
+    if ($user_role === 'editor' && $user_id) {
+        $sql .= " AND id_usuario = :id_usuario";
+    }
+    $sql .= " ORDER BY categoria, ordre, id_faq";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':q' => "%{$busqueda}%"]);
+    $params = [':q' => "%{$busqueda}%"];
+    if ($user_role === 'editor' && $user_id) {
+        $params[':id_usuario'] = $user_id;
+    }
+    $stmt->execute($params);
     $faqs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
     $faqs = $faqModel->llistar($opts);
@@ -170,6 +216,13 @@ if (!empty($busqueda)) {
 $faqEditar = null;
 if ($vista === 'editar' && $idEditar) {
     $faqEditar = $faqModel->obtenirPerId($idEditar);
+    
+    // Verificar permisos: Editors només poden editar les seves pròpies FAQs
+    if ($user_role === 'editor' && $faqEditar && $faqEditar['id_usuario'] != $user_id) {
+        $faqEditar = null;
+        $mensaje = 'No tienes permisos para editar esta FAQ.';
+        $tipoMensaje = 'error';
+    }
 }
 
 ?>
@@ -179,7 +232,7 @@ if ($vista === 'editar' && $idEditar) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Gestión de FAQs - Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">

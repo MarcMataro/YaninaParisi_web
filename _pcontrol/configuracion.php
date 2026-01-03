@@ -323,6 +323,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            // Check if user has associated content (blog entries or FAQs)
+            $contingut = $usersModel->teContingutAssociat();
+            if ($contingut['tiene_contenido']) {
+                $msg = urlencode("No se puede eliminar este usuario porque tiene {$contingut['blog']} entradas de blog y {$contingut['faqs']} FAQs asociadas.");
+                header("Location: configuracion.php?user_error=contenido&msg=$msg");
+                exit;
+            }
+
             $res = $usersModel->eliminar(true); // hard delete
             if ($res) {
                 header('Location: configuracion.php?user_deleted=1');
@@ -368,6 +376,9 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
     if (isset($_GET['user_error'])) {
         $msg = htmlspecialchars($_GET['user_error']);
         if ($_GET['user_error'] === 'permisos') $msg = 'No tens permisos per realitzar aquesta acció sobre un Superadmin.';
+        if ($_GET['user_error'] === 'contenido' && isset($_GET['msg'])) {
+            $msg = htmlspecialchars($_GET['msg']);
+        }
         $flash[] = ['type' => 'danger', 'text' => 'Error en operació d\'usuari: ' . $msg];
     }
     // Tarifes flash messages removed

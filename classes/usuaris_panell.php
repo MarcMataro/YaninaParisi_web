@@ -165,10 +165,61 @@ class UsuarisPanell {
 
 		if ($stmt->execute()) {
 			$this->id_usuario = $this->conn->lastInsertId();
+			
+			// Crear carpeta personal de l'usuari: inicial del nom + primer cognom
+			$this->crearCarpetaUsuari();
+			
 			return $this->id_usuario;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Crea una carpeta personal per a l'usuari dins de /img
+	 * Format: user_{id} (exemple: user_5)
+	 * 
+	 * @return bool True si s'ha creat o ja existeix, false si hi ha error
+	 */
+	private function crearCarpetaUsuari() {
+		if (empty($this->id_usuario)) {
+			return false;
+		}
+
+		// Crear nom de carpeta amb l'ID
+		$nomCarpeta = 'user_' . $this->id_usuario;
+		
+		// Ruta completa
+		$rutaBase = __DIR__ . '/../img';
+		$rutaCarpeta = $rutaBase . '/' . $nomCarpeta;
+		
+		// Crear carpeta si no existeix
+		if (!file_exists($rutaCarpeta)) {
+			if (mkdir($rutaCarpeta, 0755, true)) {
+				// Crear un fitxer .htaccess per permetre accés
+				file_put_contents($rutaCarpeta . '/.htaccess', "# Carpeta personal de l'usuari\nOptions +Indexes\n");
+				return true;
+			}
+			return false;
+		}
+		
+		return true; // Ja existeix
+	}
+
+	/**
+	 * Obté la ruta de la carpeta personal de l'usuari
+	 * 
+	 * @param int|null $idUsuario ID de l'usuari (si null, usa $this->id_usuario)
+	 * @return string|false Ruta relativa de la carpeta (img/user_X) o false si no hi ha ID
+	 */
+	public function obtenirRutaCarpeta($idUsuario = null) {
+		$id = $idUsuario ?? $this->id_usuario;
+		
+		if (empty($id)) {
+			return false;
+		}
+		
+		return 'img/user_' . $id;
 	}
 
 	/**
@@ -269,16 +320,50 @@ class UsuarisPanell {
 	}
 
 	/**
+	 * Verifica si l'usuari té contingut associat (entrades de blog o FAQs)
+	 * 
+	 * @return array Retorna ['tiene_contenido' => bool, 'blog' => int, 'faqs' => int]
+	 */
+	public function teContingutAssociat() {
+		if (empty($this->id_usuario)) {
+			return ['tiene_contenido' => false, 'blog' => 0, 'faqs' => 0];
+		}
+
+		// Comptar entrades de blog
+		$sqlBlog = "SELECT COUNT(*) as total FROM blog_entrades WHERE id_autor = :id_usuario";
+		$stmtBlog = $this->conn->prepare($sqlBlog);
+		$stmtBlog->bindValue(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+		$stmtBlog->execute();
+		$totalBlog = (int)$stmtBlog->fetch(PDO::FETCH_ASSOC)['total'];
+
+		// Comptar FAQs
+		$sqlFaqs = "SELECT COUNT(*) as total FROM faqs WHERE id_usuario = :id_usuario";
+		$stmtFaqs = $this->conn->prepare($sqlFaqs);
+		$stmtFaqs->bindValue(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+		$stmtFaqs->execute();
+		$totalFaqs = (int)$stmtFaqs->fetch(PDO::FETCH_ASSOC)['total'];
+
+		return [
+			'tiene_contenido' => ($totalBlog > 0 || $totalFaqs > 0),
+			'blog' => $totalBlog,
+			'faqs' => $totalFaqs
+		];
+	}
+
+	/**
 	 * Desactivar (marcar inactiu) o eliminar usuari
 	 * Recomanat utilitzar desactivació en comptes d'eliminar físicament.
 	 *
-	 * @param bool $hard Si true, s'elimina físicament (DELETE). Si false, es marca `activo` = false.
+	 * @param bool $hard Si true, s'elimina físicament (DELETE) i també la carpeta. Si false, es marca `activo` = false.
 	 * @return bool
 	 */
 	public function eliminar($hard = false) {
 		if (empty($this->id_usuario)) return false;
 
 		if ($hard) {
+			// Eliminar carpeta de l'usuari primer
+			$this->eliminarCarpetaUsuari();
+			
 			$sql = "DELETE FROM {$this->table} WHERE id_usuario = :id_usuario";
 			$stmt = $this->conn->prepare($sql);
 			$stmt->bindValue(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
@@ -289,6 +374,66 @@ class UsuarisPanell {
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindValue(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
 		return $stmt->execute();
+	}
+
+	/**
+	 * Elimina recursivament la carpeta de l'usuari i tot el seu contingut
+	 * 
+	 * @return bool True si s'ha eliminat o no existia, false si hi ha error
+	 */
+	private function eliminarCarpetaUsuari() {
+		if (empty($this->id_usuario)) {
+			return false;
+		}
+
+		$nomCarpeta = 'user_' . $this->id_usuario;
+		$rutaBase = __DIR__ . '/../img';
+		$rutaCarpeta = $rutaBase . '/' . $nomCarpeta;
+
+		// Si no existeix, retornar true (ja no hi és)
+		if (!file_exists($rutaCarpeta)) {
+			return true;
+		}
+
+		// Eliminar recursivament
+		return $this->eliminarDirectoriRecursiu($rutaCarpeta);
+	}
+
+	/**
+	 * Elimina recursivament un directori i tot el seu contingut
+	 * 
+	 * @param string $dir Ruta del directori a eliminar
+	 * @return bool
+	 */
+	private function eliminarDirectoriRecursiu($dir) {
+		if (!file_exists($dir)) {
+			return true;
+		}
+
+		if (!is_dir($dir)) {
+			return unlink($dir);
+		}
+
+		// Llegir tots els fitxers i subdirectoris
+		$items = scandir($dir);
+		foreach ($items as $item) {
+			if ($item === '.' || $item === '..') {
+				continue;
+			}
+
+			$path = $dir . DIRECTORY_SEPARATOR . $item;
+
+			if (is_dir($path)) {
+				// Cridar recursivament per subdirectoris
+				$this->eliminarDirectoriRecursiu($path);
+			} else {
+				// Eliminar fitxer
+				unlink($path);
+			}
+		}
+
+		// Finalment, eliminar el directori buit
+		return rmdir($dir);
 	}
 
 	// ==============================

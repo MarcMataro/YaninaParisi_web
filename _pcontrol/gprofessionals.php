@@ -74,6 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 case 'crear':
                     $profModel->setNom($_POST['nom'] ?? '');
                     $profModel->setCognoms($_POST['cognoms'] ?? '');
+                    $profModel->setSubtitolCa($_POST['subtitol_ca'] ?? null);
+                    $profModel->setSubtitolEs($_POST['subtitol_es'] ?? null);
                     $profModel->setEmail($_POST['email'] ?? '');
                     $profModel->setTelefon($_POST['telefon'] ?? null);
                     $profModel->setDescripcio($_POST['descripcio'] ?? null);
@@ -101,6 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($id && $profModel->llegirPerId($id)) {
                         $profModel->setNom($_POST['nom'] ?? '');
                         $profModel->setCognoms($_POST['cognoms'] ?? '');
+                        $profModel->setSubtitolCa($_POST['subtitol_ca'] ?? null);
+                        $profModel->setSubtitolEs($_POST['subtitol_es'] ?? null);
                         $profModel->setEmail($_POST['email'] ?? '');
                         $profModel->setTelefon($_POST['telefon'] ?? null);
                         $profModel->setDescripcio($_POST['descripcio'] ?? null);
@@ -393,7 +397,7 @@ if ($vista === 'editar' && $idEditarEsp) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Gestión de Profesionales - Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -653,6 +657,16 @@ if ($vista === 'editar' && $idEditarEsp) {
                                     </div>
                                     
                                     <div class="form-group">
+                                        <label for="subtitol_ca">Subtítulo (Catalán)</label>
+                                        <input type="text" id="subtitol_ca" name="subtitol_ca" class="form-control" maxlength="50" placeholder="Ej: Psicòloga especialista">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="subtitol_es">Subtítulo (Español)</label>
+                                        <input type="text" id="subtitol_es" name="subtitol_es" class="form-control" maxlength="50" placeholder="Ej: Psicóloga especialista">
+                                    </div>
+                                    
+                                    <div class="form-group">
                                         <label for="email">Email *</label>
                                         <input type="email" id="email" name="email" class="form-control" required>
                                     </div>
@@ -900,6 +914,18 @@ if ($vista === 'editar' && $idEditarEsp) {
                                         <label for="cognoms">Apellidos *</label>
                                         <input type="text" id="cognoms" name="cognoms" class="form-control" 
                                                value="<?php echo htmlspecialchars($profEditar['cognoms']); ?>" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="subtitol_ca">Subtítulo (Catalán)</label>
+                                        <input type="text" id="subtitol_ca" name="subtitol_ca" class="form-control" maxlength="50"
+                                               value="<?php echo htmlspecialchars($profEditar['subtitol_ca'] ?? ''); ?>" placeholder="Ej: Psicòloga especialista">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="subtitol_es">Subtítulo (Español)</label>
+                                        <input type="text" id="subtitol_es" name="subtitol_es" class="form-control" maxlength="50"
+                                               value="<?php echo htmlspecialchars($profEditar['subtitol_es'] ?? ''); ?>" placeholder="Ej: Psicóloga especialista">
                                     </div>
                                     
                                     <div class="form-group">

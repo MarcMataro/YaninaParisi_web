@@ -9,6 +9,8 @@
  * - id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT
  * - nom VARCHAR(100) NOT NULL
  * - cognoms VARCHAR(150) NOT NULL
+ * - subtitol_ca VARCHAR(50)
+ * - subtitol_es VARCHAR(50)
  * - email VARCHAR(150) NOT NULL UNIQUE
  * - telefon VARCHAR(30)
  * - descripcio TEXT
@@ -41,6 +43,8 @@ class Professionals {
     private $id;
     private $nom;
     private $cognoms;
+    private $subtitol_ca;
+    private $subtitol_es;
     private $email;
     private $telefon;
     private $descripcio;
@@ -115,6 +119,20 @@ class Professionals {
      */
     public function getCognoms(): ?string {
         return $this->cognoms;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSubtitolCa(): ?string {
+        return $this->subtitol_ca;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSubtitolEs(): ?string {
+        return $this->subtitol_es;
     }
 
     /**
@@ -227,6 +245,20 @@ class Professionals {
     }
 
     /**
+     * @param string|null $subtitol_ca
+     */
+    public function setSubtitolCa(?string $subtitol_ca): void {
+        $this->subtitol_ca = $subtitol_ca ? trim($subtitol_ca) : null;
+    }
+
+    /**
+     * @param string|null $subtitol_es
+     */
+    public function setSubtitolEs(?string $subtitol_es): void {
+        $this->subtitol_es = $subtitol_es ? trim($subtitol_es) : null;
+    }
+
+    /**
      * @param string $email
      */
     public function setEmail(string $email): void {
@@ -320,6 +352,8 @@ class Professionals {
         $this->id = $data['id'] ?? null;
         $this->nom = $data['nom'] ?? null;
         $this->cognoms = $data['cognoms'] ?? null;
+        $this->subtitol_ca = $data['subtitol_ca'] ?? null;
+        $this->subtitol_es = $data['subtitol_es'] ?? null;
         $this->email = $data['email'] ?? null;
         $this->telefon = $data['telefon'] ?? null;
         $this->descripcio = $data['descripcio'] ?? null;
@@ -340,6 +374,8 @@ class Professionals {
         $this->id = null;
         $this->nom = null;
         $this->cognoms = null;
+        $this->subtitol_ca = null;
+        $this->subtitol_es = null;
         $this->email = null;
         $this->telefon = null;
         $this->descripcio = null;
@@ -431,10 +467,10 @@ class Professionals {
         }
 
         $sql = "INSERT INTO {$this->table} (
-                    nom, cognoms, email, telefon, descripcio, descripcio_es,
+                    nom, cognoms, subtitol_ca, subtitol_es, email, telefon, descripcio, descripcio_es,
                     num_collegiat, anys_experiencia, foto, actiu, visible_web
                 ) VALUES (
-                    :nom, :cognoms, :email, :telefon, :descripcio, :descripcio_es,
+                    :nom, :cognoms, :subtitol_ca, :subtitol_es, :email, :telefon, :descripcio, :descripcio_es,
                     :num_collegiat, :anys_experiencia, :foto, :actiu, :visible_web
                 )";
 
@@ -443,6 +479,8 @@ class Professionals {
             
             $stmt->bindValue(':nom', $this->sanitize($this->nom));
             $stmt->bindValue(':cognoms', $this->sanitize($this->cognoms));
+            $stmt->bindValue(':subtitol_ca', $this->subtitol_ca);
+            $stmt->bindValue(':subtitol_es', $this->subtitol_es);
             $stmt->bindValue(':email', $this->email);
             $stmt->bindValue(':telefon', $this->telefon);
             $stmt->bindValue(':descripcio', $this->descripcio);
@@ -574,6 +612,8 @@ class Professionals {
         $sql = "UPDATE {$this->table} SET
                     nom = :nom,
                     cognoms = :cognoms,
+                    subtitol_ca = :subtitol_ca,
+                    subtitol_es = :subtitol_es,
                     email = :email,
                     telefon = :telefon,
                     descripcio = :descripcio,
@@ -590,6 +630,8 @@ class Professionals {
             
             $stmt->bindValue(':nom', $this->sanitize($this->nom));
             $stmt->bindValue(':cognoms', $this->sanitize($this->cognoms));
+            $stmt->bindValue(':subtitol_ca', $this->subtitol_ca);
+            $stmt->bindValue(':subtitol_es', $this->subtitol_es);
             $stmt->bindValue(':email', $this->email);
             $stmt->bindValue(':telefon', $this->telefon);
             $stmt->bindValue(':descripcio', $this->descripcio);

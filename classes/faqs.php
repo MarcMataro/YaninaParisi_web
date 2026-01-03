@@ -60,6 +60,9 @@ class Faq {
     public $data_creacio;
     public $data_actualitzacio;
 
+    // 7. Usuari creador
+    public $id_usuario;
+
 
     // ==========================
     // Constructor
@@ -202,12 +205,12 @@ class Faq {
                     pregunta_ca, pregunta_es, resposta_ca, resposta_es,
                     categoria, ordre, activa, destacada,
                     meta_title_ca, meta_title_es, meta_description_ca, meta_description_es,
-                    slug_ca, slug_es, vegades_visualitzada, vegades_util
+                    slug_ca, slug_es, vegades_visualitzada, vegades_util, id_usuario
                 ) VALUES (
                     :pregunta_ca, :pregunta_es, :resposta_ca, :resposta_es,
                     :categoria, :ordre, :activa, :destacada,
                     :meta_title_ca, :meta_title_es, :meta_description_ca, :meta_description_es,
-                    :slug_ca, :slug_es, :vegades_visualitzada, :vegades_util
+                    :slug_ca, :slug_es, :vegades_visualitzada, :vegades_util, :id_usuario
                 )";
 
         $params = [
@@ -226,7 +229,8 @@ class Faq {
             ':slug_ca' => $this->slug_ca,
             ':slug_es' => $this->slug_es,
             ':vegades_visualitzada' => (int)$this->vegades_visualitzada,
-            ':vegades_util' => (int)$this->vegades_util
+            ':vegades_util' => (int)$this->vegades_util,
+            ':id_usuario' => $this->id_usuario
         ];
 
         $stmt = $this->conn->prepare($sql);
@@ -346,7 +350,7 @@ class Faq {
     /**
      * Llistar FAQs amb filtres senzills
      *
-     * @param array $opts Opcions: categoria, activa (bool|null), destacada (bool|null), limit, offset
+     * @param array $opts Opcions: categoria, activa (bool|null), destacada (bool|null), id_usuario, limit, offset
      * @return array|false Array de resultats o false
      */
     public function llistar($opts = []) {
@@ -364,6 +368,10 @@ class Faq {
         if (isset($opts['destacada'])) {
             $where[] = 'destacada = :destacada';
             $params[':destacada'] = $opts['destacada'] ? 1 : 0;
+        }
+        if (!empty($opts['id_usuario'])) {
+            $where[] = 'id_usuario = :id_usuario';
+            $params[':id_usuario'] = $opts['id_usuario'];
         }
 
         $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
