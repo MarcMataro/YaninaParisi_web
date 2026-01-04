@@ -89,16 +89,38 @@ $metaDescription = !empty($professional['subtitol_ca']) ? htmlspecialchars($prof
     <?php include '_includes/navigation.php'; ?>
 
     <!-- Hero Section amb foto del professional -->
-    <section class="professional-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))<?php if (!empty($professional['foto'])): ?>, url('../<?php echo htmlspecialchars($professional['foto']); ?>')<?php endif; ?>;">
+    <section class="professional-hero" style="background-image: linear-gradient(135deg, rgba(98, 66, 119, 0.85), rgba(171, 120, 141, 0.75))<?php if (!empty($professional['foto'])): ?>, url('../<?php echo htmlspecialchars($professional['foto']); ?>')<?php endif; ?>;">
+        <div class="hero-overlay"></div>
         <div class="container">
             <div class="professional-hero-content">
-                <h1><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
+                <div class="hero-badge fade-in-up">
+                    <i class="fas fa-user-md"></i>
+                    <span>Professional Col·legiat</span>
+                </div>
+                <h1 class="fade-in-up delay-1"><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
                 <?php if (!empty($professional['subtitol_ca'])): ?>
-                    <p class="professional-hero-subtitle">
+                    <p class="professional-hero-subtitle fade-in-up delay-2">
                         <?php echo htmlspecialchars($professional['subtitol_ca']); ?>
                     </p>
                 <?php endif; ?>
+                <div class="hero-stats fade-in-up delay-3">
+                    <?php if (!empty($professional['anys_experiencia'])): ?>
+                        <div class="stat-item">
+                            <div class="stat-number"><?php echo htmlspecialchars($professional['anys_experiencia']); ?>+</div>
+                            <div class="stat-label">Anys d'experiència</div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($professional['num_collegiat'])): ?>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-certificate"></i></div>
+                            <div class="stat-label">Col·legiat/da</div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
         </div>
     </section>
 
@@ -165,15 +187,103 @@ $metaDescription = !empty($professional['subtitol_ca']) ? htmlspecialchars($prof
                 <!-- Columna dreta: Descripció i contingut -->
                 <article class="professional-main-content">
                     <?php if (!empty($professional['descripcio'])): ?>
-                        <div class="content-section">
-                            <h2>Sobre mi</h2>
+                        <div class="content-section animate-on-scroll">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <h2>Sobre mi</h2>
+                            </div>
                             <div class="content-text">
                                 <?php echo nl2br(htmlspecialchars($professional['descripcio'])); ?>
                             </div>
                         </div>
                     <?php endif; ?>
                     
-                    <!-- Aquí es podran afegir més seccions en el futur: especialitats, certificacions, galeria de fotos, etc. -->
+                    <!-- Secció d'especialitats -->
+                    <div class="content-section animate-on-scroll">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h2>Àrees d'especialització</h2>
+                        </div>
+                        <div class="specialties-grid">
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h3>Teràpia individual</h3>
+                                <p>Acompanyament personalitzat per superar reptes emocionals i personals.</p>
+                            </div>
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3>Teràpia de parella</h3>
+                                <p>Millora de la comunicació i resolució de conflictes en les relacions.</p>
+                            </div>
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-child"></i>
+                                </div>
+                                <h3>Psicologia infantil</h3>
+                                <p>Atenció especialitzada per al desenvolupament emocional dels més petits.</p>
+                            </div>
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-mind-share"></i>
+                                </div>
+                                <h3>Gestió emocional</h3>
+                                <p>Tècniques per gestionar ansietat, estrès i altres estats emocionals.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Secció de metodologia -->
+                    <div class="content-section animate-on-scroll">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-compass"></i>
+                            </div>
+                            <h2>La meva metodologia</h2>
+                        </div>
+                        <div class="methodology-content">
+                            <div class="methodology-item">
+                                <div class="methodology-number">01</div>
+                                <div class="methodology-text">
+                                    <h3>Escolta activa</h3>
+                                    <p>Començo entenent la teva història i les teves necessitats úniques.</p>
+                                </div>
+                            </div>
+                            <div class="methodology-item">
+                                <div class="methodology-number">02</div>
+                                <div class="methodology-text">
+                                    <h3>Diagnòstic personalitzat</h3>
+                                    <p>Desenvolupo un pla d'acció adaptat als teus objectius específics.</p>
+                                </div>
+                            </div>
+                            <div class="methodology-item">
+                                <div class="methodology-number">03</div>
+                                <div class="methodology-text">
+                                    <h3>Acompanyament continu</h3>
+                                    <p>Et guio en el procés amb eines pràctiques i suport constant.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Call to action destacat -->
+                    <div class="content-cta animate-on-scroll">
+                        <div class="cta-content">
+                            <h3>Comença el teu camí cap al benestar</h3>
+                            <p>Estic aquí per acompanyar-te en aquest viatge de creixement personal.</p>
+                            <a href="contacta.php" class="cta-button">
+                                <i class="fas fa-calendar-check"></i>
+                                Reserva la teva primera sessió
+                            </a>
+                        </div>
+                    </div>
                 </article>
             </div>
             
@@ -190,5 +300,32 @@ $metaDescription = !empty($professional['subtitol_ca']) ? htmlspecialchars($prof
     
     <script src="../js/site-nav.js"></script>
     <script src="../js/language.js"></script>
+    
+    <script>
+    // Animacions scroll-triggered
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Smooth scroll per al hero indicator
+    document.querySelector('.hero-scroll-indicator')?.addEventListener('click', () => {
+        document.querySelector('.professional-detail').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    });
+    </script>
 </body>
 </html>

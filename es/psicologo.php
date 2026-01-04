@@ -89,16 +89,38 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
     <?php include '_includes/navigation.php'; ?>
 
     <!-- Hero Section con foto del profesional -->
-    <section class="professional-hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))<?php if (!empty($professional['foto'])): ?>, url('../<?php echo htmlspecialchars($professional['foto']); ?>')<?php endif; ?>;">
+    <section class="professional-hero" style="background-image: linear-gradient(135deg, rgba(98, 66, 119, 0.85), rgba(171, 120, 141, 0.75))<?php if (!empty($professional['foto'])): ?>, url('../<?php echo htmlspecialchars($professional['foto']); ?>')<?php endif; ?>;">
+        <div class="hero-overlay"></div>
         <div class="container">
             <div class="professional-hero-content">
-                <h1><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
+                <div class="hero-badge fade-in-up">
+                    <i class="fas fa-user-md"></i>
+                    <span>Profesional Colegiado</span>
+                </div>
+                <h1 class="fade-in-up delay-1"><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
                 <?php if (!empty($professional['subtitol_es'])): ?>
-                    <p class="professional-hero-subtitle">
+                    <p class="professional-hero-subtitle fade-in-up delay-2">
                         <?php echo htmlspecialchars($professional['subtitol_es']); ?>
                     </p>
                 <?php endif; ?>
+                <div class="hero-stats fade-in-up delay-3">
+                    <?php if (!empty($professional['anys_experiencia'])): ?>
+                        <div class="stat-item">
+                            <div class="stat-number"><?php echo htmlspecialchars($professional['anys_experiencia']); ?>+</div>
+                            <div class="stat-label">Años de experiencia</div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($professional['num_collegiat'])): ?>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-certificate"></i></div>
+                            <div class="stat-label">Colegiado/a</div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
         </div>
     </section>
 
@@ -165,15 +187,103 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
                 <!-- Columna derecha: Descripción y contenido -->
                 <article class="professional-main-content">
                     <?php if (!empty($professional['descripcio_es'])): ?>
-                        <div class="content-section">
-                            <h2>Sobre mí</h2>
+                        <div class="content-section animate-on-scroll">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <h2>Sobre mí</h2>
+                            </div>
                             <div class="content-text">
                                 <?php echo nl2br(htmlspecialchars($professional['descripcio_es'])); ?>
                             </div>
                         </div>
                     <?php endif; ?>
                     
-                    <!-- Aquí se podrán añadir más secciones en el futuro: especialidades, certificaciones, galería de fotos, etc. -->
+                    <!-- Sección de especialidades -->
+                    <div class="content-section animate-on-scroll">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h2>Áreas de especialización</h2>
+                        </div>
+                        <div class="specialties-grid">
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h3>Terapia individual</h3>
+                                <p>Acompañamiento personalizado para superar retos emocionales y personales.</p>
+                            </div>
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3>Terapia de pareja</h3>
+                                <p>Mejora de la comunicación y resolución de conflictos en las relaciones.</p>
+                            </div>
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-child"></i>
+                                </div>
+                                <h3>Psicología infantil</h3>
+                                <p>Atención especializada para el desarrollo emocional de los más pequeños.</p>
+                            </div>
+                            <div class="specialty-card">
+                                <div class="specialty-icon">
+                                    <i class="fas fa-mind-share"></i>
+                                </div>
+                                <h3>Gestión emocional</h3>
+                                <p>Técnicas para gestionar ansiedad, estrés y otros estados emocionales.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección de metodología -->
+                    <div class="content-section animate-on-scroll">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-compass"></i>
+                            </div>
+                            <h2>Mi metodología</h2>
+                        </div>
+                        <div class="methodology-content">
+                            <div class="methodology-item">
+                                <div class="methodology-number">01</div>
+                                <div class="methodology-text">
+                                    <h3>Escucha activa</h3>
+                                    <p>Comienzo entendiendo tu historia y tus necesidades únicas.</p>
+                                </div>
+                            </div>
+                            <div class="methodology-item">
+                                <div class="methodology-number">02</div>
+                                <div class="methodology-text">
+                                    <h3>Diagnóstico personalizado</h3>
+                                    <p>Desarrollo un plan de acción adaptado a tus objetivos específicos.</p>
+                                </div>
+                            </div>
+                            <div class="methodology-item">
+                                <div class="methodology-number">03</div>
+                                <div class="methodology-text">
+                                    <h3>Acompañamiento continuo</h3>
+                                    <p>Te guío en el proceso con herramientas prácticas y apoyo constante.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Call to action destacado -->
+                    <div class="content-cta animate-on-scroll">
+                        <div class="cta-content">
+                            <h3>Comienza tu camino hacia el bienestar</h3>
+                            <p>Estoy aquí para acompañarte en este viaje de crecimiento personal.</p>
+                            <a href="contacta.php" class="cta-button">
+                                <i class="fas fa-calendar-check"></i>
+                                Reserva tu primera sesión
+                            </a>
+                        </div>
+                    </div>
                 </article>
             </div>
             
@@ -190,5 +300,32 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
     
     <script src="../js/site-nav.js"></script>
     <script src="../js/language.js"></script>
+    
+    <script>
+    // Animaciones scroll-triggered
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Smooth scroll para el hero indicator
+    document.querySelector('.hero-scroll-indicator')?.addEventListener('click', () => {
+        document.querySelector('.professional-detail').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    });
+    </script>
 </body>
 </html>

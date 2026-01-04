@@ -2,173 +2,321 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-    <!-- Generated snapshot: 2025-11-05 -->
+    <!-- Generated: 2025-01-04 -->
+    <!-- This sitemap includes all public-facing pages in both Catalan (ca) and Spanish (es) -->
 
-    <!-- Root / Home -->
+    <!-- ==================== -->
+    <!-- ROOT / HOME          -->
+    <!-- ==================== -->
     <url>
         <loc>https://yaninaparisi.com/</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/home.php"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/home.php"/>
-    </url>
-
-    <!-- Clinic / Clinica -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/clinica.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/clinica.php"/>
-        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/clinica.php"/>
-    </url>
-
-    <!-- Blog index -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/blog.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/blog.php"/>
-        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/blog.php"/>
-    </url>
-
-    <!-- Blog single (dynamic) - listing page for posts (entry page uses parameter) -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/entrada.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/entrada.php"/>
-    </url>
-
-    <!-- FAQs -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/faq.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/faq.php"/>
-    </url>
-
-    <!-- Contact -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/contacta.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/contacta.php"/>
-    </url>
-
-    <!-- Privacy / Legal -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/privacy.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.4</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/privacy.php"/>
-    </url>
-
-    <url>
-        <loc>https://yaninaparisi.com/ca/terms.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.4</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/terms.php"/>
-    </url>
-
-    <!-- Cookies -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/cookies.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/cookies.php"/>
-    </url>
-
-    <!-- About / Sobremi -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/sobremi.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.5</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/sobremi.php"/>
-    </url>
-
-    <!-- Special pages -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/love-match.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/love-match.php"/>
-    </url>
-
-    <!-- Ressenyes/opina (Català) -->
-    <url>
-        <loc>https://yaninaparisi.com/ca/opina.php</loc>
-        <lastmod>2025-11-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
-    </url>
-
-    <!-- Sitemap hint for admin and docs are intentionally excluded from public sitemap -->
-
-</urlset>
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
-    <!-- Root / home -->
-    <url>
-        <loc>https://yaninaparisi.com/</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <lastmod>2025-01-04</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://yaninaparisi.com/"/>
-    <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/home.php"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/home.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/home.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/home.php"/>
     </url>
 
-    <!-- Sobre mi / About -->
+    <!-- Home - Catalan -->
     <url>
-        <loc>https://yaninaparisi.com/sobremi.php</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://yaninaparisi.com/ca/home.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/home.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/home.php"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://yaninaparisi.com/"/>
+    </url>
+
+    <!-- Home - Spanish -->
+    <url>
+        <loc>https://yaninaparisi.com/es/home.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/home.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/home.php"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://yaninaparisi.com/"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- SOBRE MÍ / ABOUT     -->
+    <!-- ==================== -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/sobremi.php</loc>
+        <lastmod>2025-01-04</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
         <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/sobremi.php"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/sobremi.php"/>
     </url>
 
-    <!-- Contacta -->
+    <url>
+        <loc>https://yaninaparisi.com/es/sobremi.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/sobremi.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/sobremi.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- CONEIX-NOS / TEAM    -->
+    <!-- ==================== -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/coneixnos.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/coneixnos.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/conocenos.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/conocenos.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/conocenos.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/coneixnos.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- PROFESSIONAL PROFILE -->
+    <!-- ==================== -->
+    <!-- Note: Individual professional pages are dynamically generated via ?nom=slug (ca) / ?nombre=slug (es) -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/psicoleg.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/psicoleg.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/psicologo.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/psicologo.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/psicologo.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/psicoleg.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- CONTACTA / CONTACT   -->
+    <!-- ==================== -->
     <url>
         <loc>https://yaninaparisi.com/ca/contacta.php</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <lastmod>2025-01-04</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/contacta.php"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/contacta.php"/>
     </url>
 
-    <!-- Clinica (servicis) -->
     <url>
-        <loc>https://yaninaparisi.com/ca/clinica.php</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://yaninaparisi.com/es/contacta.php</loc>
+        <lastmod>2025-01-04</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
-        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/clinica.php"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/clinica.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/contacta.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/contacta.php"/>
     </url>
 
-    <!-- Blog -->
+    <!-- ==================== -->
+    <!-- BLOG                 -->
+    <!-- ==================== -->
     <url>
         <loc>https://yaninaparisi.com/ca/blog.php</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <lastmod>2025-01-04</lastmod>
         <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
+        <priority>0.8</priority>
         <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/blog.php"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/blog.php"/>
     </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/blog.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/blog.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/blog.php"/>
+    </url>
+
+    <!-- Blog Entry (dynamic page - individual posts accessed via ?slug=post-slug) -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/entrada.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/entrada.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/entrada.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/entrada.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/entrada.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/entrada.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- FAQ                  -->
+    <!-- ==================== -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/faq.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/faq.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/faq.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/faq.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/faq.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/faq.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- LOVE MATCH           -->
+    <!-- ==================== -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/love-match.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/love-match.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/love-match.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/love-match.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/love-match.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/love-match.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- OPINA / REVIEWS      -->
+    <!-- ==================== -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/opina.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/opina.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/opina.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/opina.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/opina.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/opina.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- LEGAL PAGES          -->
+    <!-- ==================== -->
+    
+    <!-- Privacy Policy -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/privacy.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/privacy.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/privacy.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/privacy.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/privacy.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/privacy.php"/>
+    </url>
+
+    <!-- Terms and Conditions -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/terms.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/terms.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/terms.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/terms.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/terms.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/terms.php"/>
+    </url>
+
+    <!-- Legal Notice -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/legal.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/legal.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/legal.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/legal.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/legal.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/legal.php"/>
+    </url>
+
+    <!-- Cookies Policy -->
+    <url>
+        <loc>https://yaninaparisi.com/ca/cookies.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/cookies.php"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/cookies.php"/>
+    </url>
+
+    <url>
+        <loc>https://yaninaparisi.com/es/cookies.php</loc>
+        <lastmod>2025-01-04</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://yaninaparisi.com/es/cookies.php"/>
+        <xhtml:link rel="alternate" hreflang="ca" href="https://yaninaparisi.com/ca/cookies.php"/>
+    </url>
+
+    <!-- ==================== -->
+    <!-- NOTES                -->
+    <!-- ==================== -->
+    <!-- 
+    - Admin panel (_pcontrol/) is intentionally excluded from sitemap
+    - API endpoints (api/) are intentionally excluded from sitemap
+    - Error pages (400.php, 404.php, etc.) are intentionally excluded from sitemap
+    - Dynamic content pages (blog posts, professional profiles) are represented by their base URLs
+    - Individual blog post URLs should be added dynamically if needed via a separate sitemap generator
+    -->
 
 </urlset>
