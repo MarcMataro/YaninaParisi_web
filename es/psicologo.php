@@ -179,8 +179,8 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
                     </div>
                     
                     <a href="contacta.php" class="btn-primary-large">
-                        <i class="fas fa-calendar-check"></i>
-                        Reserva una cita
+                        <span>Reserva una cita</span>
+                        <i class="fas fa-arrow-right"></i>
                     </a>
                 </aside>
                 
