@@ -207,27 +207,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: ' . $redirect . '&msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
                     exit;
 
+                case 'editar_certificacio':
+                    $prof_id = (int)($_POST['professional_id'] ?? 0);
+                    $index = (int)($_POST['index'] ?? -1);
+                    $cert_ca_editada = trim($_POST['cert_ca'] ?? '');
+                    $cert_es_editada = trim($_POST['cert_es'] ?? '');
+                    
+                    if ($index >= 0 && !empty($cert_ca_editada) && !empty($cert_es_editada)) {
+                        $certActuals = $certModel->obtenirPerProfessional($prof_id);
+                        
+                        if ($certActuals) {
+                            $llistatCa = array_filter(explode("\n", $certActuals['certificacions_ca']));
+                            $llistatEs = array_filter(explode("\n", $certActuals['certificacions_es']));
+                            $llistatCa = array_values($llistatCa);
+                            $llistatEs = array_values($llistatEs);
+                            
+                            // Actualitzar l'element específic
+                            $llistatCa[$index] = $cert_ca_editada;
+                            $llistatEs[$index] = $cert_es_editada;
+                            
+                            $cert_ca = implode("\n", $llistatCa);
+                            $cert_es = implode("\n", $llistatEs);
+                            
+                            if ($certModel->guardarCertificacions($prof_id, $cert_ca, $cert_es)) {
+                                $mensaje = 'Certificación actualizada correctamente.';
+                                $tipoMensaje = 'success';
+                            } else {
+                                $mensaje = 'Error al actualizar la certificación.';
+                                $tipoMensaje = 'error';
+                            }
+                        }
+                    } else {
+                        $mensaje = 'Datos incompletos para editar.';
+                        $tipoMensaje = 'error';
+                    }
+                    
+                    $redirect = 'gprofessionals.php?vista=certificacions&id=' . $prof_id;
+                    header('Location: ' . $redirect . '&msg=' . urlencode($mensaje) . '&type=' . $tipoMensaje);
+                    exit;
+
                 case 'eliminar_una_certificacio':
                     $prof_id = (int)($_POST['professional_id'] ?? 0);
-                    $idioma = $_POST['idioma'] ?? '';
                     $index = (int)($_POST['index'] ?? -1);
                     
                     $certActuals = $certModel->obtenirPerProfessional($prof_id);
                     
                     if ($certActuals && $index >= 0) {
-                        if ($idioma === 'ca') {
-                            $llistat = array_filter(explode("\n", $certActuals['certificacions_ca']));
-                            $llistat = array_values($llistat); // Reindexar
-                            unset($llistat[$index]);
-                            $cert_ca = implode("\n", $llistat);
-                            $cert_es = $certActuals['certificacions_es'];
-                        } else {
-                            $llistat = array_filter(explode("\n", $certActuals['certificacions_es']));
-                            $llistat = array_values($llistat); // Reindexar
-                            unset($llistat[$index]);
-                            $cert_ca = $certActuals['certificacions_ca'];
-                            $cert_es = implode("\n", $llistat);
-                        }
+                        $llistatCa = array_filter(explode("\n", $certActuals['certificacions_ca']));
+                        $llistatEs = array_filter(explode("\n", $certActuals['certificacions_es']));
+                        $llistatCa = array_values($llistatCa);
+                        $llistatEs = array_values($llistatEs);
+                        
+                        // Eliminar l'element de tots dos idiomes
+                        unset($llistatCa[$index]);
+                        unset($llistatEs[$index]);
+                        
+                        $cert_ca = implode("\n", $llistatCa);
+                        $cert_es = implode("\n", $llistatEs);
                         
                         // Si ambdues estan buides, eliminar tot
                         if (empty(trim($cert_ca)) && empty(trim($cert_es))) {
@@ -547,8 +583,6 @@ if ($vista === 'editar' && $idEditarEsp) {
                 </button>
             </div>
 
-            <!-- DEBUG INFO: <?php echo htmlspecialchars($debugInfo ?? 'no debug info'); ?> -->
-            
             <?php if ($seccion === 'professionals'): ?>
                 <!-- SECCIÓN DE PROFESIONALES -->
             <?php if ($vista === 'lista'): ?>
@@ -902,6 +936,8 @@ if ($vista === 'editar' && $idEditarEsp) {
                                 if ($certificacions) {
                                     $certListCa = array_filter(explode("\n", $certificacions['certificacions_ca']));
                                     $certListEs = array_filter(explode("\n", $certificacions['certificacions_es']));
+                                    $certListCa = array_values($certListCa);
+                                    $certListEs = array_values($certListEs);
                                 }
                             ?>
 
@@ -910,54 +946,100 @@ if ($vista === 'editar' && $idEditarEsp) {
                             <div style="margin-bottom:30px;">
                                 <h3><i class="fas fa-list"></i> Certificaciones Actuales</h3>
                                 
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:15px;">
-                                    <!-- Catalán -->
-                                    <div>
-                                        <h4 style="color:#2c3e50; margin-bottom:10px;">
-                                            <i class="fas fa-flag"></i> Catalán (<?php echo count($certListCa); ?>)
-                                        </h4>
-                                        <ul style="list-style:none; padding:0;">
-                                            <?php foreach ($certListCa as $index => $cert): ?>
-                                                <li style="background:#f8f9fa; padding:10px; margin-bottom:8px; border-left:3px solid #3498db; display:flex; justify-content:space-between; align-items:center;">
-                                                    <span><?php echo htmlspecialchars(trim($cert)); ?></span>
-                                                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta certificación?');">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="accion" value="eliminar_una_certificacio">
-                                                        <input type="hidden" name="professional_id" value="<?php echo $idEditar; ?>">
-                                                        <input type="hidden" name="idioma" value="ca">
-                                                        <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                                        <button type="submit" class="btn btn-sm btn-danger" style="padding:4px 8px;">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            <?php endforeach; ?>
-                                        </ul>
-                                    </div>
-
-                                    <!-- Español -->
-                                    <div>
-                                        <h4 style="color:#2c3e50; margin-bottom:10px;">
-                                            <i class="fas fa-flag"></i> Español (<?php echo count($certListEs); ?>)
-                                        </h4>
-                                        <ul style="list-style:none; padding:0;">
-                                            <?php foreach ($certListEs as $index => $cert): ?>
-                                                <li style="background:#f8f9fa; padding:10px; margin-bottom:8px; border-left:3px solid #e74c3c; display:flex; justify-content:space-between; align-items:center;">
-                                                    <span><?php echo htmlspecialchars(trim($cert)); ?></span>
-                                                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta certificación?');">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="accion" value="eliminar_una_certificacio">
-                                                        <input type="hidden" name="professional_id" value="<?php echo $idEditar; ?>">
-                                                        <input type="hidden" name="idioma" value="es">
-                                                        <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                                        <button type="submit" class="btn btn-sm btn-danger" style="padding:4px 8px;">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            <?php endforeach; ?>
-                                        </ul>
-                                    </div>
+                                <div style="margin-top:20px;">
+                                    <style>
+                                        .cert-display {
+                                            padding: 8px;
+                                            min-height: 20px;
+                                        }
+                                        .cert-edit {
+                                            width: 100%;
+                                            padding: 6px;
+                                        }
+                                        .btn-actions, .btn-edit-actions {
+                                            display: inline-flex;
+                                            gap: 5px;
+                                        }
+                                        .data-table tbody tr:hover {
+                                            background-color: #f8f9fa;
+                                        }
+                                        .data-table td {
+                                            vertical-align: middle;
+                                        }
+                                    </style>
+                                    <table class="data-table" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:5%;">#</th>
+                                                <th style="width:42%;">Catalán</th>
+                                                <th style="width:42%;">Español</th>
+                                                <th style="width:11%; text-align:center;">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php 
+                                            $maxCount = max(count($certListCa), count($certListEs));
+                                            for ($i = 0; $i < $maxCount; $i++): 
+                                                $certCa = $certListCa[$i] ?? '';
+                                                $certEs = $certListEs[$i] ?? '';
+                                            ?>
+                                                <tr id="row-<?php echo $i; ?>">
+                                                    <td style="text-align:center; font-weight:bold; color:#7f8c8d;">
+                                                        <?php echo $i + 1; ?>
+                                                    </td>
+                                                    <td>
+                                                        <div class="cert-display" id="display-ca-<?php echo $i; ?>">
+                                                            <?php echo htmlspecialchars(trim($certCa)); ?>
+                                                        </div>
+                                                        <input type="text" class="form-control cert-edit" 
+                                                               id="edit-ca-<?php echo $i; ?>" 
+                                                               value="<?php echo htmlspecialchars(trim($certCa)); ?>"
+                                                               style="display:none;">
+                                                    </td>
+                                                    <td>
+                                                        <div class="cert-display" id="display-es-<?php echo $i; ?>">
+                                                            <?php echo htmlspecialchars(trim($certEs)); ?>
+                                                        </div>
+                                                        <input type="text" class="form-control cert-edit" 
+                                                               id="edit-es-<?php echo $i; ?>" 
+                                                               value="<?php echo htmlspecialchars(trim($certEs)); ?>"
+                                                               style="display:none;">
+                                                    </td>
+                                                    <td style="text-align:center;">
+                                                        <div class="btn-actions" id="actions-<?php echo $i; ?>">
+                                                            <button type="button" class="btn btn-sm btn-primary" 
+                                                                    onclick="editarCertificacio(<?php echo $i; ?>)"
+                                                                    title="Editar">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <form method="POST" style="display:inline;" 
+                                                                  onsubmit="return confirm('¿Eliminar esta certificación en ambos idiomas?');">
+                                                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                                                <input type="hidden" name="accion" value="eliminar_una_certificacio">
+                                                                <input type="hidden" name="professional_id" value="<?php echo $idEditar; ?>">
+                                                                <input type="hidden" name="index" value="<?php echo $i; ?>">
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Eliminar">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="btn-edit-actions" id="edit-actions-<?php echo $i; ?>" style="display:none;">
+                                                            <button type="button" class="btn btn-sm btn-success" 
+                                                                    onclick="guardarCertificacio(<?php echo $i; ?>)"
+                                                                    title="Guardar">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-sm btn-secondary" 
+                                                                    onclick="cancelarEdicion(<?php echo $i; ?>)"
+                                                                    title="Cancelar">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endfor; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
 
                                 <div style="margin-top:15px;">
@@ -1361,8 +1443,9 @@ if ($vista === 'editar' && $idEditarEsp) {
                 </div>
                 <?php } // End else profesional encontrado ?>
             
-            <?php endif; ?>
-            <!-- End if seccion === 'professionals' -->
+            <?php endif; // End if/elseif vistas de professionals ?>
+            
+            <?php endif; // End if seccion === 'professionals' ?>
             
             <?php if ($seccion === 'especialitats'): ?>
                 <!-- SECCIÓN DE ESPECIALIDADES -->
@@ -1586,9 +1669,7 @@ if ($vista === 'editar' && $idEditarEsp) {
                     </div>
                 <?php endif; ?>
             
-            
-                
-            <?php endif; // Fin de seccion professionals + especialitats ?>
+            <?php endif; // End if seccion === 'especialitats' ?>
 
         </div>
     </div>
@@ -1751,11 +1832,77 @@ if ($vista === 'editar' && $idEditarEsp) {
                     });
                 }
             });
+
+            // Funciones para editar certificaciones inline
+            window.editarCertificacio = function(index) {
+                // Ocultar display, mostrar inputs
+                document.getElementById('display-ca-' + index).style.display = 'none';
+                document.getElementById('display-es-' + index).style.display = 'none';
+                document.getElementById('edit-ca-' + index).style.display = 'block';
+                document.getElementById('edit-es-' + index).style.display = 'block';
+                
+                // Cambiar botones
+                document.getElementById('actions-' + index).style.display = 'none';
+                document.getElementById('edit-actions-' + index).style.display = 'block';
+            };
+
+            window.cancelarEdicion = function(index) {
+                // Mostrar display, ocultar inputs (y resetear valores)
+                var inputCa = document.getElementById('edit-ca-' + index);
+                var inputEs = document.getElementById('edit-es-' + index);
+                var displayCa = document.getElementById('display-ca-' + index);
+                var displayEs = document.getElementById('display-es-' + index);
+                
+                // Resetear valores a los originales
+                inputCa.value = displayCa.textContent.trim();
+                inputEs.value = displayEs.textContent.trim();
+                
+                displayCa.style.display = 'block';
+                displayEs.style.display = 'block';
+                inputCa.style.display = 'none';
+                inputEs.style.display = 'none';
+                
+                // Cambiar botones
+                document.getElementById('actions-' + index).style.display = 'block';
+                document.getElementById('edit-actions-' + index).style.display = 'none';
+            };
+
+            window.guardarCertificacio = function(index) {
+                var certCa = document.getElementById('edit-ca-' + index).value.trim();
+                var certEs = document.getElementById('edit-es-' + index).value.trim();
+                
+                if (!certCa || !certEs) {
+                    alert('Ambos campos son obligatorios.');
+                    return;
+                }
+                
+                // Crear formulario para enviar
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'gprofessionals.php';
+                
+                var fields = {
+                    'csrf_token': '<?php echo $csrf_token; ?>',
+                    'accion': 'editar_certificacio',
+                    'professional_id': '<?php echo $idEditar; ?>',
+                    'index': index,
+                    'cert_ca': certCa,
+                    'cert_es': certEs
+                };
+                
+                for (var key in fields) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = fields[key];
+                    form.appendChild(input);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+            };
         });
     </script>
-    
-    <?php endif; ?>
-    <!-- End if seccion === 'especialitats' -->
     
 </body>
 </html>

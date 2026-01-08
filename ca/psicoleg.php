@@ -31,6 +31,10 @@ include '../includes/functions.php';
 // Carregar classes necessàries
 require_once __DIR__ . '/../classes/connexio.php';
 require_once __DIR__ . '/../classes/professionals.php';
+require_once __DIR__ . '/../classes/professional_certificacions.php';
+require_once __DIR__ . '/../classes/professional_photos.php';
+require_once __DIR__ . '/../classes/professional_especialitat.php';
+require_once __DIR__ . '/../classes/especialitats.php';
 
 // Obtenir el slug de la URL
 $slug = $_GET['nom'] ?? '';
@@ -91,37 +95,7 @@ $metaDescription = !empty($professional['subtitol_ca']) ? htmlspecialchars($prof
     <!-- Hero Section amb foto del professional -->
     <section class="professional-hero" style="background-image: linear-gradient(135deg, rgba(98, 66, 119, 0.85), rgba(171, 120, 141, 0.75))<?php if (!empty($professional['foto'])): ?>, url('../<?php echo htmlspecialchars($professional['foto']); ?>')<?php endif; ?>;">
         <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="professional-hero-content">
-                <div class="hero-badge fade-in-up">
-                    <i class="fas fa-user-md"></i>
-                    <span>Professional Col·legiat</span>
-                </div>
-                <h1 class="fade-in-up delay-1"><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
-                <?php if (!empty($professional['subtitol_ca'])): ?>
-                    <p class="professional-hero-subtitle fade-in-up delay-2">
-                        <?php echo htmlspecialchars($professional['subtitol_ca']); ?>
-                    </p>
-                <?php endif; ?>
-                <div class="hero-stats fade-in-up delay-3">
-                    <?php if (!empty($professional['anys_experiencia'])): ?>
-                        <div class="stat-item">
-                            <div class="stat-number"><?php echo htmlspecialchars($professional['anys_experiencia']); ?>+</div>
-                            <div class="stat-label">Anys d'experiència</div>
-                        </div>
-                    <?php endif; ?>
-                    <?php if (!empty($professional['num_collegiat'])): ?>
-                        <div class="stat-item">
-                            <div class="stat-icon"><i class="fas fa-certificate"></i></div>
-                            <div class="stat-label">Col·legiat/da</div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-        <div class="hero-scroll-indicator">
-            <i class="fas fa-chevron-down"></i>
-        </div>
+        <h1 class="professional-hero-name fade-in-up"><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
     </section>
 
     <?php
@@ -135,166 +109,199 @@ $metaDescription = !empty($professional['subtitol_ca']) ? htmlspecialchars($prof
         }
     ?>
 
-    <!-- Contingut Principal -->
-    <section class="professional-detail">
+    <!-- Professional Info Header -->
+    <section class="professional-info-header">
         <div class="container">
-            <div class="professional-grid">
-                <!-- Columna esquerra: Informació bàsica -->
-                <aside class="professional-sidebar">
-                    <?php if (!empty($professional['foto'])): ?>
-                        <div class="professional-photo">
-                            <?php 
-                                $fotoPath = $professional['foto'];
-                                if (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') === 0) {
-                                    $fotoPath = '../' . $fotoPath;
-                                } elseif (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') !== 0) {
-                                    $fotoPath = '../img/' . $fotoPath;
-                                }
-                            ?>
-                            <img src="<?php echo htmlspecialchars($fotoPath); ?>" 
-                                 alt="<?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?>">
+            <div class="info-header-content">
+                <div class="info-stats">
+                    <?php if (!empty($professional['anys_experiencia'])): ?>
+                        <div class="info-stat-item">
+                            <i class="fas fa-award"></i>
+                            <span><strong><?php echo htmlspecialchars($professional['anys_experiencia']); ?>+</strong> anys d'experiència</span>
                         </div>
                     <?php endif; ?>
-                    
-                    <div class="professional-info-box">
-                        <?php if (!empty($professional['num_collegiat'])): ?>
-                            <div class="info-item">
-                                <i class="fas fa-id-card"></i>
-                                <div>
-                                    <strong>Núm. Col·legiat</strong>
-                                    <span><?php echo htmlspecialchars($professional['num_collegiat']); ?></span>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <?php if (!empty($professional['anys_experiencia'])): ?>
-                            <div class="info-item">
-                                <i class="fas fa-award"></i>
-                                <div>
-                                    <strong>Experiència</strong>
-                                    <span><?php echo htmlspecialchars($professional['anys_experiencia']); ?> anys</span>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <a href="contacta.php" class="btn-primary-large">
-                        <span>Reserva una cita</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </aside>
-                
-                <!-- Columna dreta: Descripció i contingut -->
-                <article class="professional-main-content">
-                    <?php if (!empty($professional['descripcio'])): ?>
-                        <div class="content-section animate-on-scroll">
-                            <div class="section-header">
-                                <div class="section-icon">
-                                    <i class="fas fa-user-circle"></i>
-                                </div>
-                                <h2>Sobre mi</h2>
-                            </div>
-                            <div class="content-text">
-                                <?php echo nl2br(htmlspecialchars($professional['descripcio'])); ?>
-                            </div>
+                    <?php if (!empty($professional['num_collegiat'])): ?>
+                        <div class="info-stat-item">
+                            <i class="fas fa-certificate"></i>
+                            <span>Col·legiat/da núm. <strong><?php echo htmlspecialchars($professional['num_collegiat']); ?></strong></span>
                         </div>
                     <?php endif; ?>
-                    
-                    <!-- Secció d'especialitats -->
-                    <div class="content-section animate-on-scroll">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <h2>Àrees d'especialització</h2>
-                        </div>
-                        <div class="specialties-grid">
-                            <div class="specialty-card">
-                                <div class="specialty-icon">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                                <h3>Teràpia individual</h3>
-                                <p>Acompanyament personalitzat per superar reptes emocionals i personals.</p>
-                            </div>
-                            <div class="specialty-card">
-                                <div class="specialty-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <h3>Teràpia de parella</h3>
-                                <p>Millora de la comunicació i resolució de conflictes en les relacions.</p>
-                            </div>
-                            <div class="specialty-card">
-                                <div class="specialty-icon">
-                                    <i class="fas fa-child"></i>
-                                </div>
-                                <h3>Psicologia infantil</h3>
-                                <p>Atenció especialitzada per al desenvolupament emocional dels més petits.</p>
-                            </div>
-                            <div class="specialty-card">
-                                <div class="specialty-icon">
-                                    <i class="fas fa-mind-share"></i>
-                                </div>
-                                <h3>Gestió emocional</h3>
-                                <p>Tècniques per gestionar ansietat, estrès i altres estats emocionals.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Secció de metodologia -->
-                    <div class="content-section animate-on-scroll">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                <i class="fas fa-compass"></i>
-                            </div>
-                            <h2>La meva metodologia</h2>
-                        </div>
-                        <div class="methodology-content">
-                            <div class="methodology-item">
-                                <div class="methodology-number">01</div>
-                                <div class="methodology-text">
-                                    <h3>Escolta activa</h3>
-                                    <p>Començo entenent la teva història i les teves necessitats úniques.</p>
-                                </div>
-                            </div>
-                            <div class="methodology-item">
-                                <div class="methodology-number">02</div>
-                                <div class="methodology-text">
-                                    <h3>Diagnòstic personalitzat</h3>
-                                    <p>Desenvolupo un pla d'acció adaptat als teus objectius específics.</p>
-                                </div>
-                            </div>
-                            <div class="methodology-item">
-                                <div class="methodology-number">03</div>
-                                <div class="methodology-text">
-                                    <h3>Acompanyament continu</h3>
-                                    <p>Et guio en el procés amb eines pràctiques i suport constant.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Call to action destacat -->
-                    <div class="content-cta animate-on-scroll">
-                        <div class="cta-content">
-                            <h3>Comença el teu camí cap al benestar</h3>
-                            <p>Estic aquí per acompanyar-te en aquest viatge de creixement personal.</p>
-                            <a href="contacta.php" class="cta-button">
-                                <i class="fas fa-calendar-check"></i>
-                                Reserva la teva primera sessió
-                            </a>
-                        </div>
-                    </div>
-                </article>
-            </div>
-            
-            <div class="back-to-team">
-                <a href="coneixnos.php" class="btn-secondary">
-                    <i class="fas fa-arrow-left"></i>
-                    Tornar a l'equip
-                </a>
+                </div>
+                <?php if (!empty($professional['subtitol_ca'])): ?>
+                    <p class="info-subtitle">
+                        <?php echo htmlspecialchars($professional['subtitol_ca']); ?>
+                    </p>
+                <?php endif; ?>
             </div>
         </div>
     </section>
+
+    <!-- Contingut Principal -->
+    <section class="professional-detail">
+        <div class="container">
+            <div class="professional-content">
+                <?php if (!empty($professional['descripcio'])): ?>
+                    <div class="description-with-photo">
+                        <?php if (!empty($professional['foto'])): ?>
+                            <div class="floating-photo">
+                                <?php 
+                                    $fotoPath = $professional['foto'];
+                                    if (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') === 0) {
+                                        $fotoPath = '../' . $fotoPath;
+                                    } elseif (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') !== 0) {
+                                        $fotoPath = '../img/' . $fotoPath;
+                                    }
+                                ?>
+                                <img src="<?php echo htmlspecialchars($fotoPath); ?>" 
+                                     alt="<?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?>">
+                            </div>
+                        <?php endif; ?>
+                        <div class="description-text">
+                            <?php echo nl2br(htmlspecialchars($professional['descripcio'])); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+
+    <?php
+        // Obtenir certificacions del professional
+        try {
+            $certModel = ProfessionalCertificacions::getInstance();
+            $certificacions = $certModel->obtenirPerProfessional($professional['id']);
+        } catch (Exception $e) {
+            error_log("Error al carregar certificacions: " . $e->getMessage());
+            $certificacions = null;
+        }
+
+        // Obtenir fotos del professional
+        try {
+            $photosModel = ProfessionalPhotos::getInstance();
+            $fotos = $photosModel->llistarPerProfessional($professional['id']);
+            $primeraFoto = !empty($fotos) ? $fotos[0] : null;
+            $restaDeFotos = !empty($fotos) ? array_slice($fotos, 1) : [];
+        } catch (Exception $e) {
+            error_log("Error al carregar fotos: " . $e->getMessage());
+            $primeraFoto = null;
+            $restaDeFotos = [];
+        }
+
+        // Obtenir especialitats del professional
+        try {
+            $relEspModel = ProfessionalEspecialitat::getInstance();
+            $especialitats = $relEspModel->obtenirEspecialitatsProfessional($professional['id']);
+        } catch (Exception $e) {
+            error_log("Error al carregar especialitats: " . $e->getMessage());
+            $especialitats = [];
+        }
+    ?>
+
+    <?php if ($certificacions && !empty($certificacions['certificacions_ca'])): ?>
+    <!-- Secció de Certificats i Màsters -->
+    <section class="professional-certificates-section">
+        <div class="certificates-container">
+            <div class="certificates-header">
+                <div class="section-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2>Formació i Certificacions</h2>
+            </div>
+            <div class="certificates-content">
+                <?php
+                    // Convertir text en llista si conté salts de línia
+                    $certificacionsText = htmlspecialchars($certificacions['certificacions_ca']);
+                    $linies = explode("\n", $certificacionsText);
+                    $linies = array_filter(array_map('trim', $linies)); // Eliminar línies buides
+                    $totalLinies = count($linies);
+                    
+                    if ($totalLinies > 1) {
+                        echo '<ul class="certificates-list" id="certificatesList">';
+                        foreach ($linies as $index => $linia) {
+                            if (!empty($linia)) {
+                                // Afegir classe 'hidden' als elements després del 3r
+                                $hiddenClass = $index >= 3 ? ' certificate-item-hidden' : '';
+                                echo '<li class="certificate-item' . $hiddenClass . '">' . $linia . '</li>';
+                            }
+                        }
+                        echo '</ul>';
+                    } else {
+                        echo '<p>' . $certificacionsText . '</p>';
+                    }
+                ?>
+            </div>
+            <?php if ($totalLinies > 3): ?>
+                <button class="certificates-toggle-btn" id="certificatesToggle">
+                    <span class="toggle-text">Veure més certificacions</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+            <?php endif; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <?php if ($primeraFoto): ?>
+    <!-- Primera Foto amb Text -->
+    <section class="professional-photo-section">
+        <div class="container">
+            <div class="photo-content-wrapper">
+                <div class="photo-image">
+                    <img src="../<?php echo htmlspecialchars($primeraFoto['image_path']); ?>" 
+                         alt="<?php echo htmlspecialchars($primeraFoto['alt_ca']); ?>">
+                </div>
+                <div class="photo-text">
+                    <h2><?php echo htmlspecialchars($primeraFoto['title_ca']); ?></h2>
+                    <?php if (!empty($primeraFoto['description_ca'])): ?>
+                        <p><?php echo nl2br(htmlspecialchars($primeraFoto['description_ca'])); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <?php if (!empty($especialitats)): ?>
+    <!-- Secció d'Especialitats -->
+    <section class="professional-specialties-section">
+        <div class="container">
+            <div class="specialties-header">
+                <h2><i class="fas fa-stethoscope"></i> Especialitats</h2>
+            </div>
+            <div class="specialties-grid">
+                <?php foreach ($especialitats as $especialitat): ?>
+                    <div class="specialty-item">
+                        <h3><?php echo htmlspecialchars($especialitat['nom']); ?></h3>
+                        <?php if (!empty($especialitat['descripcio'])): ?>
+                            <p><?php echo htmlspecialchars($especialitat['descripcio']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <?php if (!empty($restaDeFotos)): ?>
+    <?php foreach ($restaDeFotos as $index => $foto): ?>
+    <!-- Secció de Foto amb Text -->
+    <section class="professional-photo-section">
+        <div class="container">
+            <div class="photo-content-wrapper <?php echo ($index % 2 === 0) ? 'reverse' : ''; ?>">
+                <div class="photo-image">
+                    <img src="../<?php echo htmlspecialchars($foto['image_path']); ?>" 
+                         alt="<?php echo htmlspecialchars($foto['alt_ca']); ?>">
+                </div>
+                <div class="photo-text">
+                    <h2><?php echo htmlspecialchars($foto['title_ca']); ?></h2>
+                    <?php if (!empty($foto['description_ca'])): ?>
+                        <p><?php echo nl2br(htmlspecialchars($foto['description_ca'])); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php endforeach; ?>
+    <?php endif; ?>
 
     <?php include '_includes/footer.php'; ?>
     
@@ -326,6 +333,26 @@ $metaDescription = !empty($professional['subtitol_ca']) ? htmlspecialchars($prof
             behavior: 'smooth' 
         });
     });
+    
+    // Funcionalitat d'expandir/contraure certificacions
+    const toggleBtn = document.getElementById('certificatesToggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            const list = document.getElementById('certificatesList');
+            const toggleText = this.querySelector('.toggle-text');
+            const isExpanded = list.classList.contains('expanded');
+            
+            if (isExpanded) {
+                list.classList.remove('expanded');
+                this.classList.remove('expanded');
+                toggleText.textContent = 'Veure més certificacions';
+            } else {
+                list.classList.add('expanded');
+                this.classList.add('expanded');
+                toggleText.textContent = 'Veure menys';
+            }
+        });
+    }
     </script>
 </body>
 </html>
