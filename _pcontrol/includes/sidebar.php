@@ -19,14 +19,18 @@ $user_role = $_SESSION['user_role'] ?? 'viewer';
             <i class="fas fa-home"></i>
             <span>Dashboard</span>
         </a>
+        <!-- Temporalment ocult - Descomentar per activar
         <a href="gpacients.php" class="nav-item <?php echo ($current_page == 'gpacients.php') ? 'active' : ''; ?>">
             <i class="fas fa-users"></i>
             <span>Pacientes</span>
         </a>
+        -->
+        <!-- Temporalment ocult - Descomentar per activar
         <a href="gsessions.php" class="nav-item <?php echo ($current_page == 'gsessions.php') ? 'active' : ''; ?>">
             <i class="fas fa-calendar-alt"></i>
             <span>Sesiones</span>
         </a>
+        -->
         <a href="gprofessionals.php" class="nav-item <?php echo ($current_page == 'gprofessionals.php') ? 'active' : ''; ?>">
             <i class="fas fa-user-md"></i>
             <span>Profesionales</span>
@@ -66,10 +70,12 @@ $user_role = $_SESSION['user_role'] ?? 'viewer';
             <i class="fas fa-star"></i>
             <span>Reseñas</span>
         </a>
+        <!-- Temporalment ocult - Descomentar per activar
         <a href="facturacion.php" class="nav-item <?php echo ($current_page == 'facturacion.php') ? 'active' : ''; ?>">
             <i class="fas fa-file-invoice-dollar"></i>
             <span>Facturación</span>
         </a>
+        -->
         <a href="gtarifas.php" class="nav-item <?php echo ($current_page == 'tarifas.php') ? 'active' : ''; ?>">
             <i class="fas fa-calculator"></i>
             <span>Tarifas</span>

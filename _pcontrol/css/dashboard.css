@@ -692,3 +692,134 @@ body {
         margin-bottom: 30px;
     }
 }
+
+/* Blog Posts List Styles */
+.blog-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+
+.blog-post-item {
+    background: transparent;
+    padding: 16px 20px;
+    transition: var(--transition);
+    border-bottom: 1px solid rgba(var(--color-light), 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.blog-post-item:last-child {
+    border-bottom: none;
+}
+
+.blog-post-item:hover {
+    background: rgba(var(--color-light), 0.2);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.post-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    color: #28a745;
+}
+
+.badge-warning {
+    color: #999;
+}
+
+.post-title {
+    font-size: 0.95rem;
+    color: var(--color-dark);
+    margin: 0;
+    line-height: 1.4;
+    font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.post-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: #999;
+    align-items: center;
+}
+
+.post-actions {
+    flex-shrink: 0;
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: var(--transition);
+    font-size: 1rem;
+}
+
+.btn-icon:hover {
+    background: rgba(var(--color-light), 0.5);
+    color: var(--color-dark);
+}
+
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: var(--transition);
+    font-weight: 400;
+}
+
+.btn-link:hover {
+    color: var(--color-dark);
+}
+
+.btn-link i {
+    transition: var(--transition);
+}
+
+.btn-link:hover i {
+    transform: translateX(3px);
+}
+
+/* Adjust card header when it has a button */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
