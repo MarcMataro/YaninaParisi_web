@@ -57,7 +57,17 @@
     function resolve_media_url($path) {
         if (empty($path)) return '';
         $path = trim($path);
-        // absolute URL
+        
+        // Si és una URL absoluta amb localhost, normalitzar-la al projecte actual
+        if (preg_match('#^https?://[^/]*/([^/]+)/img/#i', $path, $matches)) {
+            // Extreure la part després de /img/
+            if (preg_match('#/img/(.+)$#i', $path, $imgMatch)) {
+                // Reconstruir la ruta relativa
+                $path = 'img/' . $imgMatch[1];
+            }
+        }
+        
+        // absolute URL que no és localhost
         if (preg_match('#^https?://#i', $path) || strpos($path, '//') === 0) return $path;
 
         // origin

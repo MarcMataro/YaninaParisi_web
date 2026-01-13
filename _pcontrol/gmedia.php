@@ -344,6 +344,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 exit;
             }
             
+            // Per admins, permetre crear carpeta en una ubicació específica
+            $parentFolder = $_POST['parent_folder'] ?? '';
+            if ($isAdmin && !empty($parentFolder)) {
+                // Verificar que la carpeta pare és vàlida
+                $parentPath = $imgBaseDir . '/' . ltrim($parentFolder, '/');
+                $parentPath = str_replace('\\', '/', $parentPath);
+                
+                // Normalitzar i verificar seguretat
+                if (file_exists($parentPath)) {
+                    $realParentPath = realpath($parentPath);
+                    if ($realParentPath !== false) {
+                        $realParentPath = str_replace('\\', '/', $realParentPath);
+                        // Verificar que està dins de img/
+                        if (strpos($realParentPath, $imgBaseDir) === 0) {
+                            $fullPath = $realParentPath;
+                        }
+                    }
+                }
+            }
+            
             // Verificar que la carpeta pare existeix
             if (!is_dir($fullPath)) {
                 ob_end_clean();
@@ -390,6 +410,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if (!isset($_FILES['files'])) {
                 echo json_encode(['success' => false, 'message' => 'No hi ha fitxers']);
                 exit;
+            }
+            
+            // Per admins, permetre seleccionar carpeta de destí
+            $targetFolder = $_POST['target_folder'] ?? '';
+            if ($isAdmin && !empty($targetFolder)) {
+                // Verificar que la carpeta de destí és vàlida
+                $targetPath = $imgBaseDir . '/' . ltrim($targetFolder, '/');
+                $targetPath = str_replace('\\', '/', $targetPath);
+                
+                // Normalitzar i verificar seguretat
+                if (file_exists($targetPath)) {
+                    $realTargetPath = realpath($targetPath);
+                    if ($realTargetPath !== false) {
+                        $realTargetPath = str_replace('\\', '/', $realTargetPath);
+                        // Verificar que està dins de img/
+                        if (strpos($realTargetPath, $imgBaseDir) === 0) {
+                            $fullPath = $realTargetPath;
+                        }
+                    }
+                }
             }
             
             $uploaded = [];
@@ -455,7 +495,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 'success' => count($uploaded) > 0,
                 'uploaded' => $uploaded,
                 'errors' => $errors,
-                'message' => count($uploaded) . ' fitxers pujats correctament'
+                'message' => count($uploaded) . ' fitxers pujats correctament',
+                'target_folder' => isset($_POST['target_folder']) ? $_POST['target_folder'] : $requestedPath
             ]);
             exit;
             
@@ -525,6 +566,52 @@ function deleteDirectory($dir) {
     }
     
     return rmdir($dir);
+}
+
+/**
+ * Obté recursivament totes les carpetes dins d'un directori
+ */
+function getAllFolders($dir, $baseDir = null, $prefix = '') {
+    if ($baseDir === null) {
+        $baseDir = $dir;
+    }
+    
+    $folders = [];
+    
+    if (!is_dir($dir)) {
+        return $folders;
+    }
+    
+    $items = @scandir($dir);
+    if ($items === false) {
+        return $folders;
+    }
+    
+    $items = array_diff($items, ['.', '..']);
+    
+    // Ordenar els items alfabèticament
+    sort($items);
+    
+    foreach ($items as $item) {
+        $itemPath = $dir . '/' . $item;
+        
+        if (is_dir($itemPath)) {
+            // Obtenir ruta relativa
+            $relativePath = $prefix . $item;
+            
+            $folders[] = [
+                'path' => $relativePath,
+                'name' => $item,
+                'full_path' => $itemPath
+            ];
+            
+            // Recursiu
+            $subFolders = getAllFolders($itemPath, $baseDir, $relativePath . '/');
+            $folders = array_merge($folders, $subFolders);
+        }
+    }
+    
+    return $folders;
 }
 
 /**
@@ -600,25 +687,46 @@ function formatBytes($bytes) {
 // Obtenir contingut del directori
 $contents = getDirectoryContents($fullPath);
 
+// Obtenir totes les carpetes disponibles per admins (per al selector de carpeta)
+$availableFolders = [];
+if ($isAdmin) {
+    $availableFolders = getAllFolders($imgBaseDir);
+    // Afegir la carpeta arrel
+    array_unshift($availableFolders, [
+        'path' => '',
+        'name' => 'img/ (arrel)',
+        'full_path' => $imgBaseDir
+    ]);
+}
+
 // Breadcrumb navigation
 $pathParts = array_filter(explode('/', $requestedPath));
 $breadcrumbs = [];
 
 if ($isAdmin) {
     $breadcrumbs[] = ['name' => 'img', 'path' => ''];
-} else {
-    $breadcrumbs[] = ['name' => 'La meva carpeta', 'path' => 'user_' . $userId];
-}
-
-$currentPath = '';
-foreach ($pathParts as $index => $part) {
-    // Per no-admins, saltar el prefix user_X del breadcrumb
-    if (!$isAdmin && $index === 0 && $part === 'user_' . $userId) {
-        continue;
-    }
     
-    $currentPath .= ($currentPath ? '/' : '') . $part;
-    $breadcrumbs[] = ['name' => $part, 'path' => $currentPath];
+    // Per admins, afegir cada part del path com a breadcrumb
+    $currentPath = '';
+    foreach ($pathParts as $part) {
+        $currentPath .= ($currentPath ? '/' : '') . $part;
+        $breadcrumbs[] = ['name' => $part, 'path' => $currentPath];
+    }
+} else {
+    $breadcrumbs[] = ['name' => 'Mi carpeta', 'path' => 'user_' . $userId];
+    
+    // Per no-admins, saltar el prefix user_X del breadcrumb visual
+    $currentPath = '';
+    foreach ($pathParts as $index => $part) {
+        $currentPath .= ($currentPath ? '/' : '') . $part;
+        
+        // Saltar el prefix user_X del breadcrumb visual però mantenir el path correcte
+        if ($index === 0 && $part === 'user_' . $userId) {
+            continue;
+        }
+        
+        $breadcrumbs[] = ['name' => $part, 'path' => $currentPath];
+    }
 }
 
 ?>
@@ -647,6 +755,43 @@ foreach ($pathParts as $index => $part) {
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
+        }
+        
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #007bff;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+        
+        .btn-back:hover {
+            background: #0056b3;
+            transform: translateX(-2px);
+        }
+        
+        .btn-back i {
+            font-size: 14px;
+        }
+        
+        .breadcrumb-link {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .breadcrumb-link:hover {
+            color: #0056b3;
+            background: rgba(0, 123, 255, 0.1);
+            text-decoration: none;
         }
         
         .breadcrumb a {
@@ -950,7 +1095,7 @@ foreach ($pathParts as $index => $part) {
                 </button>
                 <div class="top-bar-info">
                     <h1>Explorador de Media</h1>
-                    <p class="date-today"><?php echo $isAdmin ? 'Vista completa' : 'La meva carpeta'; ?></p>
+                    <p class="date-today"><?php echo $isAdmin ? 'Vista completa' : 'Mi carpeta'; ?></p>
                 </div>
             </div>
             <div class="top-bar-right">
@@ -976,6 +1121,30 @@ foreach ($pathParts as $index => $part) {
             
             <!-- Breadcrumb Navigation -->
             <div class="breadcrumb">
+                <?php if (count($breadcrumbs) > 1): ?>
+                    <?php
+                        // Trobar el penúltim breadcrumb per fer el botó "Tornar"
+                        $parentCrumb = $breadcrumbs[count($breadcrumbs) - 2];
+                        $backLabel = $parentCrumb['name'] === 'img' ? 'Volver a raíz' : 'Volver a ' . $parentCrumb['name'];
+                        
+                        // Construir URL del botó tornar
+                        $backUrl = 'gmedia.php';
+                        if (!empty($parentCrumb['path'])) {
+                            $backUrl .= '?path=' . urlencode($parentCrumb['path']);
+                        }
+                        if ($isPickerMode) {
+                            $backUrl .= (strpos($backUrl, '?') !== false ? '&' : '?') . 'picker=1';
+                            if (isset($_GET['admin_picker']) && $_GET['admin_picker'] == '1') {
+                                $backUrl .= '&admin_picker=1';
+                            }
+                        }
+                    ?>
+                    <a href="<?php echo htmlspecialchars($backUrl); ?>" 
+                       class="btn-back" title="<?php echo htmlspecialchars($backLabel); ?>">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                <?php endif; ?>
+                
                 <i class="fas fa-folder"></i>
                 <?php foreach ($breadcrumbs as $index => $crumb): ?>
                     <?php if ($index > 0): ?>
@@ -985,7 +1154,21 @@ foreach ($pathParts as $index => $part) {
                     <?php if ($index === count($breadcrumbs) - 1): ?>
                         <span class="breadcrumb-current"><?php echo htmlspecialchars($crumb['name']); ?></span>
                     <?php else: ?>
-                        <a href="gmedia.php?path=<?php echo urlencode($crumb['path']); ?><?php echo $isPickerMode ? '&picker=1' : ''; ?>">
+                        <?php
+                            // Construir URL del breadcrumb
+                            $crumbUrl = 'gmedia.php';
+                            if (!empty($crumb['path'])) {
+                                $crumbUrl .= '?path=' . urlencode($crumb['path']);
+                            }
+                            if ($isPickerMode) {
+                                $crumbUrl .= (strpos($crumbUrl, '?') !== false ? '&' : '?') . 'picker=1';
+                                if (isset($_GET['admin_picker']) && $_GET['admin_picker'] == '1') {
+                                    $crumbUrl .= '&admin_picker=1';
+                                }
+                            }
+                        ?>
+                        <a href="<?php echo htmlspecialchars($crumbUrl); ?>" 
+                           class="breadcrumb-link">
                             <?php echo htmlspecialchars($crumb['name']); ?>
                         </a>
                     <?php endif; ?>
@@ -993,9 +1176,9 @@ foreach ($pathParts as $index => $part) {
             </div>
             
             <?php if ($isPickerMode): ?>
-                <!-- Mode Picker: Títol informatiu -->
+                <!-- Modo Picker: Título informativo -->
                 <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px;">
-                    <strong><i class="fas fa-info-circle"></i> Mode de selecció:</strong> Clica sobre una imatge per seleccionar-la.
+                    <strong><i class="fas fa-info-circle"></i> Modo de selección:</strong> Haz clic sobre una imagen para seleccionarla.
                 </div>
             <?php endif; ?>
             
@@ -1004,11 +1187,11 @@ foreach ($pathParts as $index => $part) {
                 <div class="toolbar">
                     <button class="btn btn-primary" onclick="openUploadModal()">
                         <i class="fas fa-upload"></i>
-                        Pujar fitxers
+                        Subir archivos
                     </button>
                     <button class="btn btn-primary" onclick="openCreateFolderModal()">
                         <i class="fas fa-folder-plus"></i>
-                        Nova carpeta
+                        Nueva carpeta
                     </button>
                     <button class="btn btn-danger" id="deleteBtn" onclick="deleteSelected()">
                         <i class="fas fa-trash"></i>
@@ -1016,11 +1199,11 @@ foreach ($pathParts as $index => $part) {
                     </button>
                 </div>
             <?php else: ?>
-                <!-- En mode picker, només mostrar el botó de pujar -->
+                <!-- En modo picker, solo mostrar el botón de subir -->
                 <div class="toolbar">
                     <button class="btn btn-primary" onclick="openUploadModal()">
                         <i class="fas fa-upload"></i>
-                        Pujar fitxers
+                        Subir archivos
                     </button>
                 </div>
             <?php endif; ?>
@@ -1030,7 +1213,7 @@ foreach ($pathParts as $index => $part) {
                 <?php if (empty($contents['folders']) && empty($contents['files'])): ?>
                     <div class="empty-state" style="grid-column: 1 / -1;">
                         <i class="fas fa-folder-open"></i>
-                        <p>Aquesta carpeta està buida</p>
+                        <p>Esta carpeta está vacía</p>
                     </div>
                 <?php endif; ?>
                 
@@ -1083,14 +1266,14 @@ foreach ($pathParts as $index => $part) {
     <div class="modal" id="createFolderModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Nova carpeta</h3>
+                <h3>Nueva carpeta</h3>
                 <button class="modal-close" onclick="closeModal('createFolderModal')">&times;</button>
             </div>
             <form onsubmit="createFolder(event)">
                 <div class="form-group">
-                    <label for="folderName">Nom de la carpeta:</label>
+                    <label for="folderName">Nombre de la carpeta:</label>
                     <input type="text" id="folderName" name="folder_name" required pattern="[A-Za-z0-9_-]+" 
-                           title="Només lletres, números, guions i guions baixos">
+                           title="Solo letras, números, guiones y guiones bajos">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Crear</button>
             </form>
@@ -1101,17 +1284,50 @@ foreach ($pathParts as $index => $part) {
     <div class="modal" id="uploadModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Pujar fitxers</h3>
+                <h3>Subir archivos</h3>
                 <button class="modal-close" onclick="closeModal('uploadModal')">&times;</button>
             </div>
             <form onsubmit="uploadFiles(event)">
+                <?php if ($isAdmin && !empty($availableFolders)): ?>
+                    <div class="form-group">
+                        <label for="targetFolder">
+                            Carpeta de destino:
+                            <span style="font-weight: normal; color: #666; font-size: 12px;">(<?php echo count($availableFolders); ?> carpetas disponibles)</span>
+                        </label>
+                        <div style="display: flex; gap: 8px; align-items: flex-start;">
+                            <select id="targetFolder" name="target_folder" class="form-control" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: 'Courier New', monospace;">
+                                <?php foreach ($availableFolders as $folder): ?>
+                                    <option value="<?php echo htmlspecialchars($folder['path']); ?>" 
+                                            <?php echo ($folder['path'] === $requestedPath) ? 'selected' : ''; ?>>
+                                        <?php 
+                                        if ($folder['path'] === '') {
+                                            echo '📁 ' . $folder['name'];
+                                        } else {
+                                            // Mostrar la ruta completa amb format visualment atractiu
+                                            echo '📁 img/' . htmlspecialchars($folder['path']);
+                                        }
+                                        ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="button" class="btn btn-secondary" onclick="openCreateFolderFromUpload()" 
+                                    style="white-space: nowrap; padding: 10px 14px;" title="Crear nueva carpeta">
+                                <i class="fas fa-folder-plus"></i>
+                            </button>
+                        </div>
+                        <small style="display: block; margin-top: 6px; color: #666; font-size: 12px;">
+                            <i class="fas fa-info-circle"></i> Puedes subir archivos a cualquier carpeta dentro de img/. Escribe para buscar una carpeta específica.
+                        </small>
+                    </div>
+                <?php endif; ?>
+                
                 <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #007bff; margin-bottom: 12px;"></i>
-                    <p>Clica per seleccionar fitxers o arrossega'ls aquí</p>
+                    <p>Haz clic para seleccionar archivos o arrástralos aquí</p>
                     <input type="file" id="fileInput" name="files[]" multiple style="display: none;" onchange="showSelectedFiles()">
                 </div>
                 <div id="selectedFiles" style="margin-top: 12px; font-size: 13px; color: #666;"></div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Pujar</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">Subir</button>
             </form>
         </div>
     </div>
@@ -1121,11 +1337,18 @@ foreach ($pathParts as $index => $part) {
         let selectedItems = new Set();
         
         const isPickerMode = <?php echo $isPickerMode ? 'true' : 'false'; ?>;
+        const isAdminPicker = <?php echo ($isPickerMode && isset($_GET['admin_picker']) && $_GET['admin_picker'] == '1') ? 'true' : 'false'; ?>;
         
         function navigateToFolder(folderName) {
             const newPath = currentPath ? currentPath + '/' + folderName : folderName;
-            const pickerParam = isPickerMode ? '&picker=1' : '';
-            window.location.href = 'gmedia.php?path=' + encodeURIComponent(newPath) + pickerParam;
+            let url = 'gmedia.php?path=' + encodeURIComponent(newPath);
+            if (isPickerMode) {
+                url += '&picker=1';
+                if (isAdminPicker) {
+                    url += '&admin_picker=1';
+                }
+            }
+            window.location.href = url;
         }
         
         function selectImage(element, event) {
@@ -1177,6 +1400,12 @@ foreach ($pathParts as $index => $part) {
         function openCreateFolderModal() {
             document.getElementById('createFolderModal').classList.add('active');
             document.getElementById('folderName').focus();
+        }
+        
+        function openCreateFolderFromUpload() {
+            // Tancar modal de upload i obrir el de crear carpeta
+            closeModal('uploadModal');
+            openCreateFolderModal();
         }
         
         function openUploadModal() {
@@ -1241,6 +1470,12 @@ foreach ($pathParts as $index => $part) {
             formData.append('action', 'upload');
             formData.append('path', currentPath);
             
+            // Afegir carpeta de destí si existeix (per admins)
+            const targetFolderSelect = document.getElementById('targetFolder');
+            if (targetFolderSelect) {
+                formData.append('target_folder', targetFolderSelect.value);
+            }
+            
             for (let i = 0; i < fileInput.files.length; i++) {
                 formData.append('files[]', fileInput.files[i]);
             }
@@ -1258,9 +1493,29 @@ foreach ($pathParts as $index => $part) {
                 const result = await response.json();
                 
                 if (result.success) {
-                    showAlert('success', result.message);
+                    let message = result.message;
+                    
+                    // Si s'ha pujat a una carpeta diferent de l'actual, informar l'usuari
+                    if (targetFolderSelect && result.target_folder && result.target_folder !== currentPath) {
+                        const folderDisplay = result.target_folder === '' ? 'img/ (arrel)' : 'img/' + result.target_folder;
+                        message += ' a la carpeta ' + folderDisplay;
+                    }
+                    
+                    showAlert('success', message);
                     closeModal('uploadModal');
-                    setTimeout(() => location.reload(), 500);
+                    
+                    // Si s'ha pujat a una carpeta diferent, preguntar si vol navegar-hi
+                    if (targetFolderSelect && result.target_folder && result.target_folder !== currentPath) {
+                        setTimeout(() => {
+                            if (confirm('Vols navegar a la carpeta on s\'han pujat els fitxers?')) {
+                                window.location.href = 'gmedia.php?path=' + encodeURIComponent(result.target_folder);
+                            } else {
+                                location.reload();
+                            }
+                        }, 800);
+                    } else {
+                        setTimeout(() => location.reload(), 500);
+                    }
                 } else {
                     showAlert('danger', result.errors.join(', '));
                 }

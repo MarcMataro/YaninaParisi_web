@@ -92,16 +92,8 @@ try {
                         <article class="professional-card">
                             <div class="professional-image">
                                 <?php if (!empty($prof['foto'])): ?>
-                                    <?php 
-                                        // Normalizar ruta: si ya comienza con ../ no añadir más
-                                        $fotoPath = $prof['foto'];
-                                        if (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') === 0) {
-                                            $fotoPath = '../' . $fotoPath;
-                                        } elseif (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') !== 0) {
-                                            $fotoPath = '../img/' . $fotoPath;
-                                        }
-                                    ?>
-                                    <img src="<?php echo htmlspecialchars($fotoPath); ?>" 
+                                    <?php $fotoUrl = resolve_media_url($prof['foto']); ?>
+                                    <img src="<?php echo htmlspecialchars($fotoUrl); ?>" 
                                          alt="<?php echo htmlspecialchars($prof['nom'] . ' ' . $prof['cognoms']); ?>">
                                 <?php else: ?>
                                     <div class="professional-placeholder">

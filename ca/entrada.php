@@ -123,21 +123,46 @@ if (!empty($entrada['id_autor'])) {
             }
         ?>
 
-        <article>
-            <div style="color:#888;margin-bottom:14px;">
-                <i class="fas fa-calendar-alt"></i> <?php echo date('d/m/Y', strtotime($entrada['data_publicacio'])); ?>
+        <article class="blog-entry">
+            <?php if (!$imgUrl): ?>
+                <h1 class="entry-title-inline"><?php echo $title; ?></h1>
+            <?php endif; ?>
+            
+            <div class="entry-meta">
+                <span class="entry-meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span><?php echo date('d/m/Y', strtotime($entrada['data_publicacio'])); ?></span>
+                </span>
                 <?php if (!empty($entrada['autor_nom_complet'])): ?>
-                    &middot; <i class="fas fa-user"></i> <?php echo htmlspecialchars($entrada['autor_nom_complet']); ?>
+                    <span class="entry-meta-item">
+                        <i class="fas fa-user"></i>
+                        <span><?php echo htmlspecialchars($entrada['autor_nom_complet']); ?></span>
+                    </span>
+                <?php endif; ?>
+                <?php if (!empty($entrada['visualitzacions'])): ?>
+                    <span class="entry-meta-item">
+                        <i class="fas fa-eye"></i>
+                        <span><?php echo number_format($entrada['visualitzacions']); ?> vistes</span>
+                    </span>
                 <?php endif; ?>
             </div>
+            
             <?php if (!$imgUrl && !empty($entrada['imatge_portada'])): ?>
-                <img src="<?php echo htmlspecialchars($entrada['imatge_portada']); ?>" alt="<?php echo htmlspecialchars($entrada['alt_imatge_ca'] ?? ''); ?>" style="width:100%;border-radius:8px;margin-bottom:16px;object-fit:cover;">
+                <div class="entry-featured-image">
+                    <img src="<?php echo htmlspecialchars($entrada['imatge_portada']); ?>" alt="<?php echo htmlspecialchars($entrada['alt_imatge_ca'] ?? ''); ?>">
+                </div>
             <?php endif; ?>
-            <div class="entrada-contenido">
+            
+            <div class="entry-content">
                 <?php echo $entrada['contingut_ca'] ?? $entrada['contingut_es']; ?>
             </div>
         </article>
-    <p style="margin-top:28px;"><a href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . '/blog.php'; ?>">&larr; Tornar al blog</a></p>
+        
+        <div class="entry-back-link">
+            <a href="<?php echo dirname($_SERVER['SCRIPT_NAME']) . '/blog.php'; ?>" class="back-to-blog">
+                <i class="fas fa-arrow-left"></i> Tornar al blog
+            </a>
+        </div>
     </main>
     <?php include '_includes/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.0.0/js/all.min.js"></script>

@@ -180,9 +180,40 @@ if (isset($_GET['lang'])) {
                 ]);
             }
         ?>
-        <h2 style="font-size:1.5em;color:#a89968;margin-bottom:28px;">
-            Últimes publicacions
-        </h2>
+        
+        <!-- Filtres -->
+        <div class="blog-filters">
+            <h3>Filtrar entrades</h3>
+            <form method="get" action="blog.php" class="blog-filters-form">
+                <div class="blog-filter-group">
+                    <label for="cat">Categoria</label>
+                    <select name="cat" id="cat">
+                        <option value="">Totes</option>
+                        <?php foreach ($catsSelect as $cat): ?>
+                            <option value="<?php echo $cat['id_category']; ?>" <?php echo (isset($_GET['cat']) && $_GET['cat'] == $cat['id_category']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($cat['nom']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="blog-filter-group">
+                    <label for="eti">Etiqueta</label>
+                    <select name="eti" id="eti">
+                        <option value="">Totes</option>
+                        <?php foreach ($etisSelect as $eti): ?>
+                            <option value="<?php echo $eti['id_etiqueta']; ?>">
+                                <?php echo htmlspecialchars($eti['nom']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="blog-filter-group">
+                    <label for="search">Cercar</label>
+                    <input type="text" name="search" id="search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="Paraules clau...">
+                </div>
+                <button type="submit" class="blog-filter-btn">Aplicar filtres</button>
+            </form>
+        </div>
     <?php
         try {
             $connexio = Connexio::getInstance();
@@ -225,9 +256,14 @@ if (isset($_GET['lang'])) {
             echo '<div style="color:#c00;padding:40px;text-align:center;">Error de conexión: ' . htmlspecialchars($e->getMessage()) . '</div>';
             $entradas = [];
         }
-        $latest = array_slice($entradas, 0, 5);
-        // Carregar categories i etiquetes per cada entrada
-        foreach ($latest as &$entrada) {
+        
+        if (empty($entradas)) {
+            echo '<div style="text-align:center;padding:60px 0;color:#999;font-size:1.2em;">No hi ha entrades de blog per mostrar</div>';
+        } else {
+            $lang = getCurrentLanguage();
+            
+            // Carregar categories, etiquetes i autor per totes les entrades
+            foreach ($entradas as &$entrada) {
             // Categories
             $cats = [];
             $catObjs = $relCatEntModel->obtenirCategoriesEntrada($entrada['id_entrada'], getCurrentLanguage(), true);
@@ -255,130 +291,79 @@ if (isset($_GET['lang'])) {
                     $autorNom = '';
                 }
             }
-            $entrada['autor_nom_complet'] = $autorNom;
+            $entrada['autor_nom'] = $autorNom;
         }
         unset($entrada);
-        if (empty($latest)) {
-            echo '<div style="text-align:center;padding:60px 0;color:#999;font-size:1.2em;">No hi ha entrades de blog per mostrar</div>';
-        } else {
-            $total = count($entradas);
-            $lang = getCurrentLanguage();
-            // --- PRIMERES 5 ENTRADES (1+2+2) ---
-            $entrada = $latest[0];
-            echo '<div class="blog-row">';
-            echo '<div class="blog-content">';
-            if (!empty($entrada['imatge_portada'])) {
-                $imgSrc = resolve_media_url($entrada['imatge_portada']);
-                echo '<div class="entrada-thumb">';
-                echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="Portada entrada" class="entrada-thumb-img">';
-                echo '</div>';
-            }
-            $titol = $lang === 'ca' ? ($entrada['titol_ca'] ?? $entrada['titol_es']) : ($entrada['titol_es'] ?? $entrada['titol_ca']);
-            $resum = $lang === 'ca' ? ($entrada['resum_ca'] ?? $entrada['resum_es']) : ($entrada['resum_es'] ?? $entrada['resum_ca']);
-            echo '<h2 class="entrada-titulo" style="font-size:1.4em;color:#333;margin-bottom:8px;">' . htmlspecialchars($titol) . '</h2>';
-            $tagsHtml = '';
-            if (!empty($entrada['categories_noms'])) {
-                $tagsHtml .= '<span style="margin-right:12px;color:#888;font-size:0.95em;"><i class="fas fa-folder"></i> ' . implode(', ', (array)$entrada['categories_noms']) . '</span>';
-            }
-            if (!empty($entrada['etiquetes_noms'])) {
-                $tagsHtml .= '<span style="color:#888;font-size:0.95em;"><i class="fas fa-tag"></i> ' . implode(', ', (array)$entrada['etiquetes_noms']) . '</span>';
-            }
-            if ($tagsHtml) {
-                echo '<div class="entrada-tags" style="margin-bottom:8px;">' . $tagsHtml . '</div>';
-            }
-            echo '<div class="entrada-meta" style="color:#888;font-size:0.95em;margin-bottom:10px;">';
-            echo '<i class="fas fa-calendar-alt"></i> ' . date('d/m/Y', strtotime($entrada['data_publicacio']));
-            if (!empty($entrada['autor_nom_complet'])) {
-                echo ' &middot; <i class="fas fa-user"></i> ' . htmlspecialchars($entrada['autor_nom_complet']);
-            }
-            echo '</div>';
-            if (!empty($resum)) {
-                echo '<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
-            }
-            $slug = $lang === 'ca' ? ($entrada['slug_ca'] ?? $entrada['slug_es'] ?? '') : ($entrada['slug_es'] ?? $entrada['slug_ca'] ?? '');
-            $href = $slug ? 'entrada.php?slug=' . rawurlencode($slug) : 'entrada.php?id=' . $entrada['id_entrada'];
-            echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="' . $href . '">Llegir més</a>';
-            echo '</div>';
-            // Columna lateral (20%)
-            echo '<aside class="blog-aside">';
-            echo '<h3 style="font-size:1.1em;color:#a89968;margin-bottom:12px;">Filtrar</h3>';
-            echo '<form method="get" action="blog.php" style="display:flex;flex-direction:column;gap:16px;">';
-            echo '<div>';
-            echo '<label for="cat" style="font-size:0.95em;color:#888;display:block;margin-bottom:4px;">Categoria</label>';
-            echo '<select name="cat" id="cat" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;min-width:120px;width:100%;">';
-            echo '<option value="">Totes</option>';
-            foreach ($catsSelect as $cat) {
-                $selected = (isset($_GET['cat']) && $_GET['cat'] == $cat['id_category']) ? 'selected' : '';
-                echo '<option value="'.$cat['id_category'].'" '.$selected.'>'.htmlspecialchars($cat['nom']).'</option>';
-            }
-            echo '</select>';
-            echo '</div>';
-            echo '<div>';
-            echo '<label for="eti" style="font-size:0.95em;color:#888;display:block;margin-bottom:4px;">Etiqueta</label>';
-            echo '<select name="eti" id="eti" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;min-width:120px;width:100%;">';
-            echo '<option value="">Totes</option>';
-            foreach ($etisSelect as $eti) {
-                $selected = (isset($_GET['eti']) && $_GET['eti'] == $eti['id_etiqueta']) ? 'selected' : '';
-                echo '<option value="'.$eti['id_etiqueta'].'" '.$selected.'>'.htmlspecialchars($eti['nom']).'</option>';
-            }
-            echo '</select>';
-            echo '</div>';
-            echo '<div>';
-            echo '<label for="search" style="font-size:0.95em;color:#888;display:block;margin-bottom:4px;">Cercar</label>';
-            $searchVal = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '';
-            echo '<input type="text" name="search" id="search" value="'.$searchVal.'" style="padding:6px 12px;border-radius:6px;border:1px solid #ccc;min-width:120px;width:100%;">';
-            echo '</div>';
-            echo '<button type="submit" style="background:#a89968;color:#fff;padding:8px 18px;border:none;border-radius:6px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;">Filtrar</button>';
-            echo '</form>';
-            echo '</aside>';
-            echo '</div>';
-            // 2+2 següents
-                for ($i = 1; $i < count($latest); $i += 2) {
-                echo '<div class="blog-row">';
-                $itemsInRow = min(2, count($latest) - $i);
-                for ($j = 0; $j < $itemsInRow; $j++) {
-                    $entrada = $latest[$i + $j];
-                    echo '<div class="blog-col">';
-                    if (!empty($entrada['imatge_portada'])) {
-                        $imgSrc = resolve_media_url($entrada['imatge_portada']);
-                        echo '<div class="entrada-thumb">';
-                        echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="Portada entrada" class="entrada-thumb-img">';
-                        echo '</div>';
-                    }
+            
+            // Mostrar les primeres 9 entrades
+            $primeres = array_slice($entradas, 0, 9);
+            
+            echo '<div class="blog-grid">';
+            
+            // Renderitzar cada entrada com a targeta
+            foreach ($primeres as $entrada) {
+                echo '<article class="blog-card">';
+                
+                // Imatge
+                if (!empty($entrada['imatge_portada'])) {
+                    $imgSrc = resolve_media_url($entrada['imatge_portada']);
                     $titol = $lang === 'ca' ? ($entrada['titol_ca'] ?? $entrada['titol_es']) : ($entrada['titol_es'] ?? $entrada['titol_ca']);
-                    $resum = $lang === 'ca' ? ($entrada['resum_ca'] ?? $entrada['resum_es']) : ($entrada['resum_es'] ?? $entrada['resum_ca']);
-                    echo '<h2 class="entrada-titulo" style="font-size:1.1em;color:#333;margin-bottom:8px;">' . htmlspecialchars($titol) . '</h2>';
-                    $tagsHtml = '';
-                    if (!empty($entrada['categories_noms'])) {
-                        $tagsHtml .= '<span style="margin-right:12px;color:#888;font-size:0.95em;"><i class="fas fa-folder"></i> ' . implode(', ', (array)$entrada['categories_noms']) . '</span>';
-                    }
-                    if (!empty($entrada['etiquetes_noms'])) {
-                        $tagsHtml .= '<span style="color:#888;font-size:0.95em;"><i class="fas fa-tag"></i> ' . implode(', ', (array)$entrada['etiquetes_noms']) . '</span>';
-                    }
-                    if ($tagsHtml) {
-                        echo '<div class="entrada-tags" style="margin-bottom:8px;">' . $tagsHtml . '</div>';
-                    }
-                    echo '<div class="entrada-meta" style="color:#888;font-size:0.95em;margin-bottom:10px;">';
-                    echo '<i class="fas fa-calendar-alt"></i> ' . date('d/m/Y', strtotime($entrada['data_publicacio']));
-                    if (!empty($entrada['autor_nom_complet'])) {
-                        echo ' &middot; <i class="fas fa-user"></i> ' . htmlspecialchars($entrada['autor_nom_complet']);
-                    }
-                    echo '</div>';
-                    if (!empty($resum)) {
-                        echo '<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
-                    }
                     $slug = $lang === 'ca' ? ($entrada['slug_ca'] ?? $entrada['slug_es'] ?? '') : ($entrada['slug_es'] ?? $entrada['slug_ca'] ?? '');
                     $href = $slug ? 'entrada.php?slug=' . rawurlencode($slug) : 'entrada.php?id=' . $entrada['id_entrada'];
-                    echo '<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="' . $href . '">Llegir més</a>';
-                    echo '</div>';
+                    echo '<a href="' . $href . '" class="blog-card-image">';
+                    echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="' . htmlspecialchars($titol) . '">';
+                    echo '</a>';
                 }
-                if ($itemsInRow === 1) {
-                    echo '<div style="flex:1;"></div>';
+                
+                echo '<div class="blog-card-content">';
+                
+                // Títol
+                $titol = $lang === 'ca' ? ($entrada['titol_ca'] ?? $entrada['titol_es']) : ($entrada['titol_es'] ?? $entrada['titol_ca']);
+                $slug = $lang === 'ca' ? ($entrada['slug_ca'] ?? $entrada['slug_es'] ?? '') : ($entrada['slug_es'] ?? $entrada['slug_ca'] ?? '');
+                $href = $slug ? 'entrada.php?slug=' . rawurlencode($slug) : 'entrada.php?id=' . $entrada['id_entrada'];
+                echo '<h3 class="blog-card-title"><a href="' . $href . '" style="color:inherit;text-decoration:none;">' . htmlspecialchars($titol) . '</a></h3>';
+                
+                // Meta (data i autor)
+                echo '<div class="blog-card-meta">';
+                echo '<span><i class="fas fa-calendar-alt"></i> ' . date('d/m/Y', strtotime($entrada['data_publicacio'])) . '</span>';
+                if (!empty($entrada['autor_nom_complet'])) {
+                    echo '<span><i class="fas fa-user"></i> ' . htmlspecialchars($entrada['autor_nom_complet']) . '</span>';
                 }
                 echo '</div>';
+                
+                // Tags (categories i etiquetes)
+                if (!empty($entrada['categories_noms']) || !empty($entrada['etiquetes_noms'])) {
+                    echo '<div class="blog-card-tags">';
+                    if (!empty($entrada['categories_noms'])) {
+                        foreach ((array)$entrada['categories_noms'] as $cat) {
+                            echo '<span><i class="fas fa-folder"></i> ' . htmlspecialchars($cat) . '</span>';
+                        }
+                    }
+                    if (!empty($entrada['etiquetes_noms'])) {
+                        foreach ((array)$entrada['etiquetes_noms'] as $eti) {
+                            echo '<span><i class="fas fa-tag"></i> ' . htmlspecialchars($eti) . '</span>';
+                        }
+                    }
+                    echo '</div>';
+                }
+                
+                // Resum
+                $resum = $lang === 'ca' ? ($entrada['resum_ca'] ?? $entrada['resum_es']) : ($entrada['resum_es'] ?? $entrada['resum_ca']);
+                if (!empty($resum)) {
+                    echo '<div class="blog-card-summary">' . html_entity_decode($resum, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</div>';
+                }
+                
+                // Enllaç
+                echo '<a class="blog-card-link" href="' . $href . '">Llegir més <i class="fas fa-arrow-right"></i></a>';
+                
+                echo '</div>';
+                echo '</article>';
             }
-            // --- ENTRADES ADDICIONALS (3x3) ---
-            $restants = array_slice($entradas, 5);
+            
+            echo '</div>';
+            
+            // --- ENTRADES ADDICIONALS ---
+            $restants = array_slice($entradas, 9);
             // Enriquir restants amb categories, etiquetes i autor perquè el JS tingui aquesta informació
             foreach ($restants as &$r) {
                 // categories
@@ -406,56 +391,89 @@ if (isset($_GET['lang'])) {
             $numRestants = count($restants);
             if ($numRestants > 0) {
                                 echo '<div id="entrades-addicionals-container"></div>';
-                                echo '<button id="btn-mostra-mes" style="display:block;margin:32px auto 0 auto;background:#a89968;color:#fff;padding:12px 32px;border:none;border-radius:6px;font-size:1.1em;font-weight:600;cursor:pointer;">Mostrar més</button>';
+                                echo '<button id="btn-mostra-mes" class="blog-load-more">Mostrar més</button>';
                                 ?>
                                 <script>
                                 const entradesAdd = <?php echo json_encode(array_values($restants), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES); ?>;
                                 let offset = 0;
-                                const perPage = 9;
                                 const lang = '<?php echo $lang; ?>';
+                                
                                 function renderEntradesAdd() {
                                     const container = document.getElementById("entrades-addicionals-container");
-                                    let html = "";
-                                    let filesMostrades = 0;
-                                    for (let i = offset; i < entradesAdd.length && filesMostrades < 3; i += 3, filesMostrades++) {
-                                        html += `<div class="blog-row">`;
-                                        for (let j = 0; j < 3; j++) {
-                                            if (i+j < entradesAdd.length) {
-                                                const entrada = entradesAdd[i+j];
-                                                html += `<div class="blog-col">`;
-                                                if (entrada.imatge_portada) {
-                                                    html += `<div class="entrada-thumb"><img src="${entrada.imatge_portada.replace(/\"/g, '&quot;')}" alt="Portada entrada" class="entrada-thumb-img"></div>`;
-                                                }
-                                                const titol = lang === "ca" ? (entrada.titol_ca || entrada.titol_es) : (entrada.titol_es || entrada.titol_ca);
-                                                const resum = lang === "ca" ? (entrada.resum_ca || entrada.resum_es) : (entrada.resum_es || entrada.resum_ca);
-                                                html += `<h2 class="entrada-titulo" style="font-size:1.1em;color:#333;margin-bottom:8px;">${titol ? titol.replace(/</g, '&lt;') : ''}</h2>`;
-                                                let tagsHtml = "";
-                                                if (entrada.categories_noms && entrada.categories_noms.length) {
-                                                    tagsHtml += `<span style="margin-right:12px;color:#888;font-size:0.95em;"><i class="fas fa-folder"></i> ${entrada.categories_noms.join(', ')}</span>`;
-                                                }
-                                                if (entrada.etiquetes_noms && entrada.etiquetes_noms.length) {
-                                                    tagsHtml += `<span style="color:#888;font-size:0.95em;"><i class="fas fa-tag"></i> ${entrada.etiquetes_noms.join(', ')}</span>`;
-                                                }
-                                                if (tagsHtml) html += `<div class="entrada-tags" style="margin-bottom:8px;">${tagsHtml}</div>`;
-                                                let metaDate = entrada.data_publicacio ? (entrada.data_publicacio.substr(8,2)+'/'+entrada.data_publicacio.substr(5,2)+'/'+entrada.data_publicacio.substr(0,4)) : '';
-                                                let autorTxt = entrada.autor_nom_complet ? (' &middot; <i class="fas fa-user"></i> ' + String(entrada.autor_nom_complet).replace(/</g,'&lt;')) : '';
-                                                html += `<div class="entrada-meta" style="color:#888;font-size:0.95em;margin-bottom:10px;"><i class="fas fa-calendar-alt"></i> ${metaDate}${autorTxt}</div>`;
-                                                if (resum) html += `<div class="entrada-resumen" style="color:#444;margin-bottom:10px;">${resum}</div>`;
-                                                const slug = lang === "ca" ? (entrada.slug_ca || entrada.slug_es || "") : (entrada.slug_es || entrada.slug_ca || "");
-                                                const href = slug ? `entrada.php?slug=${encodeURIComponent(slug)}` : `entrada.php?id=${entrada.id_entrada}`;
-                                                html += `<a class="entrada-link" style="color:#a89968;text-decoration:none;font-weight:600;" href="${href}">Llegir més</a>`;
-                                                html += `</div>`;
-                                            } else {
-                                                html += `<div class="blog-col"></div>`;
-                                            }
+                                    const grid = document.createElement('div');
+                                    grid.className = 'blog-grid';
+                                    
+                                    for (let i = offset; i < Math.min(offset + 9, entradesAdd.length); i++) {
+                                        const entrada = entradesAdd[i];
+                                        const article = document.createElement('article');
+                                        article.className = 'blog-card';
+                                        
+                                        const titol = lang === 'ca' ? (entrada.titol_ca || entrada.titol_es) : (entrada.titol_es || entrada.titol_ca);
+                                        const resum = lang === 'ca' ? (entrada.resum_ca || entrada.resum_es) : (entrada.resum_es || entrada.resum_ca);
+                                        const slug = lang === 'ca' ? (entrada.slug_ca || entrada.slug_es || '') : (entrada.slug_es || entrada.slug_ca || '');
+                                        const href = slug ? `entrada.php?slug=${encodeURIComponent(slug)}` : `entrada.php?id=${entrada.id_entrada}`;
+                                        
+                                        // Imatge
+                                        if (entrada.imatge_portada) {
+                                            const imgLink = document.createElement('a');
+                                            imgLink.href = href;
+                                            imgLink.className = 'blog-card-image';
+                                            imgLink.innerHTML = `<img src="${entrada.imatge_portada}" alt="${titol}">`;
+                                            article.appendChild(imgLink);
                                         }
-                                        html += `</div>`;
+                                        
+                                        const content = document.createElement('div');
+                                        content.className = 'blog-card-content';
+                                        
+                                        // Títol
+                                        content.innerHTML += `<h3 class="blog-card-title"><a href="${href}" style="color:inherit;text-decoration:none;">${titol}</a></h3>`;
+                                        
+                                        // Meta
+                                        let metaDate = entrada.data_publicacio ? (entrada.data_publicacio.substr(8,2)+'/'+entrada.data_publicacio.substr(5,2)+'/'+entrada.data_publicacio.substr(0,4)) : '';
+                                        let metaHtml = `<div class="blog-card-meta"><span><i class="fas fa-calendar-alt"></i> ${metaDate}</span>`;
+                                        if (entrada.autor_nom_complet) {
+                                            metaHtml += `<span><i class="fas fa-user"></i> ${entrada.autor_nom_complet}</span>`;
+                                        }
+                                        metaHtml += '</div>';
+                                        content.innerHTML += metaHtml;
+                                        
+                                        // Tags
+                                        if ((entrada.categories_noms && entrada.categories_noms.length) || (entrada.etiquetes_noms && entrada.etiquetes_noms.length)) {
+                                            let tagsHtml = '<div class="blog-card-tags">';
+                                            if (entrada.categories_noms && entrada.categories_noms.length) {
+                                                entrada.categories_noms.forEach(cat => {
+                                                    tagsHtml += `<span><i class="fas fa-folder"></i> ${cat}</span>`;
+                                                });
+                                            }
+                                            if (entrada.etiquetes_noms && entrada.etiquetes_noms.length) {
+                                                entrada.etiquetes_noms.forEach(eti => {
+                                                    tagsHtml += `<span><i class="fas fa-tag"></i> ${eti}</span>`;
+                                                });
+                                            }
+                                            tagsHtml += '</div>';
+                                            content.innerHTML += tagsHtml;
+                                        }
+                                        
+                                        // Resum
+                                        if (resum) {
+                                            content.innerHTML += `<div class="blog-card-summary">${resum}</div>`;
+                                        }
+                                        
+                                        // Enllaç
+                                        content.innerHTML += `<a class="blog-card-link" href="${href}">Llegir més <i class="fas fa-arrow-right"></i></a>`;
+                                        
+                                        article.appendChild(content);
+                                        grid.appendChild(article);
                                     }
-                                    container.innerHTML += html;
-                                    offset += filesMostrades * 3;
-                                    if (offset >= entradesAdd.length) document.getElementById("btn-mostra-mes").style.display = "none";
+                                    
+                                    container.appendChild(grid);
+                                    offset += 9;
+                                    
+                                    if (offset >= entradesAdd.length) {
+                                        document.getElementById("btn-mostra-mes").style.display = "none";
+                                    }
                                 }
-                                // Only render additional entries when the user clicks the button
+                                
                                 document.getElementById("btn-mostra-mes").addEventListener("click", renderEntradesAdd);
                                 </script>
                                 <?php

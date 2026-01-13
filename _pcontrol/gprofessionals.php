@@ -522,9 +522,98 @@ if ($vista === 'editar' && $idEditarEsp) {
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/configuracion.css">
     <style>
+        /* Estilos copiados de gblog.css para consistencia (list-container y list-table) */
+        .list-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        .list-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            table-layout: fixed; /* Forzar ancho fijo para columnas */
+        }
+
+        .list-table thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .list-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .list-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .list-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .list-table td {
+            padding: 16px 12px;
+            color: #333;
+            vertical-align: middle;
+            word-wrap: break-word; /* Romper palabras largas */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .list-table .text-center { text-align: center; }
+
+        /* Legacy styles */
         .professionals-table { width:100%; border-collapse:collapse; margin-top:20px; }
         .professionals-table th, .professionals-table td { padding:12px; border-bottom:1px solid #eee; text-align:left; position:relative; z-index:1; }
         
+        /* Responsive para tablas */
+        @media (max-width: 1024px) {
+            .list-table th:nth-child(3), /* Email */
+            .list-table td:nth-child(3),
+            .list-table th:nth-child(4), /* Telefon */
+            .list-table td:nth-child(4) {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .list-table th:nth-child(6), /* Experiencia */
+            .list-table td:nth-child(6),
+            .list-table th:nth-child(7), /* Especialidades */
+            .list-table td:nth-child(7) {
+                display: none;
+            }
+        }
+        
+        /* Badge estilos actualizados */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .status-activa { background-color: #d4edda; color: #155724; }
+        .status-inactiva { background-color: #f8d7da; color: #721c24; }
+        .status-web { background-color: #cce5ff; color: #004085; }
+        .status-oculto { background-color: #fff3cd; color: #856404; }
+
         /* Tabs para secciones */
         .section-tabs { display:flex; gap:8px; margin-bottom:20px; border-bottom:2px solid #eee; }
         .section-tab { padding:12px 24px; background:transparent; border:none; cursor:pointer; font-size:16px; font-weight:500; color:#666; border-bottom:3px solid transparent; transition:all 0.3s; }
@@ -533,6 +622,35 @@ if ($vista === 'editar' && $idEditarEsp) {
         .professionals-table th { background:#f8f9fa; font-weight:600; }
         .professionals-actions button { margin-right:8px; padding:6px 12px; }
         .filter-row { display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap; }
+        .filter-row .form-control { 
+            padding:10px 14px; 
+            border:1px solid #ddd; 
+            border-radius:6px; 
+            font-size:14px;
+            transition:all 0.2s ease;
+            background:#fff;
+        }
+        .filter-row .form-control:focus { 
+            outline:none; 
+            border-color:#007bff; 
+            box-shadow:0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .filter-row input[type="text"].form-control { 
+            flex:1; 
+            min-width:250px;
+        }
+        .filter-row select.form-control { 
+            min-width:150px;
+            cursor:pointer;
+            appearance:none;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat:no-repeat;
+            background-position:right 12px center;
+            padding-right:36px;
+        }
+        .filter-row select.form-control:hover {
+            border-color:#999;
+        }
         .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .form-grid-full { grid-column: 1 / -1; }
         .badge { padding:4px 8px; border-radius:4px; font-size:12px; font-weight:500; }
@@ -669,63 +787,66 @@ if ($vista === 'editar' && $idEditarEsp) {
                             <?php if (empty($professionals)): ?>
                                 <p>No se encontraron profesionales.</p>
                             <?php else: ?>
-                                <table class="professionals-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nombre Completo</th>
-                                            <th>Email</th>
-                                            <th>Teléfono</th>
-                                            <th>Nº Colegiado</th>
-                                            <th>Experiencia</th>
-                                            <th>Especialidades</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($professionals as $prof): ?>
-                                            <?php 
-                                                $especialitats = $relModel->obtenirEspecialitatsProfessional($prof['id']);
-                                                $especialitatsNoms = array_column($especialitats, 'nom');
-                                            ?>
+                                <div class="list-container">
+                                    <table class="list-table">
+                                        <thead>
                                             <tr>
-                                                <td><?php echo $prof['id']; ?></td>
-                                                <td>
-                                                    <strong><?php echo htmlspecialchars($prof['nom'] . ' ' . $prof['cognoms']); ?></strong>
-                                                </td>
-                                                <td><?php echo htmlspecialchars($prof['email']); ?></td>
-                                                <td><?php echo htmlspecialchars($prof['telefon'] ?? '-'); ?></td>
-                                                <td><?php echo htmlspecialchars($prof['num_collegiat'] ?? '-'); ?></td>
-                                                <td><?php echo $prof['anys_experiencia'] ? $prof['anys_experiencia'] . ' años' : '-'; ?></td>
-                                                <td>
-                                                    <?php if (!empty($especialitatsNoms)): ?>
-                                                        <small><?php echo implode(', ', array_map('htmlspecialchars', $especialitatsNoms)); ?></small>
-                                                    <?php else: ?>
-                                                        <small style="color:#999;">Sin especialidades</small>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td style="text-align:center;white-space:nowrap;">
-                                                    <?php 
-                                                    // Badge de estado activo/inactivo
-                                                    if (isset($prof['actiu']) && $prof['actiu']) {
-                                                        echo '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Activo</span>';
-                                                    } else {
-                                                        echo '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Inactivo</span>';
-                                                    }
-                                                    
-                                                    echo '<br>';
-                                                    
-                                                    // Badge de visibilidad web
-                                                    if (isset($prof['visible_web']) && $prof['visible_web']) {
-                                                        echo '<span class="badge badge-success" style="margin-top:4px;"><i class="fas fa-globe"></i> Web</span>';
-                                                    } else {
-                                                        echo '<span class="badge badge-warning" style="margin-top:4px;"><i class="fas fa-eye-slash"></i> Oculto</span>';
-                                                    }
-                                                    ?>
-                                                </td>
-                                                <td class="professionals-actions">
-                                                    <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+                                                <th style="width: 50px;">ID</th>
+                                                <th>Nombre Completo</th>
+                                                <th>Email</th>
+                                                <th>Teléfono</th>
+                                                <th>Nº Colegiado</th>
+                                                <th>Experiencia</th>
+                                                <th>Especialidades</th>
+                                                <th class="text-center" style="width: 100px;">Estado</th>
+                                                <th class="text-center" style="width: 140px;">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($professionals as $prof): ?>
+                                                <?php 
+                                                    $especialitats = $relModel->obtenirEspecialitatsProfessional($prof['id']);
+                                                    $especialitatsNoms = array_column($especialitats, 'nom');
+                                                ?>
+                                                <tr>
+                                                    <td><?php echo $prof['id']; ?></td>
+                                                    <td>
+                                                        <div class="item-name">
+                                                            <strong><?php echo htmlspecialchars($prof['nom'] . ' ' . $prof['cognoms']); ?></strong>
+                                                        </div>
+                                                    </td>
+                                                    <td><?php echo htmlspecialchars($prof['email']); ?></td>
+                                                    <td><?php echo htmlspecialchars($prof['telefon'] ?? '-'); ?></td>
+                                                    <td><?php echo htmlspecialchars($prof['num_collegiat'] ?? '-'); ?></td>
+                                                    <td><?php echo $prof['anys_experiencia'] ? $prof['anys_experiencia'] . ' años' : '-'; ?></td>
+                                                    <td>
+                                                        <?php if (!empty($especialitatsNoms)): ?>
+                                                            <small><?php echo implode(', ', array_map('htmlspecialchars', $especialitatsNoms)); ?></small>
+                                                        <?php else: ?>
+                                                            <small style="color:#999;">Sin especialidades</small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+                                                            <?php 
+                                                            // Badge de estado activo/inactivo
+                                                            if (isset($prof['actiu']) && $prof['actiu']) {
+                                                                echo '<span class="status-badge status-activa"><i class="fas fa-check-circle"></i> Activo</span>';
+                                                            } else {
+                                                                echo '<span class="status-badge status-inactiva"><i class="fas fa-times-circle"></i> Inactivo</span>';
+                                                            }
+                                                            
+                                                            // Badge de visibilidad web
+                                                            if (isset($prof['visible_web']) && $prof['visible_web']) {
+                                                                echo '<span class="status-badge status-web"><i class="fas fa-globe"></i> Web</span>';
+                                                            } else {
+                                                                echo '<span class="status-badge status-oculto"><i class="fas fa-eye-slash"></i> Oculto</span>';
+                                                            }
+                                                            ?>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
                                                         <a href="?vista=editar&id=<?php echo $prof['id']; ?>" 
                                                            class="btn btn-sm btn-primary" 
                                                            title="Editar profesional"
@@ -771,11 +892,12 @@ if ($vista === 'editar' && $idEditarEsp) {
                                                             </button>
                                                         </form>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -838,7 +960,7 @@ if ($vista === 'editar' && $idEditarEsp) {
                                             <input type="hidden" id="foto" name="foto" value="">
                                             <div class="image-picker-controls">
                                                 <button type="button" id="btnPickFoto" class="btn btn-secondary">
-                                                    <i class="fas fa-images"></i> Seleccionar Imatge
+                                                    <i class="fas fa-images"></i> Seleccionar Imagen
                                                 </button>
                                                 <button type="button" id="btnClearFoto" class="btn btn-outline-secondary" style="display:none;">
                                                     <i class="fas fa-times"></i> Eliminar
@@ -1166,7 +1288,7 @@ if ($vista === 'editar' && $idEditarEsp) {
                                             <input type="hidden" id="foto_edit" name="foto" value="<?php echo htmlspecialchars($profEditar['foto'] ?? ''); ?>">
                                             <div class="image-picker-controls">
                                                 <button type="button" id="btnPickFotoEdit" class="btn btn-secondary">
-                                                    <i class="fas fa-images"></i> Seleccionar Imatge
+                                                    <i class="fas fa-images"></i> Seleccionar Imagen
                                                 </button>
                                                 <button type="button" id="btnClearFotoEdit" class="btn btn-outline-secondary" <?php echo empty($profEditar['foto']) ? 'style="display:none;"' : ''; ?>>
                                                     <i class="fas fa-times"></i> Eliminar
@@ -1409,8 +1531,21 @@ if ($vista === 'editar' && $idEditarEsp) {
                                                     
                                                     <div class="form-group">
                                                         <label>Imagen *</label>
-                                                        <input type="text" name="image_path" class="form-control" value="<?php echo htmlspecialchars($foto['image_path']); ?>" required readonly>
-                                                        <small style="color:#666;">Para cambiar la imagen, elimina esta foto y crea una nueva.</small>
+                                                        <div class="image-picker-container">
+                                                            <input type="hidden" name="image_path" id="editFotoImagePath_<?php echo $foto['id']; ?>" value="<?php echo htmlspecialchars($foto['image_path']); ?>" required>
+                                                            <div class="image-picker-controls">
+                                                                <button type="button" class="btn btn-secondary btnPickEditFoto" data-foto-id="<?php echo $foto['id']; ?>">
+                                                                    <i class="fas fa-images"></i> Seleccionar Imagen
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-secondary btnClearEditFoto" data-foto-id="<?php echo $foto['id']; ?>">
+                                                                    <i class="fas fa-times"></i> Eliminar
+                                                                </button>
+                                                            </div>
+                                                            <div class="image-preview-container" id="editFotoPreviewContainer_<?php echo $foto['id']; ?>" style="margin-top:15px;">
+                                                                <img id="editFotoPreview_<?php echo $foto['id']; ?>" src="<?php echo htmlspecialchars($foto['image_path']); ?>" alt="Preview" class="foto-preview" style="max-width:300px; max-height:300px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                                                                <p class="image-url-text" id="editFotoUrlText_<?php echo $foto['id']; ?>" style="font-size:0.85rem; color:#666; margin-top:8px; word-break:break-all;"><?php echo htmlspecialchars($foto['image_path']); ?></p>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     
                                                     <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
@@ -1485,62 +1620,71 @@ if ($vista === 'editar' && $idEditarEsp) {
                             <?php if (empty($especialitats)): ?>
                                 <p>No se encontraron especialidades.</p>
                             <?php else: ?>
-                                <table class="professionals-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Nombre</th>
-                                            <th>Descripción</th>
-                                            <th>Nº Profesionales</th>
-                                            <th>Fecha Creación</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($especialitats as $esp): ?>
-                                            <?php 
-                                                $numProfs = $relModel->comptarProfessionalsEspecialitat($esp['id']);
-                                            ?>
+                                <div class="list-container">
+                                    <table class="list-table">
+                                        <thead>
                                             <tr>
-                                                <td><?php echo $esp['id']; ?></td>
-                                                <td><strong><?php echo htmlspecialchars($esp['nom']); ?></strong></td>
-                                                <td>
-                                                    <?php if (!empty($esp['descripcio'])): ?>
-                                                        <small><?php echo htmlspecialchars(substr($esp['descripcio'], 0, 100)); ?>
-                                                        <?php echo strlen($esp['descripcio']) > 100 ? '...' : ''; ?></small>
-                                                    <?php else: ?>
-                                                        <small style="color:#999;">Sin descripción</small>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
+                                                <th style="width: 60px;">ID</th>
+                                                <th style="width: 250px;">Nombre</th>
+                                                <th style="width: 300px;">Descripción</th>
+                                                <th class="text-center" style="width: 140px;">Nº Profesionales</th>
+                                                <th style="width: 120px;">Fecha Creación</th>
+                                                <th class="text-center" style="width: 120px;">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($especialitats as $esp): ?>
+                                                <?php 
+                                                    $numProfs = $relModel->comptarProfessionalsEspecialitat($esp['id']);
+                                                ?>
+                                                <tr>
+                                                    <td><?php echo $esp['id']; ?></td>
+                                                    <td>
+                                                        <div class="item-name">
+                                                            <strong><?php echo htmlspecialchars($esp['nom']); ?></strong>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <?php if (!empty($esp['descripcio'])): ?>
+                                                            <small><?php echo htmlspecialchars(substr($esp['descripcio'], 0, 100)); ?>
+                                                            <?php echo strlen($esp['descripcio']) > 100 ? '...' : ''; ?></small>
+                                                        <?php else: ?>
+                                                            <small style="color:#999;">Sin descripción</small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td class="text-center">
                                                     <?php if ($numProfs > 0): ?>
-                                                        <span class="badge badge-success"><?php echo $numProfs; ?> profesional(es)</span>
+                                                        <span class="status-badge status-activa"><?php echo $numProfs; ?> profesional(es)</span>
                                                     <?php else: ?>
                                                         <span style="color:#999;">0</span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td><?php echo date('d/m/Y', strtotime($esp['created_at'])); ?></td>
-                                                <td class="professionals-actions">
-                                                    <a href="?seccion=especialitats&vista=editar&id_especialitat=<?php echo $esp['id']; ?>" 
-                                                       class="btn btn-sm btn-primary" title="Editar">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    
-                                                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta especialidad?<?php echo $numProfs > 0 ? ' (Tiene ' . $numProfs . ' profesional/es asignados)' : ''; ?>');">
+                                                <td class="text-center">
+                                                    <div style="display:flex;gap:6px;justify-content:center;">
+                                                        <a href="?seccion=especialitats&vista=editar&id_especialitat=<?php echo $esp['id']; ?>" 
+                                                            class="btn btn-sm btn-primary" title="Editar" style="border-radius:6px;padding:6px 10px;">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        
+                                                        <form method="POST" style="display:inline;margin:0;" onsubmit="return confirm('¿Eliminar esta especialidad?<?php echo $numProfs > 0 ? ' (Tiene ' . $numProfs . ' profesional/es asignados)' : ''; ?>');">
                                                         <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                                         <input type="hidden" name="accion" value="eliminar_especialitat">
                                                         <input type="hidden" name="id_especialitat" value="<?php echo $esp['id']; ?>">
                                                         <button type="submit" class="btn btn-sm btn-danger" 
                                                                 title="Eliminar"
+                                                                style="border-radius:6px;padding:6px 10px;"
                                                                 <?php echo $numProfs > 0 ? 'disabled' : ''; ?>>
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -1811,6 +1955,42 @@ if ($vista === 'editar' && $idEditarEsp) {
                 });
             });
             if (btnClearNewFoto) btnClearNewFoto.addEventListener('click', function(){ setNewFoto(''); });
+
+            // Wire up photo pickers for EDIT FOTO in gallery modals (dynamic)
+            document.addEventListener('click', function(e) {
+                // Selector d'imatge per editar foto
+                if (e.target.closest('.btnPickEditFoto')) {
+                    var btn = e.target.closest('.btnPickEditFoto');
+                    var fotoId = btn.getAttribute('data-foto-id');
+                    openMediaPickerFor(function(data) {
+                        var input = document.getElementById('editFotoImagePath_' + fotoId);
+                        var preview = document.getElementById('editFotoPreview_' + fotoId);
+                        var previewContainer = document.getElementById('editFotoPreviewContainer_' + fotoId);
+                        var urlText = document.getElementById('editFotoUrlText_' + fotoId);
+                        
+                        if (input) input.value = data.mediaUrl;
+                        if (preview) preview.src = data.mediaUrl;
+                        if (previewContainer) previewContainer.style.display = 'block';
+                        if (urlText) urlText.textContent = data.mediaUrl;
+                    });
+                }
+                
+                // Eliminar imatge d'editar foto
+                if (e.target.closest('.btnClearEditFoto')) {
+                    var btn = e.target.closest('.btnClearEditFoto');
+                    var fotoId = btn.getAttribute('data-foto-id');
+                    
+                    var input = document.getElementById('editFotoImagePath_' + fotoId);
+                    var preview = document.getElementById('editFotoPreview_' + fotoId);
+                    var previewContainer = document.getElementById('editFotoPreviewContainer_' + fotoId);
+                    var urlText = document.getElementById('editFotoUrlText_' + fotoId);
+                    
+                    if (input) input.value = '';
+                    if (preview) preview.src = '';
+                    if (previewContainer) previewContainer.style.display = 'none';
+                    if (urlText) urlText.textContent = '';
+                }
+            });
 
             // Functions for edit modal management
             window.editarFoto = function(fotoId) {

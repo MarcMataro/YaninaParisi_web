@@ -93,7 +93,14 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
     <?php include '_includes/navigation.php'; ?>
 
     <!-- Hero Section con foto del profesional -->
-    <section class="professional-hero" style="background-image: linear-gradient(135deg, rgba(98, 66, 119, 0.85), rgba(171, 120, 141, 0.75))<?php if (!empty($professional['foto'])): ?>, url('../<?php echo htmlspecialchars($professional['foto']); ?>')<?php endif; ?>;">
+    <?php 
+        $heroStyle = "background-image: linear-gradient(135deg, rgba(98, 66, 119, 0.85), rgba(171, 120, 141, 0.75))";
+        if (!empty($professional['foto'])) {
+            $heroImage = resolve_media_url($professional['foto']);
+            $heroStyle .= ", url('" . htmlspecialchars($heroImage) . "')";
+        }
+    ?>
+    <section class="professional-hero" style="<?php echo $heroStyle; ?>;">
         <div class="hero-overlay"></div>
         <h1 class="professional-hero-name fade-in-up"><?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?></h1>
     </section>
@@ -144,15 +151,8 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
                     <div class="description-with-photo">
                         <?php if (!empty($professional['foto'])): ?>
                             <div class="floating-photo">
-                                <?php 
-                                    $fotoPath = $professional['foto'];
-                                    if (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') === 0) {
-                                        $fotoPath = '../' . $fotoPath;
-                                    } elseif (strpos($fotoPath, '../') !== 0 && strpos($fotoPath, 'img/') !== 0) {
-                                        $fotoPath = '../img/' . $fotoPath;
-                                    }
-                                ?>
-                                <img src="<?php echo htmlspecialchars($fotoPath); ?>" 
+                                <?php $fotoUrl = resolve_media_url($professional['foto']); ?>
+                                <img src="<?php echo htmlspecialchars($fotoUrl); ?>" 
                                      alt="<?php echo htmlspecialchars($professional['nom'] . ' ' . $professional['cognoms']); ?>">
                             </div>
                         <?php endif; ?>
@@ -246,7 +246,8 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
         <div class="container">
             <div class="photo-content-wrapper">
                 <div class="photo-image">
-                    <img src="../<?php echo htmlspecialchars($primeraFoto['image_path']); ?>" 
+                    <?php $photoUrl = resolve_media_url($primeraFoto['image_path']); ?>
+                    <img src="<?php echo htmlspecialchars($photoUrl); ?>" 
                          alt="<?php echo htmlspecialchars($primeraFoto['alt_es']); ?>">
                 </div>
                 <div class="photo-text">
@@ -290,7 +291,8 @@ $metaDescription = !empty($professional['subtitol_es']) ? htmlspecialchars($prof
         <div class="container">
             <div class="photo-content-wrapper <?php echo ($index % 2 === 0) ? 'reverse' : ''; ?>">
                 <div class="photo-image">
-                    <img src="../<?php echo htmlspecialchars($foto['image_path']); ?>" 
+                    <?php $photoUrl = resolve_media_url($foto['image_path']); ?>
+                    <img src="<?php echo htmlspecialchars($photoUrl); ?>" 
                          alt="<?php echo htmlspecialchars($foto['alt_es']); ?>">
                 </div>
                 <div class="photo-text">
