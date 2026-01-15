@@ -16,6 +16,7 @@ class PHPMailer {
     public $Subject;
     public $Body;
     public $ErrorInfo = '';
+    public $isHTML = false;
     
     private $to = [];
     private $reply_to = [];
@@ -119,22 +120,45 @@ class PHPMailer {
             
             // MAIL FROM
             fputs($smtp, "MAIL FROM: <{$this->From}>\r\n");
-            $this->getResponse($smtp);
+            $from_resp = $this->getResponse($smtp);
+            if (strpos($from_resp, '250') === false) {
+                $this->ErrorInfo = "Error MAIL FROM: $from_resp";
+                fclose($smtp);
+                return false;
+            }
             
             // RCPT TO
             foreach ($this->to as $recipient) {
                 fputs($smtp, "RCPT TO: <{$recipient['email']}>\r\n");
-                $this->getResponse($smtp);
+                $rcpt_resp = $this->getResponse($smtp);
+                if (strpos($rcpt_resp, '250') === false && strpos($rcpt_resp, '251') === false) {
+                    $this->ErrorInfo = "Error RCPT TO ({$recipient['email']}): $rcpt_resp";
+                    fclose($smtp);
+                    return false;
+                }
             }
             
             // DATA
             fputs($smtp, "DATA\r\n");
-            $this->getResponse($smtp);
+            $data_resp = $this->getResponse($smtp);
+            if (strpos($data_resp, '354') === false) {
+                $this->ErrorInfo = "Error DATA: $data_resp";
+                fclose($smtp);
+                return false;
+            }
             
             // Headers
-            $msg = $this->buildHeaders() . "\r\n\r\n" . $this->Body . "\r\n.\r\n";
+            // Normalitzar salts de línia al cos del missatge per a complir SMTP (CRLF)
+            $body_fixed = preg_replace('/\r\n|\r|\n/', "\r\n", $this->Body);
+            
+            $msg = $this->buildHeaders() . "\r\n\r\n" . $body_fixed . "\r\n.\r\n";
             fputs($smtp, $msg);
-            $this->getResponse($smtp);
+            $send_resp = $this->getResponse($smtp);
+            if (strpos($send_resp, '250') === false) {
+                $this->ErrorInfo = "Error enviant dades (DATA END): $send_resp";
+                fclose($smtp);
+                return false;
+            }
             
             // QUIT
             fputs($smtp, "QUIT\r\n");
@@ -157,21 +181,41 @@ class PHPMailer {
         return $response;
     }
     
+    private function encodeHeaderStr($str) {
+        if (preg_match('/[^\x20-\x7E]/', $str)) {
+            return "=?{$this->CharSet}?B?" . base64_encode($str) . "?=";
+        }
+        return $str;
+    }
+
     private function buildHeaders() {
         $h = [];
-        $h[] = "From: " . ($this->FromName ? "{$this->FromName} <{$this->From}>" : $this->From);
+        $fromName = $this->encodeHeaderStr($this->FromName);
+        $h[] = "From: " . ($this->FromName ? "$fromName <{$this->From}>" : $this->From);
         
         foreach ($this->to as $r) {
-            $h[] = "To: " . ($r['name'] ? "{$r['name']} <{$r['email']}>" : $r['email']);
+            $name = $r['name'] ? $this->encodeHeaderStr($r['name']) : '';
+            $h[] = "To: " . ($name ? "$name <{$r['email']}>" : $r['email']);
         }
         
         foreach ($this->reply_to as $r) {
-            $h[] = "Reply-To: " . ($r['name'] ? "{$r['name']} <{$r['email']}>" : $r['email']);
+            $name = $r['name'] ? $this->encodeHeaderStr($r['name']) : '';
+            $h[] = "Reply-To: " . ($name ? "$name <{$r['email']}>" : $r['email']);
         }
         
-        $h[] = "Subject: =?{$this->CharSet}?B?" . base64_encode($this->Subject) . "?=";
+        $safeSubject = str_replace(["\r", "\n"], ' ', $this->Subject);
+        $h[] = "Subject: " . $this->encodeHeaderStr($safeSubject);
+        
         $h[] = "MIME-Version: 1.0";
-        $h[] = "Content-Type: text/plain; charset={$this->CharSet}";
+        $token_type = $this->isHTML ? 'text/html' : 'text/plain';
+        $h[] = "Content-Type: $token_type; charset={$this->CharSet}";
+        $h[] = "Content-Transfer-Encoding: 8bit";
+        
+        // Add Date and Message-ID for better deliverability
+        $h[] = "Date: " . date('r');
+        $domain = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'yaninaparisi.com';
+        $h[] = "Message-ID: <" . md5(uniqid(microtime())) . "@" . $domain . ">";
+        
         $h[] = "X-Mailer: PHP/" . phpversion();
         
         return implode("\r\n", $h);

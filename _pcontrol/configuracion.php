@@ -460,7 +460,7 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                 </script>
                 <table class="table users-table" style="width:100%;margin-bottom:24px;">
                     <thead>
-                        <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th>Acciones</th></tr>
+                        <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th>Acciones</th></tr>
                     </thead>
                     <tbody>
                         <?php 
@@ -473,6 +473,7 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                             }
                         ?>
                             <tr>
+                                <td><?php echo htmlspecialchars($u['id_usuario']); ?></td>
                                 <td><?php echo htmlspecialchars($u['nombre'] . ' ' . $u['apellidos']); ?></td>
                                 <td><?php echo htmlspecialchars($u['email']); ?></td>
                                 <td><?php echo htmlspecialchars($u['rol']); ?></td>
@@ -487,7 +488,7 @@ $saved = isset($_GET['saved']) && $_GET['saved'] == '1';
                                 </td>
                             </tr>
                         <?php endforeach; else: ?>
-                            <tr><td colspan="5">No hay usuarios registrados.</td></tr>
+                            <tr><td colspan="6">No hay usuarios registrados.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>

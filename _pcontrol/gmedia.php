@@ -24,6 +24,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 require_once 'includes/role_check.php';
+require_once '../classes/connexio.php'; // Include database connection
 
 /**
  * Optimitza una imatge si pesa més de 300KB
@@ -547,6 +548,287 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     exit;
 }
 
+// Function to check if user folders correspond to existing users
+function checkOrphanFolders($folders) {
+    try {
+        $db = Connexio::getInstance()->getConnexio();
+    } catch (Exception $e) {
+        error_log("Database connection error in checkOrphanFolders: " . $e->getMessage());
+        return $folders;
+    }
+
+    $userFolders = [];
+    foreach ($folders as $key => $folder) {
+        if (preg_match('/^user_(\d+)$/', $folder['name'], $matches)) {
+            $userId = (int)$matches[1];
+            $userFolders[$userId] = $key;
+        }
+    }
+
+    if (empty($userFolders)) {
+        return $folders;
+    }
+
+    $ids = array_keys($userFolders);
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    
+    // Note: checking table usuarios_panel
+    $sql = "SELECT id_usuario FROM usuarios_panel WHERE id_usuario IN ($placeholders)";
+    
+    try {
+        $stmt = $db->prepare($sql);
+        $stmt->execute($ids);
+        
+        $foundIds = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $foundIds[] = $row['id_usuario'];
+        }
+        
+        foreach ($userFolders as $id => $key) {
+            if (!in_array($id, $foundIds)) {
+                $folders[$key]['is_orphan'] = true;
+            }
+        }
+    } catch (Exception $e) {
+        error_log("Error checkOrphanFolders: " . $e->getMessage());
+    }
+    
+    return $folders;
+}
+
+// Function to check if files are used in the database
+function checkFilesUsage($files, $currentPath, $imgBaseDir) {
+    try {
+        $db = Connexio::getInstance()->getConnexio();
+    } catch (Exception $e) {
+        error_log("Database connection error in checkFilesUsage: " . $e->getMessage());
+        return $files;
+    }
+
+    $filesToCheck = [];
+    $filesMap = []; // Maps lowercase filename to original entries
+
+    foreach ($files as $key => $file) {
+        if (!$file['is_dir']) {
+            $name = $file['name'];
+            $filesToCheck[] = $name;
+            $lowerName = mb_strtolower($name);
+            if (!isset($filesMap[$lowerName])) {
+                $filesMap[$lowerName] = [];
+            }
+            $filesMap[$lowerName][] = $key;
+        }
+    }
+
+    if (empty($filesToCheck)) {
+        return $files;
+    }
+    
+    // Normalize paths
+    $imgBaseDir = str_replace('\\', '/', $imgBaseDir);
+    $currentPath = str_replace('\\', '/', $currentPath);
+    
+    // Determine relative path of the CURRENT folder being viewed
+    // e.g. "user_1" or "media/videos"
+    $relDir = '';
+    if (strpos($currentPath, $imgBaseDir) === 0) {
+        $relDir = substr($currentPath, strlen($imgBaseDir));
+        $relDir = ltrim($relDir, '/');
+    }
+
+    $usedLowerNames = [];
+
+    // Helper to check if a DB path matches one of our files
+    // $dbPath: Value from database (e.g. "user_1/photo.jpg")
+    $checkMatch = function($dbPath) use ($relDir, $filesMap, &$usedLowerNames) {
+        if (empty($dbPath)) return;
+        
+        $dbPath = str_replace('\\', '/', $dbPath); // Normalize DB path
+        $dbBasename = mb_strtolower(basename($dbPath));
+        
+        // If the filename appears in our list
+        if (isset($filesMap[$dbBasename])) {
+            // Strict check: does the DB path match our file's location?
+            // If we are in "user_1" and checking "photo.jpg", our relative path is "user_1/photo.jpg"
+            
+            // 1. Calculate expected end of string for this file
+            $expectedSuffix = ($relDir ? $relDir . '/' : '') . $dbBasename;
+            $expectedSuffix = mb_strtolower($expectedSuffix);
+            $fullDbPathLower = mb_strtolower($dbPath);
+            
+            // 2. Check if DB path ends with our expected suffix
+            // This handles:
+            // "user_1/photo.jpg" (Exact match)
+            // "img/user_1/photo.jpg" (Ends with)
+            // "/var/www/.../img/user_1/photo.jpg" (Ends with)
+            
+            // We check if it ends with $expectedSuffix
+            // AND ensure it's boundary correct (preceded by / or is start of string)
+            
+            $endsWith = false;
+            $len = strlen($expectedSuffix);
+            $dbLen = strlen($fullDbPathLower);
+            
+            if ($dbLen === $len) {
+                if ($fullDbPathLower === $expectedSuffix) $endsWith = true;
+            } elseif ($dbLen > $len) {
+                // Check if it ends with suffix AND preceding char is /
+                if (substr($fullDbPathLower, -$len) === $expectedSuffix) {
+                    $charBefore = substr($fullDbPathLower, -($len + 1), 1);
+                    if ($charBefore === '/') {
+                        $endsWith = true;
+                    }
+                }
+            }
+            
+            // Fallback: If DB stores JUST the filename "photo.jpg" and we are in root, it matches.
+            // If DB stores JUST "photo.jpg" and we are in subfolder, strict match fails.
+            // BUT: legacy data might store just filenames assuming root? 
+            // Let's assume strictness to avoid false positives in other folders.
+            
+            if ($endsWith) {
+                $usedLowerNames[$dbBasename] = true;
+            } else {
+                // Special Case: If DB path has NO directory separators, match strictly on filename
+                // BUT only if we can be sure.
+                // If DB has "photo.jpg" and we have "user_1/photo.jpg", does it match?
+                // Probably not safe to assume.
+                
+                // However, if the user sees NO marks, maybe the DB has absolute paths that differ slightly?
+                // Let's rely on the suffix check.
+            }
+        }
+    };
+
+    // 1. Query Database Columns
+    // To minimize data transfer, we filter using LIKE %name for ALL files
+    // Then strictly filter in PHP
+    
+    $params = [];
+    $clauses = [];
+    foreach ($filesToCheck as $name) {
+        $clauses[] = "foto LIKE ?";
+        $params[] = "%$name";
+    }
+    // Optimization: If too many files, just fetch ALL non-null images? 
+    // No, pagination/lazy loading not evident here, usually folder size is manageable (hundreds not millions).
+    
+    // Actually, constructing 300 ORs is bad.
+    // Better strategy for folder view:
+    // "SELECT col FROM table WHERE col LIKE '%query_relevant_string%'"
+    // Since all files share the same folder, maybe filter by folder?
+    // "WHERE foto LIKE '%user_1/%'"? 
+    // If we are in root, we can't filter by folder easily.
+    
+    // Let's stick to checking names. If > 50 files, maybe just fetch all and filter PHP side?
+    // Or chunk it.
+    
+    // For now, assuming reasonably sized folders.
+    $validFilesCount = count($filesToCheck);
+    
+    if ($validFilesCount > 0) {
+        // Construct ONE big query with bound parameters is safest/easiest given unknown constraints
+        
+        // Let's use array_fill for placeholders if we used IN, but we use LIKE ...
+        // We can optimize: WHERE column REGEXP 'name1|name2|...'
+        // MySQL REGEXP is powerful.
+        // $pattern = implode('|', array_map(function($n){ return preg_quote($n); }, $filesToCheck));
+        // "foto REGEXP ?" -> $pattern
+        
+        // Let's try REGEXP approach for brevity in SQL, if simple chars.
+        // Filenames: alphanumeric + . _ -
+        
+        $namesSafe = array_map(function($f) { return preg_quote($f); }, $filesToCheck);
+        $regexp = implode('|', $namesSafe);
+        
+        $sql = "
+            SELECT foto as img FROM professionals WHERE foto REGEXP ?
+            UNION
+            SELECT image_path as img FROM professional_photos WHERE image_path REGEXP ?
+            UNION
+            SELECT imatge_portada as img FROM blog_entrades WHERE imatge_portada REGEXP ?
+        ";
+        
+        try {
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$regexp, $regexp, $regexp]);
+            
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $checkMatch($row['img']);
+            }
+        } catch (Exception $e) {
+             // Fallback to simpler query if REGEXP fails or not supported (though standard in MySQL/MariaDB)
+             error_log("REGEXP query failed: " . $e->getMessage() . ". Trying simplified checks.");
+             
+             // Fallback: simplified broad fetch or iterating
+        }
+    }
+    
+    // 2. Check Content (LIKE) in blog posts
+    // For content, we DEFINITELY should search using the path if possible to avoid false matches.
+    // If $relDir is set, use it.
+    
+    $contentSearchTerms = [];
+    foreach ($filesToCheck as $name) {
+        // Term: relative path "user_1/photo.jpg"
+        // If in root, just "photo.jpg"
+        $term = $relDir ? $relDir . '/' . $name : $name;
+        $contentSearchTerms[] = $term; // Used for PHP check
+    }
+    
+    if (!empty($contentSearchTerms)) {
+        // Use REGEXP again for content? Content is large text. LIKE is better for fulltext but REGEXP works.
+        // "contingut REGEXP 'user_1/photo.jpg|user_1/video.mp4'"
+        
+        $termsSafe = array_map(function($t) { return preg_quote($t, '/'); }, $contentSearchTerms); // / delimiter for preg_quote logic if needed, but for sql regexp just chars
+        // MySQL REGEXP doesn't use delimiters like PHP. Just escape special regexp chars.
+        // . is special.
+        $termsSafeSQL = array_map(function($t) { 
+            return str_replace('.', '\\.', $t); // Escape dot for SQL Regexp
+        }, $contentSearchTerms);
+        
+        $regexpContent = implode('|', $termsSafeSQL);
+        
+        $sqlC = "SELECT contingut_ca, contingut_es, galeria_imatges FROM blog_entrades WHERE 
+                 contingut_ca REGEXP ? OR contingut_es REGEXP ? OR galeria_imatges REGEXP ?";
+                 
+        try {
+            $stmtC = $db->prepare($sqlC);
+            $stmtC->execute([$regexpContent, $regexpContent, $regexpContent]);
+            
+            while ($row = $stmtC->fetch(PDO::FETCH_ASSOC)) {
+                $text = $row['contingut_ca'] . ' ' . $row['contingut_es'] . ' ' . $row['galeria_imatges'];
+                // Check which files are in this text
+                foreach ($contentSearchTerms as $term) {
+                    // Check existence (case insensitive)
+                    if (stripos($text, $term) !== false) {
+                        // Mark the corresponding file used
+                        // Recover filename from term (basename)
+                        $bname = basename($term);
+                        $usedLowerNames[mb_strtolower($bname)] = true;
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Content REGEXP failed: " . $e->getMessage());
+        }
+    }
+
+    // Update files array
+    foreach ($files as &$file) {
+        if (!$file['is_dir']) {
+            $lower = mb_strtolower($file['name']);
+            if (isset($usedLowerNames[$lower])) {
+                $file['is_used'] = true;
+            } else {
+                $file['is_used'] = false;
+            }
+        }
+    }
+    
+    return $files;
+}
+
 /**
  * Elimina recursivament un directori
  */
@@ -622,6 +904,10 @@ function getDirectoryContents($path) {
         return ['folders' => [], 'files' => []];
     }
     
+    // Get base dir for usage check
+    $imgBaseDir = realpath(__DIR__ . '/../img');
+    $imgBaseDir = str_replace('\\', '/', $imgBaseDir);
+    
     $folders = [];
     $files = [];
     
@@ -657,10 +943,17 @@ function getDirectoryContents($path) {
                 'size' => filesize($itemPath),
                 'modified' => filemtime($itemPath),
                 'type' => mime_content_type($itemPath),
-                'extension' => $extension
+                'extension' => $extension,
+                'is_dir' => false
             ];
         }
     }
+
+    // Check usage
+    $files = checkFilesUsage($files, $path, $imgBaseDir);
+    
+    // Check orphan folders
+    $folders = checkOrphanFolders($folders);
     
     // Ordenar alfabèticament
     usort($folders, function($a, $b) {
@@ -888,6 +1181,46 @@ if ($isAdmin) {
         .media-item.selected {
             border-color: #007bff;
             background: #e7f3ff;
+        }
+
+        .delete-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc3545;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+            border: 1px solid #dc3545;
+        }
+        
+        .delete-icon:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .usage-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 3px;
         }
         
         /* Estil específic per mode picker */
@@ -1219,9 +1552,24 @@ if ($isAdmin) {
                 
                 <?php foreach ($contents['folders'] as $folder): ?>
                     <div class="media-item" data-type="folder" data-name="<?php echo htmlspecialchars($folder['name']); ?>" 
-                         onclick="navigateToFolder('<?php echo htmlspecialchars($folder['name']); ?>')">
-                        <div class="media-icon folder">
-                            <i class="fas fa-folder"></i>
+                         onclick="navigateToFolder('<?php echo htmlspecialchars($folder['name']); ?>')"
+                         style="position: relative;">
+                        
+                        <?php if ($isAdmin && ($folder['items'] == 0 || !empty($folder['is_orphan']))): ?>
+                        <div class="delete-icon" 
+                             onclick="deleteSingleFolder(event, '<?php echo htmlspecialchars($folder['name']); ?>', <?php echo !empty($folder['is_orphan']) ? 'true' : 'false'; ?>)"
+                             title="<?php echo !empty($folder['is_orphan']) ? 'Eliminar carpeta d\'usuari inexistent (amb contingut)' : 'Eliminar carpeta buida'; ?>">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <?php endif; ?>
+
+                        <div class="media-icon folder" style="<?php echo !empty($folder['is_orphan']) ? 'background: linear-gradient(135deg, #aeaeae 0%, #767676 100%);' : ''; ?>">
+                            <?php if (!empty($folder['is_orphan'])): ?>
+                                <div class="usage-badge" style="background: #dc3545;" title="Usuari no trobat a la base de dades">
+                                    <i class="fas fa-user-slash"></i> Usuari inexistent
+                                </div>
+                            <?php endif; ?>
+                            <i class="fas <?php echo !empty($folder['is_orphan']) ? 'fa-folder-minus' : 'fa-folder'; ?>"></i>
                         </div>
                         <div class="media-name"><?php echo htmlspecialchars($folder['name']); ?></div>
                         <div class="media-info"><?php echo $folder['items']; ?> elements</div>
@@ -1243,8 +1591,21 @@ if ($isAdmin) {
                     ?>
                     <div class="media-item" data-type="file" data-name="<?php echo htmlspecialchars($file['name']); ?>"
                          data-url="<?php echo htmlspecialchars($imageUrl); ?>"
+                         data-in-use="<?php echo !empty($file['is_used']) ? 'true' : 'false'; ?>"
                          onclick="<?php echo $isPickerMode ? 'selectImage(this, event)' : 'toggleSelect(this, event)'; ?>">
+                         
+                        <?php if (empty($file['is_used']) && !$isPickerMode): ?>
+                        <div class="delete-icon" 
+                             onclick="deleteSingleFile(event, '<?php echo htmlspecialchars($file['name']); ?>')"
+                             title="Eliminar arxiu">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <?php endif; ?>
+
                         <div class="media-icon">
+                            <?php if (!empty($file['is_used'])): ?>
+                                <div class="usage-badge" title="Aquest arxiu està en ús"><i class="fas fa-link"></i> En ús</div>
+                            <?php endif; ?>
                             <?php if ($isImage): ?>
                                 <img src="../img/<?php echo htmlspecialchars($relativePath); ?>" 
                                      alt="<?php echo htmlspecialchars($file['name']); ?>"
@@ -1524,16 +1885,119 @@ if ($isAdmin) {
                 showAlert('danger', 'Error de connexió: ' + error.message);
             }
         }
+
+        async function deleteSingleFolder(event, folderName, isOrphan = false) {
+            event.stopPropagation();
+            
+            let confirmMsg = 'Segur que vols eliminar la carpeta buida: "' + folderName + '"?';
+            if (isOrphan) {
+                confirmMsg = 'ATENCIÓ: Aquesta és una carpeta d\'un usuari que ja no existeix ("' + folderName + '").\n\nSi l\'elimines, s\'esborraran TOTS els arxius que conté permanentment.\n\nEstàs segur que vols continuar?';
+            }
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('item_name', folderName);
+            formData.append('path', currentPath);
+            
+            try {
+                const response = await fetch('gmedia.php?path=' + encodeURIComponent(currentPath), {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('success', 'Carpeta eliminada');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    showAlert('danger', 'Error: ' + (result.message || 'Error desconegut'));
+                }
+            } catch (error) {
+                console.error('Error eliminant carpeta:', error);
+                showAlert('danger', 'Error de connexió: ' + error.message);
+            }
+        }
+
+        async function deleteSingleFile(event, fileName) {
+            event.stopPropagation();
+            
+            if (!confirm('Segur que vols eliminar l\'arxiu: "' + fileName + '"?')) {
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('item_name', fileName);
+            formData.append('path', currentPath);
+            
+            try {
+                const response = await fetch('gmedia.php?path=' + encodeURIComponent(currentPath), {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('success', 'Arxiu eliminat');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    showAlert('danger', 'Error eliminant arxiu: ' + (result.message || 'Error desconegut'));
+                }
+            } catch (error) {
+                console.error('Error eliminant arxiu:', error);
+                showAlert('danger', 'Error de connexió: ' + error.message);
+            }
+        }
         
         async function deleteSelected() {
             if (selectedItems.size === 0) return;
             
-            const itemsText = Array.from(selectedItems).join(', ');
-            if (!confirm('Segur que vols eliminar: ' + itemsText + '?')) {
-                return;
-            }
+            // Filtrar arxius en ús
+            const itemsToDelete = [];
+            const skippedItems = [];
             
             for (const itemName of selectedItems) {
+                // Busquem l'element DOM per comprovar l'atribut data-in-use
+                // Escapem cometes dobles per al selector
+                const safeName = itemName.replace(/"/g, '\\"');
+                const element = document.querySelector(`.media-item[data-name="${safeName}"]`);
+                
+                if (element && element.getAttribute('data-in-use') === 'true') {
+                    skippedItems.push(itemName);
+                } else {
+                    itemsToDelete.push(itemName);
+                }
+            }
+            
+            if (skippedItems.length > 0) {
+                 if (itemsToDelete.length === 0) {
+                     showAlert('warning', 'No es poden eliminar els arxius seleccionats perquè estan en ús: ' + skippedItems.join(', '));
+                     return;
+                 }
+                 
+                 if (!confirm('Alguns arxius estan en ús i no s\'eliminaran:\n' + skippedItems.join(', ') + '.\n\nVols continuar amb l\'eliminació de la resta (' + itemsToDelete.join(', ') + ')?')) {
+                     return;
+                 }
+            } else {
+                 const itemsText = Array.from(selectedItems).join(', ');
+                 if (!confirm('Segur que vols eliminar: ' + itemsText + '?')) {
+                     return;
+                 }
+            }
+            
+            for (const itemName of itemsToDelete) {
                 const formData = new FormData();
                 formData.append('action', 'delete');
                 formData.append('item_name', itemName);

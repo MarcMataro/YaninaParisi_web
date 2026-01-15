@@ -394,28 +394,87 @@ $lang = getCurrentLanguage();
             <div class="section-title">
                 <h2>Testimonis</h2>
             </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"La Yanina m'ha ajudat a superar la meva ansietat com mai havia imaginat. Les seves tècniques i suport em van donar les eines necessàries per afrontar les meves pors."</p>
-                    <div class="testimonial-author">
-                        <div class="author-image"><i class="fas fa-user"></i></div>
-                        <div>
-                            <h4>Laura G.</h4>
-                            <p>Pacient des de 2021</p>
+            
+            <?php
+            // Càrrega dinàmica de ressenyes
+            require_once __DIR__ . '/../classes/connexio.php';
+            require_once __DIR__ . '/../classes/ressenyes.php';
+            require_once __DIR__ . '/../classes/video_reviews.php';
+
+            try {
+                $db = Connexio::getInstance()->getConnexio();
+                $rModel = new Ressenyes($db);
+                $vModel = VideoReviews::getInstance();
+
+                // 1. Text Reviews (Aprovades)
+                // Obtenim un nombre raonable, ex: 6 últimes
+                $textReviewsData = $rModel->list(['estat' => 'aprovat', 'per_page' => 6, 'order_by' => 'data_creacio', 'order_dir' => 'DESC']); 
+                $textReviews = $textReviewsData['data'];
+
+                // 2. Video Reviews (Públiques)
+                $videoReviews = $vModel->getAll(true);
+
+            } catch (Exception $e) {
+                // Silenciem errors bbdd en producció
+                $textReviews = [];
+                $videoReviews = [];
+            }
+            ?>
+
+            <?php if (empty($textReviews) && empty($videoReviews)): ?>
+                <p style="text-align: center; color: #666;">No hi ha testimonis disponibles actualment.</p>
+            <?php endif; ?>
+
+            <!-- Opinions dels clients (Text) -->
+            <?php if (!empty($textReviews)): ?>
+            <div class="reviews-subsection" style="margin-bottom: 40px;">
+                <h3 style="text-align: center; margin-bottom: 20px; font-family: 'Libre Baskerville', serif;">Opinions dels clients</h3>
+                <div class="testimonials-grid">
+                    <?php foreach($textReviews as $review): 
+                        // Només mostrem si hi ha text en aquest idioma
+                        if (empty($review['text_ressenya_ca'])) continue;
+                    ?>
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">"<?php echo htmlspecialchars($review['text_ressenya_ca']); ?>"</p>
+                            <div class="testimonial-author">
+                                <div class="author-image"><i class="fas fa-user"></i></div>
+                                <div>
+                                    <h4><?php echo htmlspecialchars($review['nom_pacient'] ?: 'Anònim'); ?></h4>
+                                    <?php if(!empty($review['verificada'])): ?>
+                                        <p style="font-size: 0.85em; color: #10b981;"><i class="fas fa-check-circle"></i> Verificat</p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <p class="testimonial-text">"Després de poc més de sis mesos de teràpia de parella, la nostra relació ha millorat dràsticament. Gràcies a la Yanina per ensenyar-nos a comunicar-nos millor."</p>
-                    <div class="testimonial-author">
-                        <div class="author-image"><i class="fas fa-users"></i></div>
-                        <div>
-                            <h4>Marc i Elena</h4>
-                            <p>Pacients des de 2022</p>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
+            <?php endif; ?>
+
+            <!-- Videorressenyes (Admin) -->
+            <?php if (!empty($videoReviews)): ?>
+            <div class="reviews-subsection">
+                <h3 style="text-align: center; margin-bottom: 20px; font-family: 'Libre Baskerville', serif;">Videorressenyes</h3>
+                <div class="testimonials-grid">
+                    <?php foreach($videoReviews as $video): 
+                        $ytId = $vModel->extractYoutubeId($video['youtube_url']);
+                    ?>
+                        <div class="testimonial-card" style="padding: 0; overflow: hidden;">
+                            <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                                <iframe src="https://www.youtube.com/embed/<?php echo $ytId; ?>" 
+                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" 
+                                        allowfullscreen loading="lazy">
+                                </iframe>
+                            </div>
+                            <div style="padding: 15px; text-align: center;">
+                                <h4 style="margin: 0; font-size: 1.1em;"><?php echo htmlspecialchars($video['title_ca']); ?></h4>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
         </div>
     </section>
 

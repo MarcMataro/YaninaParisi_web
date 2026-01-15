@@ -68,6 +68,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $m->data_fi_promocio = $_POST['data_fi_promocio'] ?? null;
 
             $errors = $m->validate();
+            
+            // Validació extra: màxim 4 tarifes visibles
+            if ($m->visible_web) {
+                try {
+                    // Comptem quantes n'hi ha visibles actualment
+                    $stmt = $db->query("SELECT COUNT(*) FROM tarifes WHERE visible_web = 1");
+                    if ($stmt && $stmt->fetchColumn() >= 4) {
+                         $errors[] = "El màxim de tarifes visibles és 4. Desactiva'n una abans d'activar aquesta.";
+                    }
+                } catch (Exception $e) {}
+            }
+
             if (!empty($errors)) {
                 $flash = ['type' => 'danger', 'text' => 'Errors: ' . implode(', ', $errors)];
             } else {
@@ -84,6 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['edit'])) {
             $id = intval($_POST['id_tarifa'] ?? 0);
             if ($id && $model->llegirPerId($id)) {
+                $wasVisible = $model->visible_web; // Estat anterior per comprovar canvis
+
                 $model->nom_servei_ca = $_POST['nom_servei_ca'] ?? $model->nom_servei_ca;
                 $model->nom_servei_es = $_POST['nom_servei_es'] ?? $model->nom_servei_es;
                 $model->tipus_servei = $_POST['tipus_servei'] ?? $model->tipus_servei;
@@ -109,6 +123,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $model->data_fi_promocio = $_POST['data_fi_promocio'] ?? $model->data_fi_promocio;
 
                 $errors = $model->validate();
+
+                // Validació extra: màxim 4 tarifes visibles (només si estem activant una que no ho estava)
+                if ($model->visible_web && empty($wasVisible)) {
+                    try {
+                        $stmt = $db->query("SELECT COUNT(*) FROM tarifes WHERE visible_web = 1");
+                        if ($stmt && $stmt->fetchColumn() >= 4) {
+                             $errors[] = "El màxim de tarifes visibles és 4. Desactiva'n una altra abans d'activar aquesta.";
+                        }
+                    } catch (Exception $e) {}
+                }
+
                 if (!empty($errors)) {
                     $flash = ['type' => 'danger', 'text' => 'Errors: ' . implode(', ', $errors)];
                 } else {
